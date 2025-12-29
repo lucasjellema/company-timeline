@@ -1,0 +1,325 @@
+:root {
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --secondary: #a855f7;
+    --bg-dark: #0f172a;
+    --bg-card: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent: #10b981;
+    --border: #334155;
+    --glass: rgba(30, 41, 59, 0.7);
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    line-height: 1.5;
+    overflow-x: hidden;
+}
+
+.app-header {
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logo h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(to right, var(--primary-light), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.controls {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.875rem;
+    border: none;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-light);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.btn-secondary {
+    background: var(--bg-card);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+    border-color: var(--primary-light);
+    background: #2d3a4f;
+}
+
+main {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.viz-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: var(--shadow);
+    flex-grow: 1;
+    overflow: visible;
+}
+
+.app-layout {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.side-panel {
+    width: 350px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 5.5rem;
+    max-height: calc(100vh - 8rem);
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-header {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem;
+}
+
+.panel-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.current-date {
+    color: var(--primary-light);
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-top: 0.25rem;
+}
+
+.events-list {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.event-item {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 4px solid var(--primary);
+    transition: background 0.2s;
+}
+
+.event-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.event-item-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.event-item-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.empty-state {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    text-align: center;
+    padding: 2rem 0;
+    font-style: italic;
+}
+
+.zoom-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-right: 1rem;
+    padding-right: 1rem;
+    border-right: 1px solid var(--border);
+}
+
+.btn-icon {
+    padding: 0.5rem;
+    background: var(--bg-card);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon:hover {
+    color: var(--text-main);
+    border-color: var(--primary-light);
+}
+
+#timeline-viz {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Tooltip Styles */
+.tooltip {
+    position: absolute;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid var(--primary);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    color: var(--text-main);
+    font-size: 0.875rem;
+    max-width: 300px;
+    pointer-events: none;
+    z-index: 1000;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    transition: opacity 0.2s ease;
+}
+
+.tooltip.hidden {
+    opacity: 0;
+}
+
+.tooltip-title {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: block;
+    color: var(--primary-light);
+}
+
+/* D3 Styles */
+.axis-line {
+    stroke: var(--border);
+}
+
+.axis-text {
+    fill: var(--text-muted);
+    font-size: 11px;
+}
+
+.level-label {
+    fill: var(--text-muted);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.event-bar {
+    rx: 6;
+    ry: 6;
+    cursor: pointer;
+    transition: filter 0.2s, stroke 0.2s, stroke-width 0.2s;
+}
+
+.event-bar.active {
+    stroke: #fff;
+    stroke-width: 2px;
+    filter: brightness(1.3) drop-shadow(0 0 8px var(--primary));
+}
+
+.time-slider-line {
+    stroke: var(--primary-light);
+    stroke-width: 2;
+    stroke-dasharray: 4, 4;
+    pointer-events: none;
+}
+
+.time-slider-handle {
+    fill: var(--primary);
+    cursor: ew-resize;
+    stroke: white;
+    stroke-width: 2;
+}
+
+.time-slider-hitbox {
+    fill: transparent;
+    cursor: ew-resize;
+}
+
+.bar-label {
+    fill: var(--text-main);
+    font-size: 11px;
+    font-weight: 500;
+    pointer-events: none;
+}
+
+.grid-line {
+    stroke: var(--border);
+    stroke-dasharray: 2, 2;
+}
+
+.level-separator {
+    stroke: var(--border);
+    stroke-width: 1;
+}
+
+.level-bg {
+    fill: rgba(255, 255, 255, 0.02);
+}
