@@ -26,8 +26,9 @@ export class TimelineRenderer {
             this.sliderDate = d3.timeMonth.offset(minDate, 2);
         }
 
-        const containerWidth = this.container.node().getBoundingClientRect().width - 40;
-        const baseWidth = Math.max(1000, containerWidth);
+        const containerNode = this.container.node();
+        const viewportWidth = containerNode.clientWidth;
+        const baseWidth = Math.max(1000, viewportWidth - 20);
         this.width = baseWidth * this.zoomFactor;
 
         const range = [CONFIG.PADDING.LEFT, this.width - CONFIG.PADDING.RIGHT];
@@ -48,6 +49,8 @@ export class TimelineRenderer {
         const svg = this.container.append("svg")
             .attr("width", this.width)
             .attr("height", this.totalHeight)
+            .style("width", `${this.width}px`)
+            .style("height", `${this.totalHeight}px`)
             .attr("viewBox", `0 0 ${this.width} ${this.totalHeight}`);
 
         this.drawAxis(svg, this.xScale, this.width);
@@ -57,15 +60,33 @@ export class TimelineRenderer {
         // Initial highlight
         this.updateActiveEvents();
 
-        // Scroll to slider
-        this.scrollToSlider();
+        // Keep slider in view (center it initially). Use RAF to ensure DOM is ready.
+        requestAnimationFrame(() => this.keepSliderInView(true));
     }
 
-    scrollToSlider() {
-        const sliderX = this.xScale(this.sliderDate);
+    keepSliderInView(alwaysCenter = false) {
+        if (!this.xScale) return;
+
         const container = this.container.node();
+        if (!container) return;
+
+        const sliderX = this.xScale(this.sliderDate);
         const viewportWidth = container.clientWidth;
-        container.scrollLeft = sliderX - viewportWidth / 2;
+        const currentScroll = container.scrollLeft;
+        const sliderPosInViewport = sliderX - currentScroll;
+
+        const leftLimit = viewportWidth * 0.2;
+        const rightLimit = viewportWidth * 0.8;
+
+        if (alwaysCenter) {
+            container.scrollLeft = sliderX - viewportWidth / 2;
+        } else {
+            if (sliderPosInViewport < leftLimit) {
+                container.scrollLeft = sliderX - leftLimit;
+            } else if (sliderPosInViewport > rightLimit) {
+                container.scrollLeft = sliderX - rightLimit;
+            }
+        }
     }
 
     zoom(delta) {
@@ -78,19 +99,61 @@ export class TimelineRenderer {
 
     drawAxis(svg, xScale, width) {
         const monthsDiff = d3.timeMonth.count(xScale.domain()[0], xScale.domain()[1]);
-        let interval = d3.timeMonth.every(3);
-        if (monthsDiff < 12) interval = d3.timeMonth.every(1);
-        if (monthsDiff > 60) interval = d3.timeYear.every(1);
+
+        // Determine granularity based on zoom factor
+        let interval, formatType;
+
+        if (this.zoomFactor >= CONFIG.ZOOM_GRANULARITY.WEEKLY_THRESHOLD) {
+            // Weekly granularity at high zoom
+            interval = d3.timeWeek.every(1);
+            formatType = 'week';
+        } else if (this.zoomFactor >= CONFIG.ZOOM_GRANULARITY.MONTHLY_THRESHOLD) {
+            // Monthly granularity at medium zoom
+            interval = d3.timeMonth.every(1);
+            formatType = 'month';
+        } else if (this.zoomFactor >= CONFIG.ZOOM_GRANULARITY.QUARTERLY_THRESHOLD) {
+            // Quarterly granularity at low-medium zoom
+            interval = d3.timeMonth.every(3);
+            formatType = 'quarter';
+        } else {
+            // Yearly granularity at minimum zoom
+            interval = d3.timeYear.every(1);
+            formatType = 'year';
+        }
 
         const xAxis = d3.axisTop(xScale)
             .ticks(interval)
             .tickSize(-this.totalHeight + CONFIG.PADDING.TOP)
             .tickFormat(d => {
                 const month = d.getMonth();
-                if (month === 0) return d3.timeFormat("%Y")(d);
-                if (monthsDiff < 24) return d3.timeFormat("%b %y")(d);
-                if (month % 3 === 0) return d3.timeFormat("Q%q")(d);
-                return "";
+                const day = d.getDate();
+
+                if (formatType === 'week') {
+                    // Show week number for weekly view
+                    const weekNum = d3.timeWeek.count(d3.timeYear(d), d);
+                    if (month === 0 && weekNum <= 1) {
+                        return d3.timeFormat("%Y")(d);
+                    }
+                    return d3.timeFormat("%b %d")(d);
+                } else if (formatType === 'month') {
+                    // Show month abbreviation for monthly view
+                    if (month === 0) {
+                        return d3.timeFormat("%Y")(d);
+                    }
+                    return d3.timeFormat("%b")(d);
+                } else if (formatType === 'quarter') {
+                    // Show quarters for quarterly view
+                    if (month === 0) {
+                        return d3.timeFormat("%Y")(d);
+                    }
+                    if (month % 3 === 0) {
+                        return d3.timeFormat("Q%q")(d);
+                    }
+                    return "";
+                } else {
+                    // Show only years for yearly view
+                    return d3.timeFormat("%Y")(d);
+                }
             });
 
         const axisG = svg.append("g")
@@ -99,7 +162,13 @@ export class TimelineRenderer {
 
         axisG.selectAll(".tick line")
             .attr("class", "grid-line")
-            .style("stroke-opacity", d => d.getMonth() === 0 ? 0.3 : 0.1);
+            .style("stroke-opacity", d => {
+                const month = d.getMonth();
+                // Emphasize year boundaries and quarters
+                if (month === 0) return 0.3;
+                if (formatType === 'quarter' && month % 3 === 0) return 0.15;
+                return 0.1;
+            });
 
         axisG.select(".domain").remove();
         axisG.selectAll("text")
@@ -115,6 +184,7 @@ export class TimelineRenderer {
             levelG.append("line").attr("class", "level-separator").attr("x1", 0).attr("x2", this.width).attr("y1", level.height - 10).attr("y2", level.height - 10);
             levelG.append("text").attr("class", "level-label").attr("x", 20).attr("y", 25).text(level.level0);
 
+            // Draw regular timeline bars
             const eventGroups = levelG.selectAll(".event-g")
                 .data(level.events).enter().append("g").attr("class", "event-g")
                 .attr("transform", d => `translate(${xScale(d.startDate)}, ${45 + d.rowIndex * (CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING)})`);
@@ -127,6 +197,58 @@ export class TimelineRenderer {
                 .on("mouseleave", () => this.tooltip.hide());
 
             eventGroups.append("text").attr("class", "bar-label").attr("x", 4).attr("y", CONFIG.BAR_HEIGHT + 16).text(d => d.title);
+
+            // Draw event triangles (for point events without end dates)
+            this.drawEventTriangles(levelG, level, xScale);
+        });
+    }
+
+    drawEventTriangles(levelG, level, xScale) {
+        if (!level.pointEvents || level.pointEvents.length === 0) {
+            return; // No point events in this level
+        }
+
+        const triangleSize = 10; // Size of the triangle
+
+        level.pointEvents.forEach(event => {
+            const x = xScale(event.startDate);
+
+            // Calculate Y based on the row index assigned by layout-engine
+            // Position so tip touches top of the virtual bar
+            const barY = level.topBarY + event.rowIndex * (CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING);
+
+            // Use transform for positioning the entire group
+            const triangleG = levelG.append("g")
+                .attr("class", "event-triangle-group")
+                .attr("transform", `translate(${x}, ${barY})`);
+
+            // Create a downward-pointing triangle relative to (0,0) (the tip)
+            // Points: top-left, top-right, bottom-center (0,0)
+            const pathD = `M ${-triangleSize / 2},${-triangleSize} L ${triangleSize / 2},${-triangleSize} L 0,0 Z`;
+
+            triangleG.append("path")
+                .attr("class", "event-triangle")
+                .attr("d", pathD)
+                .attr("fill", getEventColor(event.type, CONFIG.TYPE_COLORS))
+                .attr("stroke", "#fff")
+                .attr("stroke-width", 1.5)
+                .style("cursor", "pointer")
+                .on("mouseenter", (e) => {
+                    const tooltip = `<span class="tooltip-title">${event.title}</span><strong>Type:</strong> ${event.type}<br><strong>Date:</strong> ${event.start}<br><br>${event.description}`;
+                    this.tooltip.show(e, tooltip);
+                })
+                .on("mousemove", (e) => this.tooltip.move(e))
+                .on("mouseleave", () => this.tooltip.hide());
+
+            // Add a small label above the triangle
+            triangleG.append("text")
+                .attr("class", "event-label")
+                .attr("x", 0) // Centered horizontally
+                .attr("y", -triangleSize - 8) // Above the triangle
+                .attr("text-anchor", "middle")
+                .attr("font-size", "9px")
+                .attr("fill", "var(--text-muted)")
+                .text(event.title.length > 15 ? event.title.substring(0, 12) + '...' : event.title);
         });
     }
 
@@ -135,15 +257,16 @@ export class TimelineRenderer {
         const sliderG = svg.append("g").attr("class", "slider-group");
         sliderG.append("line").attr("class", "time-slider-line").attr("x1", sliderX).attr("x2", sliderX).attr("y1", CONFIG.PADDING.TOP - 30).attr("y2", this.totalHeight);
         sliderG.append("rect").attr("class", "time-slider-hitbox").attr("x", sliderX - 10).attr("y", CONFIG.PADDING.TOP - 40).attr("width", 20).attr("height", 30)
-            .call(d3.drag().on("drag", (event) => {
-                const newDate = this.xScale.invert(event.x);
-                if (newDate >= this.xScale.domain()[0] && newDate <= this.xScale.domain()[1]) {
-                    this.sliderDate = newDate;
-                    this.updateSliderUI(sliderG);
-                    this.updateActiveEvents();
-                }
-            }));
-        sliderG.append("circle").attr("class", "time-slider-handle").attr("cx", sliderX).attr("cy", CONFIG.PADDING.TOP - 25).attr("r", 6);
+            ;
+        sliderG.append("circle").attr("class", "time-slider-handle").attr("cx", sliderX).attr("cy", CONFIG.PADDING.TOP - 25).attr("r", 6).call(d3.drag().on("drag", (event) => {
+            const newDate = this.xScale.invert(event.x);
+            if (newDate >= this.xScale.domain()[0] && newDate <= this.xScale.domain()[1]) {
+                this.sliderDate = newDate;
+                this.updateSliderUI(sliderG);
+                this.updateActiveEvents();
+                this.keepSliderInView(false);
+            }
+        }));
     }
 
     updateSliderUI(sliderG) {

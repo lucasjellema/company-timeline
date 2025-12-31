@@ -1,8 +1,31 @@
 export const parseDate = (dateStr) => {
-    // Expected format: YYYY-M or YYYY-MM
-    const [year, month] = dateStr.split('-').map(Number);
-    // JS Months are 0-indexed
-    return new Date(year, month - 1, 1);
+    if (!dateStr || dateStr.trim() === '') {
+        return null; // No date provided (for events without end date)
+    }
+
+    const parts = dateStr.trim().split('-');
+
+    if (parts.length === 2) {
+        // Format: YYYY-MM (month precision)
+        const [year, month] = parts.map(Number);
+        return new Date(year, month - 1, 1);
+    } else if (parts.length === 3) {
+        // Could be YYYY-MM-DD or DD-MM-YYYY
+        const firstPart = parseInt(parts[0]);
+
+        if (firstPart > 31) {
+            // Format: YYYY-MM-DD
+            const [year, month, day] = parts.map(Number);
+            return new Date(year, month - 1, day);
+        } else {
+            // Format: DD-MM-YYYY
+            const [day, month, year] = parts.map(Number);
+            return new Date(year, month - 1, day);
+        }
+    }
+
+    // Fallback: try to parse as-is
+    return new Date(dateStr);
 };
 
 export const formatDate = (date) => {
@@ -20,8 +43,9 @@ export const createTooltip = () => {
         show: (e, content) => {
             tooltip.innerHTML = content;
             tooltip.classList.remove('hidden');
-            tooltip.style.left = `${e.pageX + 15}px`;
-            tooltip.style.top = `${e.pageY + 15}px`;
+            tooltip.style.left = `${e.pageX + 20}px`;
+            tooltip.style.top = `${e.pageY + 20}px`;
+            tooltip.style.pointerEvents = 'none'; // Prevent tooltip from capturing mouse events
         },
         hide: () => {
             tooltip.classList.add('hidden');

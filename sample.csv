@@ -9,3 +9,6 @@ start,end,title,description,type,level0,level1,level2
 2023-01,2023-06,Cloud Migration,Moving data centers to AWS. Phase 1: Migration of core API services.,project,IT,infrastructure,cloud
 2023-07,2023-12,Security Audit,SOC2 compliance and remediation. External auditing firm review.,project,IT,security,audit
 2024-02,2025-04,Network Upgrade,Fiber installation across campuses to support 10Gbps internal speeds.,project,IT,infrastructure,net
+2023-09-15,,Product Launch,Official launch of Version 3.0 to the public.,release,company,product,launch
+2024-01-01,,New Year Kickoff,Company-wide meeting and strategy session for 2024.,project,company,strategy,kickoff
+17-03-2025,,Major Milestone,Company reaches 1 million users.,project,company,growth,milestone
