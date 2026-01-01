@@ -38,19 +38,66 @@ export const getEventColor = (type, colors) => {
 
 export const createTooltip = () => {
     const tooltip = document.getElementById('tooltip');
+    let hideTimeout = null;
+
+    // Keep tooltip open when hovering over it
+    tooltip.addEventListener('mouseenter', () => {
+        if (hideTimeout) {
+            clearTimeout(hideTimeout);
+            hideTimeout = null;
+        }
+    });
+
+    // Hide tooltip when leaving it
+    tooltip.addEventListener('mouseleave', () => {
+        hideTimeout = setTimeout(() => {
+            tooltip.classList.add('hidden');
+            tooltip.style.pointerEvents = 'none';
+        }, 300); // 300ms grace period
+    });
 
     return {
-        show: (e, content) => {
+        show: (e, content, interactive = false) => {
+            if (hideTimeout) {
+                clearTimeout(hideTimeout);
+                hideTimeout = null;
+            }
+
             tooltip.innerHTML = content;
             tooltip.classList.remove('hidden');
-            tooltip.style.left = `${e.pageX + 20}px`;
-            tooltip.style.top = `${e.pageY + 20}px`;
-            tooltip.style.pointerEvents = 'none'; // Prevent tooltip from capturing mouse events
+
+            // If interactive, verify it stays within viewport
+            let left = e.pageX + 20;
+            let top = e.pageY + 20;
+
+            // Simple viewport check (assuming standard window)
+            if (interactive) {
+                const tooltipWidth = 400; // Approx based on map
+                if (left + tooltipWidth > window.innerWidth) {
+                    left = e.pageX - tooltipWidth - 20;
+                }
+                tooltip.style.pointerEvents = 'auto';
+            } else {
+                tooltip.style.pointerEvents = 'none';
+            }
+
+            tooltip.style.left = `${left}px`;
+            tooltip.style.top = `${top}px`;
         },
         hide: () => {
+            // Delay hiding to allow user to move mouse into tooltip
+            hideTimeout = setTimeout(() => {
+                tooltip.classList.add('hidden');
+                tooltip.style.pointerEvents = 'none';
+            }, 300);
+        },
+        forceHide: () => {
+            if (hideTimeout) clearTimeout(hideTimeout);
             tooltip.classList.add('hidden');
+            tooltip.style.pointerEvents = 'none';
         },
         move: (e) => {
+            if (tooltip.style.pointerEvents === 'auto') return; // Don't move if interactive
             tooltip.style.left = `${e.pageX + 15}px`;
             tooltip.style.top = `${e.pageY + 15}px`;
         }

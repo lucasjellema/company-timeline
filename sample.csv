@@ -1,14 +1,14 @@
-start,end,title,description,type,level0,level1,level2
-2022-01,2024-12,Vision 2024,Strategic roadmap for company growth. High level objectives for the next two years.,project,company,strategy,global
-2023-03,2023-05,Q1 Release,Core platform stabilization and features. Includes performance improvements and security patches.,release,company,platform,core
-2023-06,2023-08,Summer Sprint,Performance optimization phase targeting DB queries and frontend bundle size.,sprint,company,platform,ops
-2024-01,2024-03,AI Integration,Deploying LLMs across internal tools. Evaluation of different model providers (OpenAI / Anthropic).,project,company,R&D,ai
-2023-02,2023-03,Manager Training,Leadership development workshop for newly promoted managers.,training,HR,culture,mgmt
-2023-04,2023-06,New Hire Onboarding,Batch 1 training program for engineering and product hires.,training,HR,onboarding,batch1
-2023-08,2023-10,Feedback Cycle,Annual performance review and planning. Employee self-assessments and manager syncs.,project,HR,ops,reviews
-2023-01,2023-06,Cloud Migration,Moving data centers to AWS. Phase 1: Migration of core API services.,project,IT,infrastructure,cloud
-2023-07,2023-12,Security Audit,SOC2 compliance and remediation. External auditing firm review.,project,IT,security,audit
-2024-02,2025-04,Network Upgrade,Fiber installation across campuses to support 10Gbps internal speeds.,project,IT,infrastructure,net
-2023-09-15,,Product Launch,Official launch of Version 3.0 to the public.,release,company,product,launch
-2024-01-01,,New Year Kickoff,Company-wide meeting and strategy session for 2024.,project,company,strategy,kickoff
-17-03-2025,,Major Milestone,Company reaches 1 million users.,project,company,growth,milestone
+start,end,title,description,type,level0,level1,level2,lattitude,longitude
+2022-01,2024-12,Vision 2024,Strategic roadmap for company growth. High level objectives for the next two years.,project,company,strategy,global,,
+2023-03,2023-05,Q1 Release,Core platform stabilization and features. Includes performance improvements and security patches.,release,company,platform,core,,
+2023-06,2023-08,Summer Sprint,Performance optimization phase targeting DB queries and frontend bundle size.,sprint,company,platform,ops,,
+2024-01,2024-03,AI Integration,Deploying LLMs across internal tools. Evaluation of different model providers (OpenAI / Anthropic).,project,company,R&D,ai,,
+2023-02,2023-03,Manager Training,Leadership development workshop for newly promoted managers.,training,HR,culture,mgmt,,
+2023-04,2023-06,New Hire Onboarding,Batch 1 training program for engineering and product hires.,training,HR,onboarding,batch1,,
+2023-08,2023-10,Feedback Cycle,Annual performance review and planning. Employee self-assessments and manager syncs.,project,HR,ops,reviews,,
+2023-01,2023-06,Cloud Migration,Moving data centers to AWS. Phase 1: Migration of core API services.,project,IT,infrastructure,cloud,,
+2023-07,2023-12,Security Audit,SOC2 compliance and remediation. External auditing firm review.,project,IT,security,audit,37.7749,-122.4194
+2024-02,2025-04,Network Upgrade,Fiber installation across campuses to support 10Gbps internal speeds.,project,IT,infrastructure,net,,
+2023-09-15,,Product Launch,Official launch of Version 3.0 to the public.,release,company,product,launch,40.7128,-74.0060
+2024-01-01,,New Year Kickoff,Company-wide meeting and strategy session for 2024.,project,company,strategy,kickoff,51.5074,-0.1278
+17-03-2025,,Major Milestone,Company reaches 1 million users.,project,company,growth,milestone,,

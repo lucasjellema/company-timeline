@@ -12,6 +12,7 @@ export class TimelineRenderer {
         this.xScale = null;
         this.width = 0;
         this.totalHeight = 0;
+        this.activeMapEventId = null;
     }
 
     render(layoutData, preserveSlider = false) {
@@ -192,9 +193,15 @@ export class TimelineRenderer {
             eventGroups.append("rect").attr("class", "event-bar")
                 .attr("height", CONFIG.BAR_HEIGHT).attr("fill", d => getEventColor(d.type, CONFIG.TYPE_COLORS))
                 .attr("width", d => Math.max(8, xScale(d.endDate) - xScale(d.startDate)))
-                .on("mouseenter", (e, d) => this.tooltip.show(e, `<span class="tooltip-title">${d.title}</span><strong>Type:</strong> ${d.type}<br><strong>Period:</strong> ${d.start} to ${d.end}<br><br>${d.description}`))
-                .on("mousemove", (e) => this.tooltip.move(e))
-                .on("mouseleave", () => this.tooltip.hide());
+                .on("mouseenter", (e, d) => this.handleEventHover(e, d))
+                .on("mousemove", (e) => {
+                    if (this.activeMapEventId) return; // Don't move if showing map
+                    this.tooltip.move(e);
+                })
+                .on("mouseleave", () => {
+                    this.activeMapEventId = null;
+                    this.tooltip.hide();
+                });
 
             eventGroups.append("text").attr("class", "bar-label").attr("x", 4).attr("y", CONFIG.BAR_HEIGHT + 16).text(d => d.title);
 
@@ -233,12 +240,15 @@ export class TimelineRenderer {
                 .attr("stroke", "#fff")
                 .attr("stroke-width", 1.5)
                 .style("cursor", "pointer")
-                .on("mouseenter", (e) => {
-                    const tooltip = `<span class="tooltip-title">${event.title}</span><strong>Type:</strong> ${event.type}<br><strong>Date:</strong> ${event.start}<br><br>${event.description}`;
-                    this.tooltip.show(e, tooltip);
+                .on("mouseenter", (e) => this.handleEventHover(e, event))
+                .on("mousemove", (e) => {
+                    if (this.activeMapEventId) return;
+                    this.tooltip.move(e);
                 })
-                .on("mousemove", (e) => this.tooltip.move(e))
-                .on("mouseleave", () => this.tooltip.hide());
+                .on("mouseleave", () => {
+                    this.activeMapEventId = null;
+                    this.tooltip.hide();
+                });
 
             // Add a small label above the triangle
             triangleG.append("text")
@@ -286,6 +296,52 @@ export class TimelineRenderer {
 
         if (this.onSliderMove) {
             this.onSliderMove(this.sliderDate, activeEvents);
+        }
+    }
+
+    handleEventHover(e, d) {
+        const lat = parseFloat(d.lattitude || d.latitude);
+        const lng = parseFloat(d.longitude || d.longtitude);
+        const hasMap = !isNaN(lat) && !isNaN(lng);
+
+        if (hasMap) {
+            this.activeMapEventId = d.id;
+            const mapId = `map-${d.id}`;
+            const content = `
+                <span class="tooltip-title">${d.title}</span>
+                <div style="margin-bottom:8px; font-size: 0.9em"><strong>Type:</strong> ${d.type} &middot; <strong>Period:</strong> ${d.start} to ${d.end || 'Ongoing'}</div>
+                <div style="margin-bottom:10px">${d.description}</div>
+                <div id="${mapId}" style="width: 400px; height: 300px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); background: #333;"></div>
+             `;
+
+            // Show interactive tooltip
+            this.tooltip.show(e, content, true);
+
+            // Init map
+            setTimeout(() => {
+                const mapEl = document.getElementById(mapId);
+                if (mapEl && !mapEl._leaflet_id) { // Check if exists and not already init
+                    const map = L.map(mapId, {
+                        zoomControl: true,
+                        dragging: true,
+                        scrollWheelZoom: true
+                    }).setView([lat, lng], 9);
+
+                    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OSM</a>'
+                    }).addTo(map);
+
+                    L.marker([lat, lng]).addTo(map);
+
+                    // Stop propagation to prevent bubbling issues
+                    mapEl.addEventListener('mousedown', (evt) => evt.stopPropagation());
+                }
+            }, 50);
+        } else {
+            this.activeMapEventId = null;
+            const content = `<span class="tooltip-title">${d.title}</span><strong>Type:</strong> ${d.type}<br><strong>Period:</strong> ${d.start} to ${d.end || 'Ongoing'}<br><br>${d.description}`;
+            this.tooltip.show(e, content, false);
         }
     }
 }

@@ -239,7 +239,7 @@ main {
     border-radius: 0.5rem;
     color: var(--text-main);
     font-size: 0.875rem;
-    max-width: 300px;
+    max-width: 450px;
     pointer-events: none;
     z-index: 1000;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
