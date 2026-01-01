@@ -36,6 +36,175 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('zoom-in').addEventListener('click', () => renderer.zoom(0.5));
     document.getElementById('zoom-out').addEventListener('click', () => renderer.zoom(-0.5));
 
+    // --- Tab Switching Logic ---
+    const tabs = document.querySelectorAll('.nav-tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    let activeTabId = 'events';
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = tab.dataset.tab;
+            activeTabId = target;
+
+            // Update UI
+            tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === target));
+            tabContents.forEach(c => c.classList.toggle('active', c.id === `tab-${target}`));
+
+            renderer.isMapPanelOpen = (target === 'map');
+
+            if (target === 'map') {
+                mapController.initIfNeeded();
+            }
+        });
+    });
+
+    // --- Splitter Logic ---
+    const splitter = document.getElementById('timeline-splitter');
+    const sidePanel = document.getElementById('side-panel');
+    let isResizing = false;
+    let startX = 0;
+    let startWidth = 0;
+
+    splitter.addEventListener('mousedown', (e) => {
+        isResizing = true;
+        startX = e.clientX;
+        startWidth = sidePanel.getBoundingClientRect().width;
+        document.body.style.cursor = 'col-resize';
+        e.preventDefault(); // Prevent text selection
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+
+        // Calculate delta. Moving left (negative delta) means increasing width.
+        const delta = startX - e.clientX;
+        const newWidth = startWidth + delta;
+
+        // Constraints: Min 250px, Max 80% of screen width (leaving 20% for left side)
+        const maxWidth = window.innerWidth * 0.8;
+
+        if (newWidth > 250 && newWidth < maxWidth) {
+            sidePanel.style.width = `${newWidth}px`;
+
+            // Adjust map height to keep aspect ratio (optional, but requested) 
+            // or just ensure it fills available vertical space? 
+            // User asked: "height of map should increase accordingly". 
+            // Simple approach: maintain a ratio or let it grow.
+            // Let's set height proportional to width, e.g., 3:4 ratio or square.
+            // Currently height is fixed in CSS or HTML? usually fixed pixels.
+            // Let's make it responsive.
+            const mapContainer = document.getElementById('side-panel-map');
+            if (mapContainer) {
+                mapContainer.style.height = `${newWidth * 0.75}px`;
+            }
+
+            // Force map resize check
+            if (mapController.map) {
+                mapController.map.invalidateSize();
+            }
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isResizing) {
+            isResizing = false;
+            document.body.style.cursor = 'default';
+        }
+    });
+
+
+    // --- Map Manager ---
+    const mapController = {
+        map: null,
+        markers: [],
+        initIfNeeded: function () {
+            if (this.map) {
+                setTimeout(() => this.map.invalidateSize(), 100);
+                return;
+            }
+
+            const mapContainer = document.getElementById('side-panel-map');
+            if (!mapContainer) return;
+
+            // Set initial height based on current width
+            const width = mapContainer.clientWidth || 300;
+            mapContainer.style.height = `${width * 0.75}px`;
+
+            this.map = L.map('side-panel-map').setView([20, 0], 2);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OSM</a>'
+            }).addTo(this.map);
+
+            // Handler for reset
+            document.getElementById('reset-map-btn').addEventListener('click', () => {
+                this.clearMarkers();
+            });
+        },
+        addEventPin: function (d) {
+            if (!this.map) this.initIfNeeded();
+
+            const lat = parseFloat(d.lattitude || d.latitude);
+            const lng = parseFloat(d.longitude || d.longtitude);
+
+            if (isNaN(lat) || isNaN(lng)) return;
+
+            // Check if marker already exists for this exact location?
+            // Or allow duplicates for different events?
+            // User wants "pinpoint for that location" and "additional pinpoints are added".
+            // So we accumulate them.
+
+            const marker = L.marker([lat, lng]).addTo(this.map);
+            marker.bindPopup(`
+                <strong>${d.title}</strong><br>
+                Type: ${d.type}<br>
+                ${d.start} - ${d.end || 'Now'}<br>
+                <div style="font-size:0.9em; margin-top:4px">${d.description}</div>
+             `);
+
+            marker.on('mouseover', function (e) {
+                this.openPopup();
+                renderer.highlightEvent(d.id);
+            });
+
+            marker.on('mouseout', function (e) {
+                // this.closePopup(); // Optional: keep it open or close it? usually map popups stay until clicked off or another opens.
+                // But for highlight we want it to stop when leaving.
+                renderer.unhighlightEvent(d.id);
+            });
+
+            // Optional: Pan to it? Maybe not if we want to add multiple.
+            // But usually it's nice to see what you added.
+            this.map.panTo([lat, lng]);
+
+            this.markers.push(marker);
+        },
+        clearMarkers: function () {
+            this.markers.forEach(m => this.map.removeLayer(m));
+            this.markers = [];
+        }
+    };
+
+    // --- Connect Renderer to Map ---
+    renderer.onEventHover = (e, d) => {
+        // If map tab is active, add pin to map
+        if (activeTabId === 'map') {
+            const lat = parseFloat(d.lattitude || d.latitude);
+            const lng = parseFloat(d.longitude || d.longtitude);
+
+            if (!isNaN(lat) && !isNaN(lng)) {
+                mapController.addEventPin(d);
+                return false; // Let renderer show tooltip too (as per requirement "tooltip is shown... details")
+                // Actually user said: "When the user hovers over a pinpoint, a tooltip / popup is shown"
+                // They didn't explicitly say NOT to show the timeline tooltip.
+                // But typically if looking at map, we might want to focus there.
+                // I will return FALSE so the simple tooltip continues to show on the timeline for feedback.
+                // The map marker itself has a popup on hover.
+            }
+        }
+        return false; // Default behavior
+    };
+
     // Load default data
     loadCSV(SAMPLE_CSV);
 

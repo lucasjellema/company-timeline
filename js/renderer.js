@@ -12,7 +12,9 @@ export class TimelineRenderer {
         this.xScale = null;
         this.width = 0;
         this.totalHeight = 0;
+        this.totalHeight = 0;
         this.activeMapEventId = null;
+        this.isMapPanelOpen = false;
     }
 
     render(layoutData, preserveSlider = false) {
@@ -30,7 +32,9 @@ export class TimelineRenderer {
         const containerNode = this.container.node();
         const viewportWidth = containerNode.clientWidth;
         const baseWidth = Math.max(1000, viewportWidth - 20);
-        this.width = baseWidth * this.zoomFactor;
+
+        // Limit width so it doesn't shrink smaller than viewport (for zoomed out view)
+        this.width = Math.max(viewportWidth, baseWidth * this.zoomFactor);
 
         const range = [CONFIG.PADDING.LEFT, this.width - CONFIG.PADDING.RIGHT];
 
@@ -92,7 +96,18 @@ export class TimelineRenderer {
 
     zoom(delta) {
         const prevZoom = this.zoomFactor;
-        this.zoomFactor = Math.max(1, Math.min(20, this.zoomFactor + delta));
+
+        // If we are at low zoom levels, an additive delta of 0.5 is too aggressive and prevents going lower than 0.5 (as 0.5 - 0.5 = 0).
+        // Let's switch to multiplicative zoom or adaptive delta.
+        // Simple adaptive:
+        let effectiveDelta = delta;
+        if (this.zoomFactor <= 1 && Math.abs(delta) >= 0.1) {
+            effectiveDelta = delta * 0.2;
+        }
+
+        // Allow zooming out further (down to 0.01)
+        this.zoomFactor = Math.max(0.01, Math.min(20, this.zoomFactor + effectiveDelta));
+
         if (prevZoom !== this.zoomFactor) {
             this.render(this.layoutData, true);
         }
@@ -153,6 +168,8 @@ export class TimelineRenderer {
                     return "";
                 } else {
                     // Show only years for yearly view
+                    // If very zoomed out, maybe only show every 5 years or based on tick count?
+                    // D3 usually handles tick density well if we just provide format
                     return d3.timeFormat("%Y")(d);
                 }
             });
@@ -193,14 +210,32 @@ export class TimelineRenderer {
             eventGroups.append("rect").attr("class", "event-bar")
                 .attr("height", CONFIG.BAR_HEIGHT).attr("fill", d => getEventColor(d.type, CONFIG.TYPE_COLORS))
                 .attr("width", d => Math.max(8, xScale(d.endDate) - xScale(d.startDate)))
-                .on("mouseenter", (e, d) => this.handleEventHover(e, d))
+                .attr("data-id", d => d.id)
+                .on("mouseenter", (e, d) => {
+                    // Check if we are currently holding an interactive tooltip open (e.g. map)
+                    // and if so, don't switch unless we truly left the previous context?
+                    // But mouseleave already fired.
+                    // The issue is traversing the space between bar 1 and tooltip 1 often crosses bar 2.
+                    // We need a small delay before showing NEW tooltip?
+                    // OR check if tooltip is currently hovered?
+                    // Simple fix: Check if tooltip is currently in "interactive mode" and visible.
+                    if (this.tooltip.isLocked && this.tooltip.isLocked()) return;
+
+                    this.handleEventHover(e, d);
+                })
                 .on("mousemove", (e) => {
-                    if (this.activeMapEventId) return; // Don't move if showing map
+                    if (this.activeMapEventId || (this.tooltip.isLocked && this.tooltip.isLocked())) return;
                     this.tooltip.move(e);
                 })
                 .on("mouseleave", () => {
-                    this.activeMapEventId = null;
+                    // Start hide process
                     this.tooltip.hide();
+
+                    // Allow renderer to clear its state after the grace period?
+                    // actually activeMapEventId is mostly used to stop moving.
+                    // If we clear it here, mousemove starts working again?
+                    // We should probably rely on tooltip state mainly.
+                    this.activeMapEventId = null;
                 });
 
             eventGroups.append("text").attr("class", "bar-label").attr("x", 4).attr("y", CONFIG.BAR_HEIGHT + 16).text(d => d.title);
@@ -239,6 +274,7 @@ export class TimelineRenderer {
                 .attr("fill", getEventColor(event.type, CONFIG.TYPE_COLORS))
                 .attr("stroke", "#fff")
                 .attr("stroke-width", 1.5)
+                .attr("data-id", event.id)
                 .style("cursor", "pointer")
                 .on("mouseenter", (e) => this.handleEventHover(e, event))
                 .on("mousemove", (e) => {
@@ -300,11 +336,22 @@ export class TimelineRenderer {
     }
 
     handleEventHover(e, d) {
+        if (this.onEventHover) {
+            this.onEventHover(e, d);
+        }
+
+        // Standard tooltip behavior (fallback or complementary)
+        // If external handler returns true, skip default
+        if (this.onEventHover && this.onEventHover(e, d) === true) {
+            return;
+        }
+
         const lat = parseFloat(d.lattitude || d.latitude);
         const lng = parseFloat(d.longitude || d.longtitude);
         const hasMap = !isNaN(lat) && !isNaN(lng);
 
-        if (hasMap) {
+        // Conditional logic: Show map in tooltip ONLY if panel is closed
+        if (hasMap && !this.isMapPanelOpen) {
             this.activeMapEventId = d.id;
             const mapId = `map-${d.id}`;
             const content = `
@@ -340,8 +387,46 @@ export class TimelineRenderer {
             }, 50);
         } else {
             this.activeMapEventId = null;
-            const content = `<span class="tooltip-title">${d.title}</span><strong>Type:</strong> ${d.type}<br><strong>Period:</strong> ${d.start} to ${d.end || 'Ongoing'}<br><br>${d.description}`;
+
+            // If local map is suppressed because panel is open, show hint?
+            const mapHint = (hasMap && this.isMapPanelOpen) ? `<br><em style='color: #ccc; font-size: 0.8em'>Shown on map panel</em>` : "";
+
+            const content = `<span class="tooltip-title">${d.title}</span>` +
+                `<strong>Type:</strong> ${d.type}<br>` +
+                `<strong>Period:</strong> ${d.start} to ${d.end || 'Ongoing'}<br><br>` +
+                `${d.description}${mapHint}`;
+
             this.tooltip.show(e, content, false);
         }
+    }
+
+    highlightEvent(id) {
+        // Highlight bars
+        this.container.selectAll(`.event-bar[data-id="${id}"]`)
+            .classed("highlighted", true)
+            .style("stroke", "#fff")
+            .style("stroke-width", "3px")
+            .style("filter", "brightness(1.5) drop-shadow(0 0 10px var(--primary))");
+
+        // Highlight triangles
+        this.container.selectAll(`.event-triangle[data-id="${id}"]`)
+            .classed("highlighted", true)
+            .style("stroke-width", "3px")
+            .style("filter", "brightness(1.5) drop-shadow(0 0 10px var(--primary))");
+    }
+
+    unhighlightEvent(id) {
+        // Reset bars
+        this.container.selectAll(`.event-bar[data-id="${id}"]`)
+            .classed("highlighted", false)
+            .style("stroke", null)
+            .style("stroke-width", null)
+            .style("filter", null);
+
+        // Reset triangles
+        this.container.selectAll(`.event-triangle[data-id="${id}"]`)
+            .classed("highlighted", false)
+            .style("stroke-width", "1.5px")
+            .style("filter", null);
     }
 }

@@ -51,5 +51,4 @@ export const SAMPLE_CSV = `start,end,title,description,type,level0,level1,level2
 2023-09-15,,Product Launch,Official launch of Version 3.0 to the public.,release,company,product,launch,40.7128,-74.0060
 2024-01-01,,New Year Kickoff,Company-wide meeting and strategy session for 2024.,project,company,strategy,kickoff,51.5074,-0.1278
 17-03-2025,,Major Milestone,Company reaches 1 million users.,project,company,growth,milestone,,
-
 `;

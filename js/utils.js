@@ -57,6 +57,13 @@ export const createTooltip = () => {
     });
 
     return {
+        isLocked: () => {
+            // Locked if interactive mode is ON (pointerEvents auto) AND (hovering tooltip OR hideTimeout is valid)
+            // Actually, if hideTimeout is active, it means user left the target but hasn't entered tooltip yet (or just left it).
+            // We want to lock 'active' if the tooltip is intended to be used.
+            // Simplified: if pointerEvents is auto, we treat it as potentially locked.
+            return tooltip.style.pointerEvents === 'auto' && !tooltip.classList.contains('hidden');
+        },
         show: (e, content, interactive = false) => {
             if (hideTimeout) {
                 clearTimeout(hideTimeout);

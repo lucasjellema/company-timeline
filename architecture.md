@@ -10,7 +10,10 @@ The Company Timeline Visualization is a client-side, single-page application (SP
 - **Visualization Engine**: [D3.js v7](https://d3js.org/) (Data-Driven Documents).
 - **Styling**: Vanilla CSS using CSS Custom Properties (Variables) for theming.
 - **Fonts**: Google Fonts ("Outfit").
-- **External Dependencies**: D3.js (loaded via CDN).
+- **External Dependencies**: 
+  - D3.js (Visualization)
+  - Leaflet.js (Maps)
+  - OpenStreetMap (Tiles)
 
 ## Project Structure
 
@@ -36,6 +39,8 @@ The Company Timeline Visualization is a client-side, single-page application (SP
   - Instantiates `TimelineRenderer`.
   - Handles CSV file uploads and loading of sample data.
   - Updates the Side Panel based on the renderer's slider state.
+  - **Map Controller**: Manages the Leaflet instance, markers, and resizing logic.
+  - **Tab Switching**: Toggles between "Events" list and "Map" view.
 
 ### 2. Layout Engine (`layout-engine.js`)
 - **Responsibility**: transform raw CSV data into a structured, visualizable layout.
@@ -52,7 +57,8 @@ The Company Timeline Visualization is a client-side, single-page application (SP
   - **Drawing**: Renders Axes (Year/Quarter/Month/Week), Group Backgrounds, Timeline Bars, and Event Triangles.
   - **Zooming**: Implements a semantic zoom that changes axis granularity based on the zoom factor.
   - **Interactive Slider**: Manages the draggable vertical line. Calculates which events are "active" at the slider's position.
-  - **Tooltips**: Handles mouseover events to show detailed metadata.
+  - **Tooltips**: Handles mouseover events to show detailed metadata. Includes logic to "lock" interactive tooltips to allow traversing bars.
+  - **Highlighting**: Exposes API to highlight events based on external triggers (e.g., map hover).
 
 ### 4. Utilities & Config (`utils.js`, `config.js`)
 - **Utils**: Contains robust Date parsing logic (ISO 8601, European formats) and tooltip management.
@@ -72,6 +78,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
 5. **Interaction**:
     - **Zoom**: Updates the Scale domain and re-draws elements.
     - **Slider**: Checks `startDate <= sliderDate <= endDate` and highlights active items.
+    - **Map Sync**: Hovering timeline `->` `main.js` adds pin. Hovering pin `->` `renderer.js` highlights bar.
 
 ## Critical Algorithms
 

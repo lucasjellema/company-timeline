@@ -12,6 +12,10 @@ A premium, interactive company timeline visualization tool powered by **D3.js**.
   - **Quarters** - Low-medium zoom (1.5x - 3x zoom)
   - **Months** - Medium zoom (3x - 8x zoom)
   - **Weeks** - High detail zoom (8x+ zoom)
+- **Geographic Map Integration**:
+  - **Dual Mode**: View event details in a dedicated side panel tab or via rich tooltips.
+  - **Interactive Map**: Built with **Leaflet.js**, displaying events with geolocation data (`lattitude`, `longitude`).
+  - **Hover Sync**: Hovering over timeline events updates the map; hovering over map pins highlights corresponding timeline events.
 - **Hierarchical Layout**: Automatically groups events by organizational levels (Level 0, Level 1, Level 2).
 - **Vertical Time Slider**: A draggable time focus that highlights active events at any specific point in time.
 - **Real-time Side Panel**: Instantly see all "Simultaneous Events" occurring at the selected slider date.
@@ -58,6 +62,8 @@ The visualization consumes CSV data with the following structure:
 | `level0` | Top-level grouping (e.g., Department or Division, Program) |
 | `level1` | Second-level grouping (e.g., Team or Platform, Project) |
 | `level2` | Third-level grouping (e.g., Project category or Module) |
+| `lattitude` | (Optional) Latitude for map visualization |
+| `longitude` | (Optional) Longitude for map visualization |
 
 ### Date Formats
 
@@ -83,6 +89,7 @@ start,end,title,description,type,level0,level1,level2
 ## 🛠️ Built With
 
 - **[D3.js](https://d3js.org/)** - Data-driven document manipulation.
+- **[Leaflet.js](https://leafletjs.com/)** - Interactive maps.
 - **Vanilla JavaScript (ES6+)** - Modular application logic.
 - **Vanilla CSS3** - Modern styling with CSS Grid and HSL color systems.
 - **Google Fonts** - Featuring the "Outfit" typography.
