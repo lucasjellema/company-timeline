@@ -1,13 +1,59 @@
 import { CONFIG, SAMPLE_CSV } from './config.js';
 import { processTimelineData } from './layout-engine.js';
 import { TimelineRenderer } from './renderer.js';
+import { TimelineStorage } from './storage.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const renderer = new TimelineRenderer('#timeline-viz');
+    const storage = new TimelineStorage();
 
     // UI Elements
     const dateLabel = document.getElementById('current-slider-date');
     const eventsList = document.getElementById('active-events-list');
+
+    // --- Initialization Logic ---
+    const activeStory = storage.getActiveStory();
+    if (activeStory) {
+        // Load existing story
+        window.timelineData = activeStory.data;
+        renderTimeline();
+        console.log(`Loaded story: ${activeStory.name}`);
+    } else {
+        // Initialize with Sample Data
+        const data = d3.csvParse(SAMPLE_CSV);
+        // Create Default Story
+        storage.createStory("Sample Project Story", data);
+        window.timelineData = data;
+        renderTimeline();
+    }
+
+    function renderTimeline(preserveSlider = false) {
+        const layout = processTimelineData(window.timelineData);
+        renderer.render(layout, preserveSlider);
+    }
+
+    // Override renderer update to save? No, save happens on explicit edits.
+
+    // Import function for file upload
+    function importCSV(csvText) {
+        try {
+            const data = d3.csvParse(csvText);
+
+            // For now, importing creates a new story or overwrites?
+            // User requirement isn't specific on import, but implies "edits" are saved.
+            // Let's assume uploading a CSV creates a new story with a generic name.
+            if (confirm("Create a new story from this CSV?")) {
+                const name = `Imported Story ${new Date().toLocaleDateString()}`;
+                storage.createStory(name, data);
+                window.timelineData = data;
+                renderTimeline();
+            }
+
+        } catch (error) {
+            console.error("Error parsing CSV:", error);
+            alert("Failed to parse CSV. Please check the format.");
+        }
+    }
 
     // Handle Slider Move
     renderer.onSliderMove = (date, activeEvents) => {
@@ -205,17 +251,17 @@ document.addEventListener('DOMContentLoaded', () => {
         return false; // Default behavior
     };
 
-    // Load default data
-    loadCSV(SAMPLE_CSV);
+    // Load default data handled by init logic above
+    // loadCSV(SAMPLE_CSV);
 
-    // Handle File Upload
+    // Handle File Upload - Imports as new story
     const uploadInput = document.getElementById('csv-upload');
     uploadInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = (event) => {
-                loadCSV(event.target.result);
+                handleCSVImport(event.target.result);
             };
             reader.readAsText(file);
         }
@@ -232,12 +278,15 @@ document.addEventListener('DOMContentLoaded', () => {
         window.URL.revokeObjectURL(url);
     });
 
-    function loadCSV(csvText) {
+    function handleCSVImport(csvText) {
         try {
             const data = d3.csvParse(csvText);
-            window.timelineData = data; // Store globally for add event feature
-            const layout = processTimelineData(data);
-            renderer.render(layout);
+            if (confirm("Importing specific CSV. Create a new Story from this?")) {
+                const name = `Imported Story ${new Date().toLocaleTimeString()}`;
+                storage.createStory(name, data);
+                window.timelineData = data;
+                renderTimeline();
+            }
         } catch (error) {
             console.error("Error parsing CSV:", error);
             alert("Failed to parse CSV. Please check the format.");
@@ -575,8 +624,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         function refreshTimeline() {
-            const layout = processTimelineData(window.timelineData);
-            renderer.render(layout, true); // Preserve slider position if possible
+            try {
+                const layout = processTimelineData(window.timelineData);
+                renderer.render(layout, true); // Preserve slider position if possible
+
+                // Persist changes
+                const storage = new TimelineStorage();
+                console.log("[Main] Saving story to storage...", window.timelineData.length);
+                storage.saveActiveStory(window.timelineData);
+            } catch (error) {
+                console.error("[Main] Error in refreshTimeline/save:", error);
+            }
         }
     }
 
