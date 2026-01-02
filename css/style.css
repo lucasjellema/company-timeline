@@ -676,3 +676,74 @@ main {
     padding: 0.4rem 0.8rem;
     font-size: 0.85rem;
 }
+
+/* Color Settings Styles */
+.color-settings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    /* Tighter gap */
+}
+
+.color-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    /* Reduced padding */
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 0.375rem;
+    transition: background 0.2s;
+    min-height: 42px;
+    /* Ensure logical height */
+}
+
+.color-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.color-label {
+    flex: 1;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-transform: capitalize;
+    color: var(--text-main);
+}
+
+.color-preview {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    /* Circular */
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
+}
+
+.color-edit-icon {
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.color-edit-icon:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Hidden color input but accessible via label/icon click */
+.color-input-hidden {
+    border: 0;
+    padding: 0;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+}

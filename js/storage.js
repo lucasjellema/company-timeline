@@ -93,6 +93,27 @@ export class TimelineStorage {
         console.log(`[Storage] Saved story: ${story.name} with ${cleanData.length} events`);
     }
 
+    updateStorySettings(id, metadata, settings) {
+        if (!this.cache.stories[id]) return false;
+        const story = this.cache.stories[id];
+
+        if (metadata.name) story.name = metadata.name;
+        if (metadata.description !== undefined) story.description = metadata.description;
+
+        // Ensure settings object exists
+        if (!story.settings) story.settings = {};
+
+        // Merge provided settings
+        if (settings) {
+            story.settings = { ...story.settings, ...settings };
+        }
+
+        story.lastModified = Date.now();
+        this._saveToStorage();
+        console.log(`[Storage] Updated settings for story: ${story.name}`);
+        return true;
+    }
+
     setActiveStory(id) {
         if (this.cache.stories[id]) {
             this.cache.activeStoryId = id;

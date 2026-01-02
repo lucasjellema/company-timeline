@@ -27,10 +27,12 @@ export class TimelineRenderer {
 
         if (typeof options === 'boolean') {
             preserveSlider = options;
+            this.typeColors = CONFIG.TYPE_COLORS; // default
         } else {
             preserveSlider = options.preserveSlider || false;
             customDomain = options.domain || null;
             this.isDrilledDown = options.isDrilledDown || false;
+            this.typeColors = options.typeColors || CONFIG.TYPE_COLORS;
         }
 
         const allEvents = layoutData.flatMap(d => d.events);
@@ -324,7 +326,7 @@ export class TimelineRenderer {
                 .attr("transform", d => `translate(${xScale(d.startDate)}, ${45 + d.rowIndex * (CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING)})`);
 
             eventGroups.append("rect").attr("class", "event-bar")
-                .attr("height", CONFIG.BAR_HEIGHT).attr("fill", d => getEventColor(d.type, CONFIG.TYPE_COLORS))
+                .attr("height", CONFIG.BAR_HEIGHT).attr("fill", d => getEventColor(d.type, this.typeColors))
                 .attr("width", d => Math.max(8, xScale(d.endDate) - xScale(d.startDate)))
                 .attr("data-id", d => d.id)
                 .on("mouseenter", (e, d) => {
@@ -393,7 +395,7 @@ export class TimelineRenderer {
             triangleG.append("path")
                 .attr("class", "event-triangle")
                 .attr("d", pathD)
-                .attr("fill", getEventColor(event.type, CONFIG.TYPE_COLORS))
+                .attr("fill", getEventColor(event.type, this.typeColors))
                 .attr("stroke", "#fff")
                 .attr("stroke-width", 1.5)
                 .attr("data-id", event.id)

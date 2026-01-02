@@ -61,6 +61,13 @@
                     </svg>
                     Add Event
                 </button>
+                <button id="settings-btn" class="btn btn-icon" title="Story Settings">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.18-.08a2 2 0 0 0-2 0l-.45.45a2 2 0 0 0 0 2l.08.18a2 2 0 0 1 0 2l-.25.43a2 2 0 0 1-1.73 1l-.18.08a2 2 0 0 0 0 2l.44.44a2 2 0 0 0 2 0v.18a2 2 0 0 1 1 1.73l.43.25a2 2 0 0 1 2 0l.18.08a2 2 0 0 0 2 0l.45-.45a2 2 0 0 0 0-2l-.08-.18a2 2 0 0 1 0-2l.25-.43a2 2 0 0 1 1.73-1l.18-.08a2 2 0 0 0 0-2l-.44-.44a2 2 0 0 0-2 0V11a2 2 0 0 1-1-1.73l-.43-.25a2 2 0 0 1-2 0l-.18-.08zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z">
+                        </path>
+                    </svg>
+                </button>
                 <button id="create-story-btn" class="btn btn-secondary">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -179,13 +186,11 @@
                         </div>
                         <div class="form-group">
                             <label for="event-type">Type</label>
-                            <select id="event-type">
-                                <option value="project">Project</option>
-                                <option value="release">Release</option>
-                                <option value="milestone">Milestone</option>
-                                <option value="sprint">Sprint</option>
-                                <option value="training">Training</option>
-                            </select>
+                            <div class="input-with-datalist">
+                                <input type="text" id="event-type" list="type-options" required autocomplete="off"
+                                    placeholder="Select or type capability...">
+                                <datalist id="type-options"></datalist>
+                            </div>
                         </div>
                     </div>
 
@@ -281,6 +286,49 @@
                     <div class="form-actions">
                         <button type="button" id="cancel-story-btn" class="btn btn-secondary">Cancel</button>
                         <button type="submit" class="btn btn-primary">Create Story</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="story-settings-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Story Settings</h2>
+                <button id="close-settings-btn" class="btn-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="story-settings-form">
+                    <div class="form-group">
+                        <label for="settings-title">Story Name</label>
+                        <input type="text" id="settings-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="settings-desc">Description</label>
+                        <textarea id="settings-desc" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Event Type Colors</label>
+                        <div id="color-settings-container" class="color-grid">
+                            <!-- Dynamic color pickers will go here -->
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="cancel-settings-btn" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Settings</button>
                     </div>
                 </form>
             </div>

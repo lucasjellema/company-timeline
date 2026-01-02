@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const activeStory = storage.getActiveStory();
         let customDomain = null;
+        let mergedColors = CONFIG.TYPE_COLORS;
 
         // Update Header Info
         const titleEl = document.getElementById('story-title');
@@ -48,12 +49,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     customDomain = [s, e];
                 }
             }
+
+            // Check for custom colors
+            if (activeStory.settings && activeStory.settings.colors) {
+                mergedColors = { ...CONFIG.TYPE_COLORS, ...activeStory.settings.colors };
+            }
         }
 
         renderer.render(layout, {
             preserveSlider,
             domain: customDomain,
-            isDrilledDown: !!activeL0Category
+            isDrilledDown: !!activeL0Category,
+            typeColors: mergedColors
         });
     }
 
@@ -558,6 +565,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cancelBtn.addEventListener('click', closeModal);
 
         // Populate Datalists
+        // Populate Datalists
         function populateDropdowns() {
             if (!window.timelineData) return;
 
@@ -567,14 +575,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const l1 = getUnique('level1');
             const l2 = getUnique('level2');
 
+            // Default types + existing types in data
+            const defaultTypes = ['project', 'release', 'milestone', 'sprint', 'training'];
+
+            // Get existing types, normalize to lower case
+            const currentTypes = window.timelineData.map(d => d.type ? d.type.toLowerCase() : null).filter(Boolean);
+
+            // Normalize for case-insensitivity: merge and dedup
+            const allTypes = [...new Set([...defaultTypes, ...currentTypes])].sort();
+
             const fillList = (id, items) => {
                 const dl = document.getElementById(id);
-                dl.innerHTML = items.map(i => `<option value="${i}">`).join('');
+                if (dl) dl.innerHTML = items.map(i => `<option value="${i}">`).join('');
             };
 
             fillList('l0-options', l0);
             fillList('l1-options', l1);
             fillList('l2-options', l2);
+            fillList('type-options', allTypes);
         }
 
         // Initialize Map inside Modal
@@ -794,6 +812,117 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     initLoadStoryUI();
+
+    // --- Settings UI Logic ---
+    function initSettingsUI() {
+        const modal = document.getElementById('story-settings-modal');
+        const openBtn = document.getElementById('settings-btn');
+        const closeBtn = document.getElementById('close-settings-btn');
+        const cancelBtn = document.getElementById('cancel-settings-btn');
+        const form = document.getElementById('story-settings-form');
+        const colorContainer = document.getElementById('color-settings-container');
+
+        const openModal = () => {
+            const activeStory = storage.getActiveStory();
+            if (!activeStory) {
+                alert("No active story to configure.");
+                return;
+            }
+
+            modal.classList.remove('hidden');
+
+            // Populate basic fields
+            document.getElementById('settings-title').value = activeStory.name || '';
+            document.getElementById('settings-desc').value = activeStory.description || '';
+
+            // Populate Color Pickers
+            renderColorPickers(activeStory);
+        };
+
+        const closeModal = () => {
+            modal.classList.add('hidden');
+        };
+
+        if (openBtn) openBtn.addEventListener('click', openModal);
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+        if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+
+        function renderColorPickers(story) {
+            colorContainer.innerHTML = '';
+            colorContainer.className = 'color-settings-list'; // Ensure correct class
+
+            // Determine all unique types from current data + defaults
+            const defaultTypes = Object.keys(CONFIG.TYPE_COLORS).filter(k => k !== 'default');
+            const dataTypes = [...new Set(window.timelineData.map(d => d.type ? d.type.toLowerCase() : "").filter(Boolean))];
+            const allTypes = [...new Set([...defaultTypes, ...dataTypes])].sort();
+
+            // Get current saved colors or defaults
+            const currentColors = (story.settings && story.settings.colors) ? story.settings.colors : {};
+
+            allTypes.forEach(type => {
+                const defaultColor = CONFIG.TYPE_COLORS[type] || CONFIG.COLORS.default;
+                const savedColor = currentColors[type] || defaultColor;
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'color-item';
+
+                // Structure: Label | Preview Bar | Edit Icon | Hidden Input
+                wrapper.innerHTML = `
+                    <span class="color-label">${type}</span>
+                    <div class="color-preview" style="background-color: ${savedColor};" id="preview-${type}"></div>
+                    <label for="color-input-${type}" class="color-edit-icon" title="Change Color">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                        </svg>
+                    </label>
+                    <input type="color" id="color-input-${type}" name="color-${type}" value="${savedColor}" class="color-input-hidden">
+                `;
+
+                // Add event listener to update preview immediately on change
+                const input = wrapper.querySelector('input');
+                const preview = wrapper.querySelector('.color-preview');
+                input.addEventListener('input', (e) => {
+                    preview.style.backgroundColor = e.target.value;
+                });
+
+                colorContainer.appendChild(wrapper);
+            });
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const activeStory = storage.getActiveStory();
+            if (!activeStory) return;
+
+            const newName = document.getElementById('settings-title').value;
+            const newDesc = document.getElementById('settings-desc').value;
+
+            // Collect colors
+            const newColors = {};
+            const inputs = colorContainer.querySelectorAll('input[type="color"]');
+            inputs.forEach(input => {
+                const type = input.name.replace('color-', '');
+                newColors[type] = input.value;
+            });
+
+            // Save to storage
+            // Note: window.timelineData is kept as is, only metadata changes
+            storage.updateStorySettings(activeStory.id, {
+                name: newName,
+                description: newDesc
+            }, {
+                colors: newColors
+            });
+
+            // Force refresh of header and chart
+            closeModal();
+            renderTimeline(true); // Preserve slider
+        });
+    }
+
+    initSettingsUI();
 
     // --- Initialization Logic ---
     const activeStory = storage.getActiveStory();
