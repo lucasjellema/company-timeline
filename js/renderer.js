@@ -335,7 +335,10 @@ export class TimelineRenderer {
     }
 
     updateActiveEvents() {
-        const activeEvents = this.layoutData.flatMap(l => l.events).filter(e =>
+        // Include both standard duration events and point events (like milestones)
+        const allLayoutEvents = this.layoutData.flatMap(l => [...l.events, ...l.pointEvents]);
+
+        const activeEvents = allLayoutEvents.filter(e =>
             this.sliderDate >= e.startDate && this.sliderDate <= e.endDate
         );
 

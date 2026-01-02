@@ -11,21 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dateLabel = document.getElementById('current-slider-date');
     const eventsList = document.getElementById('active-events-list');
 
-    // --- Initialization Logic ---
-    const activeStory = storage.getActiveStory();
-    if (activeStory) {
-        // Load existing story
-        window.timelineData = activeStory.data;
-        renderTimeline();
-        console.log(`Loaded story: ${activeStory.name}`);
-    } else {
-        // Initialize with Sample Data
-        const data = d3.csvParse(SAMPLE_CSV);
-        // Create Default Story
-        storage.createStory("Sample Project Story", data);
-        window.timelineData = data;
-        renderTimeline();
-    }
+    // --- Initialization Logic (Moved to end) ---
 
     function renderTimeline(preserveSlider = false) {
         const layout = processTimelineData(window.timelineData);
@@ -56,26 +42,57 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Handle Slider Move
+    let lastActiveEventIds = "";
+
     renderer.onSliderMove = (date, activeEvents) => {
         dateLabel.textContent = d3.timeFormat("%B %Y")(date);
 
+        // Deduplicate updates based on event sets to avoid heavy DOM/Map operations
+        // IDs are numbers (indices), but we sort to be safe against order changes
+        const currentIds = activeEvents.map(e => e.id).sort((a, b) => a - b).join(',');
+
+        if (currentIds === lastActiveEventIds) return;
+        lastActiveEventIds = currentIds;
+
+        // Update Events List
         if (activeEvents.length === 0) {
             eventsList.innerHTML = '<div class="empty-state">No events active at this time.</div>';
-            return;
-        }
-
-        eventsList.innerHTML = activeEvents.map(e => {
-            const color = CONFIG.TYPE_COLORS[e.type.toLowerCase()] || CONFIG.COLORS.default;
-            return `
+        } else {
+            eventsList.innerHTML = activeEvents.map(e => {
+                const color = CONFIG.TYPE_COLORS[e.type.toLowerCase()] || CONFIG.COLORS.default;
+                return `
                 <div class="event-item" style="border-left-color: ${color}">
                     <span class="event-item-title">${e.title}</span>
                     <div class="event-item-meta">
                         <strong>${e.level0}</strong> &middot; ${e.type}<br>
-                        ${e.start} to ${e.end}
+                        ${d3.timeFormat("%b %d, %Y")(e.startDate)} to ${e.isEvent ? 'Point Event' : d3.timeFormat("%b %d, %Y")(e.endDate)}
                     </div>
                 </div>
             `;
-        }).join('');
+            }).join('');
+        }
+
+        // Update Map Pins
+        // We sync the map regardless of whether the tab is active, 
+        // to ensure it is ready when the user switches to it.
+        mapController.clearMarkers();
+
+        // Batch add markers
+        activeEvents.forEach(d => {
+            const lat = parseFloat(d.lattitude || d.latitude);
+            const lng = parseFloat(d.longitude || d.longtitude);
+
+            if (!isNaN(lat) && !isNaN(lng)) {
+                // Determine if we need to init map (only once)
+                // mapController.addEventPin handles initIfNeeded, but let's be efficient
+                if (activeTabId === 'map' && !mapController.map) {
+                    mapController.initIfNeeded();
+                }
+
+                // We directly use addEventPin which handles logic
+                mapController.addEventPin(d);
+            }
+        });
     };
 
     // Zoom Controls
@@ -639,6 +656,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     initUIInteractions();
+
+    // --- Initialization Logic ---
+    const activeStory = storage.getActiveStory();
+    if (activeStory) {
+        // Load existing story
+        window.timelineData = activeStory.data;
+        renderTimeline();
+        console.log(`Loaded story: ${activeStory.name}`);
+    } else {
+        // Initialize with Sample Data
+        const data = d3.csvParse(SAMPLE_CSV);
+        // Create Default Story
+        storage.createStory("Sample Project Story", data);
+        window.timelineData = data;
+        renderTimeline();
+    }
 
     // Handle Resize
     window.addEventListener('resize', () => {
