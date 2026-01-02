@@ -236,6 +236,12 @@ export class TimelineRenderer {
                     // If we clear it here, mousemove starts working again?
                     // We should probably rely on tooltip state mainly.
                     this.activeMapEventId = null;
+                })
+                .on("contextmenu", (e, d) => {
+                    e.preventDefault();
+                    if (this.onEventContextMenu) {
+                        this.onEventContextMenu(e, d);
+                    }
                 });
 
             eventGroups.append("text").attr("class", "bar-label").attr("x", 4).attr("y", CONFIG.BAR_HEIGHT + 16).text(d => d.title);
@@ -284,6 +290,12 @@ export class TimelineRenderer {
                 .on("mouseleave", () => {
                     this.activeMapEventId = null;
                     this.tooltip.hide();
+                })
+                .on("contextmenu", (e, d) => {
+                    e.preventDefault();
+                    if (this.onEventContextMenu) {
+                        this.onEventContextMenu(e, d);
+                    }
                 });
 
             // Add a small label above the triangle

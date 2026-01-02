@@ -578,3 +578,43 @@ main {
 .form-grid:nth-child(2) {
     grid-template-columns: 1fr 1fr 1fr;
 }
+
+/* Context Menu */
+.context-menu {
+    position: absolute;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0;
+    min-width: 150px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    z-index: 2000;
+}
+
+.context-menu.hidden {
+    display: none;
+}
+
+.context-menu-item {
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: var(--text-main);
+    font-size: 0.875rem;
+    transition: background 0.2s;
+}
+
+.context-menu-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.context-menu-item.delete {
+    color: #ef4444;
+    /* Red color */
+}
+
+.context-menu-item.delete:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
