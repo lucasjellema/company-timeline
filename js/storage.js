@@ -97,4 +97,27 @@ export class TimelineStorage {
         }
         return null;
     }
+
+    importStory(story) {
+        if (!story || !story.data) {
+            console.error("[Storage] Invalid story object provided for import");
+            return false;
+        }
+
+        // If story has no ID (legacy/external?), generate one
+        if (!story.id) {
+            story.id = 'story_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        }
+
+        // Update last modified to now, to indicate a fresh import action? 
+        // Or keep original? Let's keep original if present, or set now.
+        // Actually for "Restore", keeping original timestamps might be better, 
+        // but if we edit it later it will update.
+
+        this.cache.stories[story.id] = story;
+        this.cache.activeStoryId = story.id;
+        this._saveToStorage();
+        console.log(`[Storage] Imported story: ${story.name} (${story.id})`);
+        return story;
+    }
 }

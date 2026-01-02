@@ -194,9 +194,10 @@ document.addEventListener('DOMContentLoaded', () => {
             mapContainer.style.height = `${width * 0.75}px`;
 
             this.map = L.map('side-panel-map').setView([20, 0], 2);
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            // Use Dark Matter tiles for premium look
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
                 maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OSM</a>'
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
             }).addTo(this.map);
 
             // Handler for reset
@@ -237,8 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             // Optional: Pan to it? Maybe not if we want to add multiple.
-            // But usually it's nice to see what you added.
-            this.map.panTo([lat, lng]);
+            // this.map.panTo([lat, lng]); // Disabled to avoid jitter during slider playback
 
             this.markers.push(marker);
         },
@@ -284,15 +284,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Handle Sample Download
+    // Handle Story Download
     document.getElementById('download-sample').addEventListener('click', () => {
-        const blob = new Blob([SAMPLE_CSV], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'company_timeline_sample.csv';
-        a.click();
-        window.URL.revokeObjectURL(url);
+        const activeStory = storage.getActiveStory();
+        if (activeStory) {
+            const jsonContent = JSON.stringify(activeStory, null, 2);
+            const blob = new Blob([jsonContent], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            // Sanitize filename to be safe
+            const safeName = (activeStory.name || 'story').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            a.download = `${safeName}.json`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        } else {
+            alert("No active story to download.");
+        }
     });
 
     function handleCSVImport(csvText) {
@@ -310,116 +318,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Add Event Modal Logic ---
-    function initAddEventModal() {
-        const modal = document.getElementById('add-event-modal');
-        const openBtn = document.getElementById('add-event-btn');
-        const closeBtn = document.getElementById('close-modal-btn');
-        const cancelBtn = document.getElementById('cancel-event-btn');
-        const form = document.getElementById('add-event-form');
+    // Handle JSON Story Upload
+    const uploadJsonInput = document.getElementById('json-upload');
+    uploadJsonInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const story = JSON.parse(event.target.result);
+                    if (story && Array.isArray(story.data)) {
+                        if (confirm(`Replace active story with "${story.name || 'Uploaded Story'}"?`)) {
+                            storage.importStory(story);
 
-        let modalMap = null;
-        let modalMarker = null;
-
-        // Open Modal
-        openBtn.addEventListener('click', () => {
-            modal.classList.remove('hidden');
-            populateDropdowns();
-            initModalMap();
-        });
-
-        // Close Modal
-        const closeModal = () => {
-            modal.classList.add('hidden');
-            form.reset();
-            if (modalMarker) {
-                modalMap.removeLayer(modalMarker);
-                modalMarker = null;
-            }
-            document.getElementById('map-coords-display').textContent = 'No location selected';
-        };
-
-        closeBtn.addEventListener('click', closeModal);
-        cancelBtn.addEventListener('click', closeModal);
-
-        // Populate Datalists
-        function populateDropdowns() {
-            if (!window.timelineData) return;
-
-            const getUnique = (key) => [...new Set(window.timelineData.map(d => d[key]).filter(Boolean))].sort();
-
-            const l0 = getUnique('level0');
-            const l1 = getUnique('level1');
-            const l2 = getUnique('level2');
-
-            const fillList = (id, items) => {
-                const dl = document.getElementById(id);
-                dl.innerHTML = items.map(i => `<option value="${i}">`).join('');
-            };
-
-            fillList('l0-options', l0);
-            fillList('l1-options', l1);
-            fillList('l2-options', l2);
-        }
-
-        // Initialize Map inside Modal
-        function initModalMap() {
-            if (modalMap) {
-                setTimeout(() => modalMap.invalidateSize(), 200);
-                return;
-            }
-
-            modalMap = L.map('modal-map').setView([20, 0], 2);
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OSM</a>'
-            }).addTo(modalMap);
-
-            modalMap.on('click', function (e) {
-                const { lat, lng } = e.latlng;
-
-                if (modalMarker) {
-                    modalMap.removeLayer(modalMarker);
+                            // Update global state
+                            window.timelineData = story.data;
+                            renderTimeline();
+                            console.log("Story imported and rendered:", story.name);
+                        }
+                    } else {
+                        alert("Invalid Story JSON format. Missing 'data' array.");
+                    }
+                } catch (err) {
+                    console.error("Error parsing JSON:", err);
+                    alert("Failed to parse JSON file.");
                 }
-
-                modalMarker = L.marker([lat, lng]).addTo(modalMap);
-
-                document.getElementById('event-lat').value = lat.toFixed(6);
-                document.getElementById('event-lng').value = lng.toFixed(6);
-                document.getElementById('map-coords-display').textContent = `Selected: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-            });
-
-            // Fix display issue when modal opens
-            setTimeout(() => modalMap.invalidateSize(), 200);
-        }
-
-        // Handle Form Submit
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const formData = {
-                title: document.getElementById('event-title').value,
-                type: document.getElementById('event-type').value,
-                level0: document.getElementById('event-l0').value,
-                level1: document.getElementById('event-l1').value,
-                level2: document.getElementById('event-l2').value,
-                start: document.getElementById('event-start').value,
-                end: document.getElementById('event-end').value, // Can be empty
-                description: document.getElementById('event-desc').value,
-                lattitude: document.getElementById('event-lat').value,
-                longitude: document.getElementById('event-lng').value
             };
+            reader.readAsText(file);
+        }
+        // Reset input so same file can be selected again if needed
+        e.target.value = '';
+    });
 
-            if (window.timelineData) {
-                window.timelineData.push(formData);
-                const layout = processTimelineData(window.timelineData);
-                renderer.render(layout);
-                closeModal();
-            }
-        });
-    }
 
-    // initAddEventModal();
 
     // --- UI Logic: Modal & Context Menu ---
     function initUIInteractions() {
@@ -586,9 +517,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             modalMap = L.map('modal-map').setView([20, 0], 2);
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
                 maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OSM</a>'
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
             }).addTo(modalMap);
 
             modalMap.on('click', function (e) {
