@@ -39,7 +39,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
   - Instantiates `TimelineRenderer`.
   - Handles CSV file uploads and loading of sample data.
   - Updates the Side Panel based on the renderer's slider state.
-  - **Map Controller**: Manages the Leaflet instance, markers, and resizing logic.
+  - **Map Controller**: Manages the Leaflet instance and synchronizes markers with the slider's active events.
   - **Tab Switching**: Toggles between "Events" list and "Map" view.
 
 ### 2. Layout Engine (`layout-engine.js`)
@@ -56,7 +56,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
 - **Key Features**:
   - **Drawing**: Renders Axes (Year/Quarter/Month/Week), Group Backgrounds, Timeline Bars, and Event Triangles.
   - **Zooming**: Implements a semantic zoom that changes axis granularity based on the zoom factor.
-  - **Interactive Slider**: Manages the draggable vertical line. Calculates which events are "active" at the slider's position.
+  - **Interactive Slider**: Manages the draggable vertical line. Calculates which events (duration bars and point milestones) are "active" at the slider's position.
   - **Tooltips**: Handles mouseover events to show detailed metadata. Includes logic to "lock" interactive tooltips to allow traversing bars.
   - **Highlighting**: Exposes API to highlight events based on external triggers (e.g., map hover).
 
@@ -78,7 +78,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
 5. **Interaction**:
     - **Zoom**: Updates the Scale domain and re-draws elements.
     - **Slider**: Checks `startDate <= sliderDate <= endDate` and highlights active items.
-    - **Map Sync**: Hovering timeline `->` `main.js` adds pin. Hovering pin `->` `renderer.js` highlights bar.
+    - **Map Sync**: Slider Drag -> `main.js` updates Map pins. Hovering pin -> `renderer.js` highlights bar.
 
 ## Critical Algorithms
 

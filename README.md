@@ -15,7 +15,8 @@ A premium, interactive company timeline visualization tool powered by **D3.js**.
 - **Geographic Map Integration**:
   - **Dual Mode**: View event details in a dedicated side panel tab or via rich tooltips.
   - **Interactive Map**: Built with **Leaflet.js**, displaying events with geolocation data (`lattitude`, `longitude`).
-  - **Hover Sync**: Hovering over timeline events updates the map; hovering over map pins highlights corresponding timeline events.
+  - **Slider Sync**: The map automatically updates in real-time to show pins for all events (including milestones) active at the slider's current time.
+  - **Hover Sync**: Hovering over map pins highlights the corresponding timeline events for easy identification.
 - **Hierarchical Layout**: Automatically groups events by organizational levels (Level 0, Level 1, Level 2).
 - **Vertical Time Slider**: A draggable time focus that highlights active events at any specific point in time.
 - **Real-time Side Panel**: Instantly see all "Simultaneous Events" occurring at the selected slider date.
