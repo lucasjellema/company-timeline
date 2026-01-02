@@ -23,6 +23,7 @@ A premium, interactive company timeline visualization tool powered by **D3.js**.
 - **Dynamic Styling**: Color-coded event types (Projects, Releases, Sprints, Training) for quick visual scanning.
 - **CSV Integration**: Upload your own data or download a sample template to get started instantly.
 - **Responsive Design**: Adapts to various screen sizes with automatic re-rendering.
+- **Strategic Drill Down**: Double-click any top-level category (Level 0) to instantly filter the timeline and focus on that specific department or stream. A context-aware "Back" button allows for easy navigation back to the overview.
 
 
 ## 🚀 Getting Started

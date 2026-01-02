@@ -41,6 +41,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
   - Updates the Side Panel based on the renderer's slider state.
   - **Map Controller**: Manages the Leaflet instance and synchronizes markers with the slider's active events.
   - **Tab Switching**: Toggles between "Events" list and "Map" view.
+  - **Drill Down State**: Manages the `activeL0Category` state. Filters the raw dataset dynamically before passing it to the Layout Engine when a category is selected.
 
 ### 2. Layout Engine (`layout-engine.js`)
 - **Responsibility**: transform raw CSV data into a structured, visualizable layout.
@@ -59,6 +60,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
   - **Interactive Slider**: Manages the draggable vertical line. Calculates which events (duration bars and point milestones) are "active" at the slider's position.
   - **Tooltips**: Handles mouseover events to show detailed metadata. Includes logic to "lock" interactive tooltips to allow traversing bars.
   - **Highlighting**: Exposes API to highlight events based on external triggers (e.g., map hover).
+  - **Drill Down Interaction**: Detects double-clicks on category headers to trigger filtering. Renders visual controls (Back button) when in a filtered state.
 
 ### 4. Utilities & Config (`utils.js`, `config.js`)
 - **Utils**: Contains robust Date parsing logic (ISO 8601, European formats) and tooltip management.
