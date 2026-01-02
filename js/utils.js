@@ -24,6 +24,22 @@ export const parseDate = (dateStr) => {
         }
     }
 
+    // Check for single year (e.g. "200", "1999", "2025")
+    if (parts.length === 1) {
+        // Is it a number?
+        if (/^\d{1,4}$/.test(parts[0])) {
+            const year = parseInt(parts[0], 10);
+            // new Date(year, ...) handles 0-99 as 1900-1999 usually? 
+            // Actually new Date(year, month) constructor:
+            // "if year is between 0 and 99, it effectively maps to 1900-1999" - legacy behavior.
+            // To support year 200, we must use setFullYear.
+            const d = new Date(0); // clear date
+            d.setFullYear(year, 0, 1);
+            d.setHours(0, 0, 0, 0);
+            return d;
+        }
+    }
+
     // Fallback: try to parse as-is
     return new Date(dateStr);
 };

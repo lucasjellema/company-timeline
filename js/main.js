@@ -1,4 +1,5 @@
 import { CONFIG, SAMPLE_CSV } from './config.js';
+import { parseDate } from './utils.js';
 import { processTimelineData } from './layout-engine.js';
 import { TimelineRenderer } from './renderer.js';
 import { TimelineStorage } from './storage.js';
@@ -15,7 +16,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderTimeline(preserveSlider = false) {
         const layout = processTimelineData(window.timelineData);
-        renderer.render(layout, preserveSlider);
+
+        const activeStory = storage.getActiveStory();
+        let customDomain = null;
+
+        // Update Header Info
+        const titleEl = document.getElementById('story-title');
+        if (titleEl && activeStory) {
+            titleEl.textContent = activeStory.name || "Company Timeline";
+            titleEl.title = activeStory.description || ""; // Description on hover
+
+            // Check for custom bounds
+            if (activeStory.startDate && activeStory.endDate) {
+                const s = parseDate(activeStory.startDate);
+                const e = parseDate(activeStory.endDate);
+                if (s && e) {
+                    customDomain = [s, e];
+                }
+            }
+        }
+
+        renderer.render(layout, { preserveSlider, domain: customDomain });
     }
 
     // Override renderer update to save? No, save happens on explicit edits.
@@ -78,21 +99,33 @@ document.addEventListener('DOMContentLoaded', () => {
         mapController.clearMarkers();
 
         // Batch add markers
+        // Batch add markers and collect bounds
+        const boundsPoints = [];
+
         activeEvents.forEach(d => {
             const lat = parseFloat(d.lattitude || d.latitude);
             const lng = parseFloat(d.longitude || d.longtitude);
 
             if (!isNaN(lat) && !isNaN(lng)) {
-                // Determine if we need to init map (only once)
-                // mapController.addEventPin handles initIfNeeded, but let's be efficient
-                if (activeTabId === 'map' && !mapController.map) {
-                    mapController.initIfNeeded();
-                }
 
-                // We directly use addEventPin which handles logic
-                mapController.addEventPin(d);
+                if (activeTabId === 'map') {
+                    if (!mapController.map) mapController.initIfNeeded();
+                    mapController.addEventPin(d, false); // Don't individual pan here
+                    boundsPoints.push([lat, lng]);
+                }
             }
         });
+
+        // Fit bounds for all active events if map is visible
+        if (activeTabId === 'map' && mapController.map && boundsPoints.length > 0) {
+            // Use fitBounds but maybe throttle it or use flyTo if single point?
+            // fitBounds can be jittery if points change rapidly.
+            // If points are same as last frame, don't move.
+            // But checking exact sameness is hard.
+            // Let's just do it. Leaflet handles small moves okay usually.
+            // Ensure maxZoom isn't too close
+            mapController.map.fitBounds(boundsPoints, { padding: [50, 50], maxZoom: 10, animate: true, duration: 0.5 });
+        }
     };
 
     // Zoom Controls
@@ -194,8 +227,8 @@ document.addEventListener('DOMContentLoaded', () => {
             mapContainer.style.height = `${width * 0.75}px`;
 
             this.map = L.map('side-panel-map').setView([20, 0], 2);
-            // Use Dark Matter tiles for premium look
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            // Use Light tiles for better visibility
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
                 maxZoom: 19,
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
             }).addTo(this.map);
@@ -205,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.clearMarkers();
             });
         },
-        addEventPin: function (d) {
+        addEventPin: function (d, shouldPan = false) {
             if (!this.map) this.initIfNeeded();
 
             const lat = parseFloat(d.lattitude || d.latitude);
@@ -237,8 +270,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderer.unhighlightEvent(d.id);
             });
 
-            // Optional: Pan to it? Maybe not if we want to add multiple.
-            // this.map.panTo([lat, lng]); // Disabled to avoid jitter during slider playback
+            if (shouldPan) {
+                this.map.flyTo([lat, lng], Math.max(this.map.getZoom(), 6), { duration: 1 });
+            }
 
             this.markers.push(marker);
         },
@@ -256,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const lng = parseFloat(d.longitude || d.longtitude);
 
             if (!isNaN(lat) && !isNaN(lng)) {
-                mapController.addEventPin(d);
+                mapController.addEventPin(d, true);
                 return false; // Let renderer show tooltip too (as per requirement "tooltip is shown... details")
                 // Actually user said: "When the user hovers over a pinpoint, a tooltip / popup is shown"
                 // They didn't explicitly say NOT to show the timeline tooltip.
@@ -587,6 +621,57 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     initUIInteractions();
+
+    // --- Create Story UI Logic ---
+    function initCreateStoryUI() {
+        const modal = document.getElementById('create-story-modal');
+        const openBtn = document.getElementById('create-story-btn');
+        const closeBtn = document.getElementById('close-story-modal-btn');
+        const cancelBtn = document.getElementById('cancel-story-btn');
+        const form = document.getElementById('create-story-form');
+
+        const openModal = () => {
+            modal.classList.remove('hidden');
+            // Default values? maybe current year
+            const now = new Date();
+            if (!document.getElementById('story-start').value) {
+                document.getElementById('story-start').value = now.getFullYear();
+                document.getElementById('story-end').value = now.getFullYear() + 1;
+            }
+        };
+
+        const closeModal = () => {
+            modal.classList.add('hidden');
+            form.reset();
+        };
+
+        if (openBtn) openBtn.addEventListener('click', openModal);
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+        if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const title = document.getElementById('story-title-input').value;
+            const start = document.getElementById('story-start').value;
+            const end = document.getElementById('story-end').value;
+            const desc = document.getElementById('story-desc').value;
+
+            // Create new story in storage
+            // This replaces the current active story
+            storage.createStory(title, [], { description: desc, start, end });
+
+            // Clear current data + update view
+            window.timelineData = [];
+
+            console.log(`[Main] Created new story: ${title}`);
+            renderTimeline();
+
+            closeModal();
+        });
+    }
+
+    initCreateStoryUI();
 
     // --- Initialization Logic ---
     const activeStory = storage.getActiveStory();

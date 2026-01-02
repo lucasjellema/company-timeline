@@ -38,12 +38,15 @@ export class TimelineStorage {
         }));
     }
 
-    createStory(name, data) {
+    createStory(name, data, metadata = {}) {
         const id = 'story_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
         const story = {
             id,
             name,
             data,
+            description: metadata.description || "",
+            startDate: metadata.start || null,
+            endDate: metadata.end || null,
             lastModified: Date.now()
         };
         this.cache.stories[id] = story;
@@ -109,10 +112,9 @@ export class TimelineStorage {
             story.id = 'story_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
         }
 
-        // Update last modified to now, to indicate a fresh import action? 
-        // Or keep original? Let's keep original if present, or set now.
-        // Actually for "Restore", keeping original timestamps might be better, 
-        // but if we edit it later it will update.
+        // Ensure we preserve metadata if it exists in the imported story object
+        // The incoming 'story' object replaces the entry, so we just use it directly.
+        // But we should ensure it has the expected structure.
 
         this.cache.stories[story.id] = story;
         this.cache.activeStoryId = story.id;

@@ -27,9 +27,9 @@ export const CONFIG = {
     // 3-8x: Months
     // 8x+: Weeks
     ZOOM_GRANULARITY: {
-        WEEKLY_THRESHOLD: 8,
-        MONTHLY_THRESHOLD: 3,
-        QUARTERLY_THRESHOLD: 1.5
+        WEEKLY_THRESHOLD: 12,
+        MONTHLY_THRESHOLD: 6,
+        QUARTERLY_THRESHOLD: 3
     }
 };
 

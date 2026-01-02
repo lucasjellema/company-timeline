@@ -32,7 +32,7 @@
                         </linearGradient>
                     </defs>
                 </svg>
-                <h1>Company Timeline</h1>
+                <h1 id="story-title" title="">Company Timeline</h1>
             </div>
             <div class="controls">
                 <div class="zoom-group">
@@ -60,6 +60,14 @@
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                     </svg>
                     Add Event
+                </button>
+                <button id="create-story-btn" class="btn btn-secondary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    New Story
                 </button>
                 <label for="csv-upload" class="btn btn-primary">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -221,6 +229,47 @@
                     <div class="form-actions">
                         <button type="button" id="cancel-event-btn" class="btn btn-secondary">Cancel</button>
                         <button type="submit" class="btn btn-primary">Add Event</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Story Modal -->
+    <div id="create-story-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Story</h2>
+                <button id="close-story-modal-btn" class="btn-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="create-story-form">
+                    <div class="form-group">
+                        <label for="story-title-input">Story Title</label>
+                        <input type="text" id="story-title-input" required placeholder="e.g. Q1 Roadmap">
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="story-start">Start Date (Year or ISO)</label>
+                            <input type="text" id="story-start" required placeholder="YYYY or YYYY-MM">
+                        </div>
+                        <div class="form-group">
+                            <label for="story-end">End Date (Year or ISO)</label>
+                            <input type="text" id="story-end" required placeholder="YYYY or YYYY-MM">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="story-desc">Description</label>
+                        <textarea id="story-desc" rows="3" placeholder="Brief description of this story..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" id="cancel-story-btn" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Story</button>
                     </div>
                 </form>
             </div>

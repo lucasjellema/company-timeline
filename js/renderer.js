@@ -17,16 +17,47 @@ export class TimelineRenderer {
         this.isMapPanelOpen = false;
     }
 
-    render(layoutData, preserveSlider = false) {
+    render(layoutData, options = {}) {
         this.layoutData = layoutData;
         this.container.selectAll("*").remove();
 
+        // Backward compatibility: if options is boolean, treat as preserveSlider
+        let preserveSlider = false;
+        let customDomain = null;
+
+        if (typeof options === 'boolean') {
+            preserveSlider = options;
+        } else {
+            preserveSlider = options.preserveSlider || false;
+            customDomain = options.domain || null;
+        }
+
         const allEvents = layoutData.flatMap(d => d.events);
-        const minDate = d3.min(allEvents, d => d.startDate);
-        const maxDate = d3.max(allEvents, d => d.endDate);
+
+        let minDate, maxDate;
+
+        if (customDomain && customDomain.length === 2) {
+            [minDate, maxDate] = customDomain;
+        } else {
+            // Auto-calculate or Default
+            if (allEvents.length > 0) {
+                minDate = d3.min(allEvents, d => d.startDate);
+                maxDate = d3.max(allEvents, d => d.endDate);
+            } else {
+                // Default fallback if no data and no domain: Current Year
+                const now = new Date();
+                minDate = new Date(now.getFullYear(), 0, 1);
+                maxDate = new Date(now.getFullYear(), 11, 31);
+            }
+        }
 
         if (!this.sliderDate || !preserveSlider) {
+            // If we have a domain, position slider somewhat intelligently (e.g. 10% in, or start date)
+            // But usually 'offset 2 months' from minDate is the existing logic.
             this.sliderDate = d3.timeMonth.offset(minDate, 2);
+            // Ensure slider is within bounds
+            if (this.sliderDate < minDate) this.sliderDate = minDate;
+            if (this.sliderDate > maxDate) this.sliderDate = maxDate;
         }
 
         const containerNode = this.container.node();
@@ -133,7 +164,40 @@ export class TimelineRenderer {
             formatType = 'quarter';
         } else {
             // Yearly granularity at minimum zoom
-            interval = d3.timeYear.every(1);
+            // Adapt based on available width per tick to avoid overlap
+            const start = xScale.domain()[0];
+            const end = xScale.domain()[1];
+            const yearCount = d3.timeYear.count(start, end);
+            const widthPerYear = yearCount > 0 ? width / yearCount : width;
+
+            // "2025" is approx 30-40px wide. We want some padding.
+            // Let's aim for min 50-60px per label.
+            // "2025" is approx 30-40px wide. We want some padding.
+            // Let's aim for min 50px per label.
+            // widthPerYear = pixels per 1 year. 
+            // yearsPerTick = 50 / widthPerYear
+
+            if (widthPerYear < 0.05) { // < 0.05px per year -> every 1000 years
+                interval = d3.timeYear.every(1000);
+            } else if (widthPerYear < 0.1) { // < 0.1px per year -> every 500 years
+                interval = d3.timeYear.every(500);
+            } else if (widthPerYear < 0.25) { // < 0.25px per year -> every 200 years
+                interval = d3.timeYear.every(200);
+            } else if (widthPerYear < 0.5) { // < 0.5px per year -> every 100 years
+                interval = d3.timeYear.every(100);
+            } else if (widthPerYear < 1) { // < 1px per year -> every 50 years
+                interval = d3.timeYear.every(50);
+            } else if (widthPerYear < 2.5) { // < 2.5px per year -> every 20 years
+                interval = d3.timeYear.every(20);
+            } else if (widthPerYear < 5) { // < 5px per year -> every 10 years
+                interval = d3.timeYear.every(10);
+            } else if (widthPerYear < 12) {
+                interval = d3.timeYear.every(5); // Adjusted to 5 from 10 to be smoother? No, 12px*5=60px.
+            } else if (widthPerYear < 25) {
+                interval = d3.timeYear.every(2); // 25px*2=50px
+            } else {
+                interval = d3.timeYear.every(1);
+            }
             formatType = 'year';
         }
 
