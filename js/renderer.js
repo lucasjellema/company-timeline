@@ -27,7 +27,7 @@ export class TimelineRenderer {
 
         if (typeof options === 'boolean') {
             preserveSlider = options;
-            this.typeColors = CONFIG.TYPE_COLORS; // default
+            this.typeColors = this.typeColors || CONFIG.TYPE_COLORS;
         } else {
             preserveSlider = options.preserveSlider || false;
             customDomain = options.domain || null;

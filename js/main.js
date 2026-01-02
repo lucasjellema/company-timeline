@@ -196,6 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Resize Handler
     window.addEventListener('resize', () => {
-        if (renderer.layoutData) renderer.render(renderer.layoutData, { preserveSlider: true });
+        if (renderer.layoutData) renderTimeline({ preserveSlider: true });
     });
 });
