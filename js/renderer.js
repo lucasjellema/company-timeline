@@ -30,6 +30,7 @@ export class TimelineRenderer {
         } else {
             preserveSlider = options.preserveSlider || false;
             customDomain = options.domain || null;
+            this.isDrilledDown = options.isDrilledDown || false;
         }
 
         const allEvents = layoutData.flatMap(d => d.events);
@@ -264,7 +265,58 @@ export class TimelineRenderer {
 
             levelG.append("rect").attr("class", "level-bg").attr("width", this.width).attr("height", level.height - 15);
             levelG.append("line").attr("class", "level-separator").attr("x1", 0).attr("x2", this.width).attr("y1", level.height - 10).attr("y2", level.height - 10);
-            levelG.append("text").attr("class", "level-label").attr("x", 20).attr("y", 25).text(level.level0);
+            // Level Label Group with Interaction
+            const labelG = levelG.append("g")
+                .attr("class", "level-title-group")
+                .style("cursor", "pointer")
+                .on("dblclick", (e) => {
+                    e.stopPropagation();
+                    if (this.onCategoryDblClick) {
+                        this.onCategoryDblClick(level.level0);
+                    }
+                });
+
+            // Back Button (only if drilled down and callback exists)
+            if (this.isDrilledDown) {
+                const backBtn = labelG.append("g")
+                    .attr("class", "back-button-icon")
+                    .attr("transform", "translate(0, 15)") // Positioned relative to text baseline
+                    .on("click", (e) => {
+                        e.stopPropagation();
+                        if (this.onBackButtonClick) this.onBackButtonClick();
+                    });
+
+                // Circle background
+                backBtn.append("circle")
+                    .attr("r", 10)
+                    .attr("cx", 10)
+                    .attr("cy", 5)
+                    .attr("fill", "rgba(255,255,255,0.1)")
+                    .attr("stroke", "#666")
+                    .attr("stroke-width", 1);
+
+                // Arrow Path
+                backBtn.append("path")
+                    .attr("d", "M 12 5 L 8 9 L 12 13") // Simple Left Arrow
+                    .attr("stroke", "#fff")
+                    .attr("fill", "none")
+                    .attr("transform", "translate(0, -4)"); // Adjust to center in circle
+
+                // Add hover effect
+                backBtn.on("mouseenter", function () {
+                    d3.select(this).select("circle").attr("fill", "rgba(255,255,255,0.3)");
+                }).on("mouseleave", function () {
+                    d3.select(this).select("circle").attr("fill", "rgba(255,255,255,0.1)");
+                });
+
+                // Shift text to the right
+                labelG.append("text").attr("class", "level-label").attr("x", 35).attr("y", 25).text(level.level0);
+            } else {
+                labelG.append("text").attr("class", "level-label").attr("x", 20).attr("y", 25).text(level.level0);
+
+                // Add tooltip prompt for drilldown?
+                labelG.append("title").text("Double-click to drill down");
+            }
 
             // Draw regular timeline bars
             const eventGroups = levelG.selectAll(".event-g")

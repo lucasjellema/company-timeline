@@ -14,8 +14,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initialization Logic (Moved to end) ---
 
+    // State
+    let activeL0Category = null;
+
     function renderTimeline(preserveSlider = false) {
-        const layout = processTimelineData(window.timelineData);
+        // Filter data if drilled down
+        let dataToProcess = window.timelineData;
+        if (activeL0Category) {
+            dataToProcess = window.timelineData.filter(d => d.level0 === activeL0Category);
+            // If filtering results in empty (e.g. category deleted), reset
+            if (dataToProcess.length === 0) {
+                activeL0Category = null;
+                dataToProcess = window.timelineData;
+            }
+        }
+
+        const layout = processTimelineData(dataToProcess);
 
         const activeStory = storage.getActiveStory();
         let customDomain = null;
@@ -36,8 +50,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        renderer.render(layout, { preserveSlider, domain: customDomain });
+        renderer.render(layout, {
+            preserveSlider,
+            domain: customDomain,
+            isDrilledDown: !!activeL0Category
+        });
     }
+
+    // Drill-down Interactivity
+    renderer.onCategoryDblClick = (category) => {
+        console.log("Drilling down to:", category);
+        activeL0Category = category;
+        renderTimeline(true); // Preserve slider position
+    };
+
+    renderer.onBackButtonClick = () => {
+        console.log("Back from drill down");
+        activeL0Category = null;
+        renderTimeline(true);
+    };
 
     // Override renderer update to save? No, save happens on explicit edits.
 
@@ -53,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const name = `Imported Story ${new Date().toLocaleDateString()}`;
                 storage.createStory(name, data);
                 window.timelineData = data;
+                activeL0Category = null;
                 renderTimeline();
             }
 
@@ -344,6 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const name = `Imported Story ${new Date().toLocaleTimeString()}`;
                 storage.createStory(name, data);
                 window.timelineData = data;
+                activeL0Category = null;
                 renderTimeline();
             }
         } catch (error) {
@@ -367,6 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             // Update global state
                             window.timelineData = story.data;
+                            activeL0Category = null;
                             renderTimeline();
                             console.log("Story imported and rendered:", story.name);
                         }
@@ -663,6 +697,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Clear current data + update view
             window.timelineData = [];
+            activeL0Category = null;
 
             console.log(`[Main] Created new story: ${title}`);
             renderTimeline();
@@ -742,6 +777,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const story = storage.setActiveStory(id);
             if (story) {
                 window.timelineData = story.data;
+                activeL0Category = null;
                 renderTimeline();
                 console.log(`[Main] Loaded story: ${story.name}`);
                 closeModal();
