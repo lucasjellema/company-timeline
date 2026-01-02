@@ -407,8 +407,7 @@ export class TimelineRenderer {
             // Create a downward-pointing triangle relative to (0,0) (the tip)
             // Points: top-left, top-right, bottom-center (0,0)
             let pathD = `M ${-triangleSize / 2},${-triangleSize} L ${triangleSize / 2},${-triangleSize} L 0,0 Z`;
-            let transform = "";
-            let scale = 1;
+            let iconGroupTransform = "";
 
             const iconName = this.typeIcons[event.type ? event.type.toLowerCase() : ''];
             if (iconName && CONFIG.ICONS[iconName]) {
@@ -417,16 +416,21 @@ export class TimelineRenderer {
                 // The line is at y=0.
                 // So translate x by -12 to center.
                 // Translate y by -24 to sit on top.
-                transform = "translate(-12, -26) scale(1)";
+                iconGroupTransform = "translate(-12, -26) scale(1)";
             }
 
-            triangleG.append("path")
+            // Create a wrapper group specifically for the icon/triangle path
+            // This ensures static transforms (translate) are kept separate from CSS hover transforms (scale)
+            const iconWrapper = triangleG.append("g")
+                .attr("transform", iconGroupTransform);
+
+            iconWrapper.append("path")
                 .attr("class", "event-triangle")
                 .attr("d", pathD)
                 .attr("fill", getEventColor(event.type, this.typeColors))
                 .attr("stroke", "#fff")
                 .attr("stroke-width", 1.5)
-                .attr("transform", transform) // Apply icon transform if any
+                // transform attribute handled by wrapper
                 .attr("data-id", event.id)
                 .style("cursor", "pointer")
                 .on("mouseenter", (e) => this.handleEventHover(e, event))
