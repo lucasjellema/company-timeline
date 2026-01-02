@@ -58,10 +58,11 @@ export class TimelineRenderer {
             // If we have a domain, position slider somewhat intelligently (e.g. 10% in, or start date)
             // But usually 'offset 2 months' from minDate is the existing logic.
             this.sliderDate = d3.timeMonth.offset(minDate, 2);
-            // Ensure slider is within bounds
-            if (this.sliderDate < minDate) this.sliderDate = minDate;
-            if (this.sliderDate > maxDate) this.sliderDate = maxDate;
         }
+
+        // Ensure slider is within bounds (Always clamp, even if preserving, because the data domain might have changed/shrunk)
+        if (this.sliderDate < minDate) this.sliderDate = minDate;
+        if (this.sliderDate > maxDate) this.sliderDate = maxDate;
 
         const containerNode = this.container.node();
         const viewportWidth = containerNode.clientWidth;
