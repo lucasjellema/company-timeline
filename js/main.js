@@ -517,9 +517,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             modalMap = L.map('modal-map').setView([20, 0], 2);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OSM</a>'
             }).addTo(modalMap);
 
             modalMap.on('click', function (e) {

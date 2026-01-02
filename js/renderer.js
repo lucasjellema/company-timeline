@@ -291,10 +291,10 @@ export class TimelineRenderer {
                     this.activeMapEventId = null;
                     this.tooltip.hide();
                 })
-                .on("contextmenu", (e, d) => {
+                .on("contextmenu", (e) => {
                     e.preventDefault();
                     if (this.onEventContextMenu) {
-                        this.onEventContextMenu(e, d);
+                        this.onEventContextMenu(e, event);
                     }
                 });
 
