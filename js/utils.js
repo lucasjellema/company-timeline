@@ -90,14 +90,14 @@ export const createTooltip = () => {
             tooltip.classList.remove('hidden');
 
             // If interactive, verify it stays within viewport
-            let left = e.pageX + 20;
-            let top = e.pageY + 20;
+            let left = e.pageX + 30;
+            let top = e.pageY + 30;
 
             // Simple viewport check (assuming standard window)
             if (interactive) {
                 const tooltipWidth = 400; // Approx based on map
                 if (left + tooltipWidth > window.innerWidth) {
-                    left = e.pageX - tooltipWidth - 20;
+                    left = e.pageX - tooltipWidth - 30;
                 }
                 tooltip.style.pointerEvents = 'auto';
             } else {
@@ -121,8 +121,8 @@ export const createTooltip = () => {
         },
         move: (e) => {
             if (tooltip.style.pointerEvents === 'auto') return; // Don't move if interactive
-            tooltip.style.left = `${e.pageX + 15}px`;
-            tooltip.style.top = `${e.pageY + 15}px`;
+            tooltip.style.left = `${e.pageX + 30}px`;
+            tooltip.style.top = `${e.pageY + 30}px`;
         }
     };
 };

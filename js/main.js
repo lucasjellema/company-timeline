@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const activeStory = storage.getActiveStory();
         let customDomain = null;
         let mergedColors = CONFIG.TYPE_COLORS;
+        let mergedIcons = {};
 
         // Update Header Info
         const titleEl = document.getElementById('story-title');
@@ -54,13 +55,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (activeStory.settings && activeStory.settings.colors) {
                 mergedColors = { ...CONFIG.TYPE_COLORS, ...activeStory.settings.colors };
             }
+
+            // Check for custom icons
+            if (activeStory.settings && activeStory.settings.icons) {
+                mergedIcons = { ...activeStory.settings.icons };
+            }
         }
 
         renderer.render(layout, {
             preserveSlider,
             domain: customDomain,
             isDrilledDown: !!activeL0Category,
-            typeColors: mergedColors
+            typeColors: mergedColors,
+            typeIcons: mergedIcons
         });
     }
 
@@ -836,7 +843,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('settings-desc').value = activeStory.description || '';
 
             // Populate Color Pickers
-            renderColorPickers(activeStory);
+            renderSettings(activeStory);
         };
 
         const closeModal = () => {
@@ -847,7 +854,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (closeBtn) closeBtn.addEventListener('click', closeModal);
         if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
 
-        function renderColorPickers(story) {
+        function renderSettings(story) {
             colorContainer.innerHTML = '';
             colorContainer.className = 'color-settings-list'; // Ensure correct class
 
@@ -858,17 +865,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Get current saved colors or defaults
             const currentColors = (story.settings && story.settings.colors) ? story.settings.colors : {};
+            const currentIcons = (story.settings && story.settings.icons) ? story.settings.icons : {};
 
             allTypes.forEach(type => {
                 const defaultColor = CONFIG.TYPE_COLORS[type] || CONFIG.COLORS.default;
                 const savedColor = currentColors[type] || defaultColor;
+                const savedIcon = currentIcons[type] || '';
 
                 const wrapper = document.createElement('div');
                 wrapper.className = 'color-item';
+                // wrapper.style.display = 'grid'; // Handled by CSS
+                // wrapper.style.gridTemplateColumns = '1fr auto auto auto';
 
-                // Structure: Label | Preview Bar | Edit Icon | Hidden Input
+                const getIconSvg = (name) => {
+                    const path = CONFIG.ICONS[name];
+                    if (!path) return '';
+                    return `<svg class="select-icon-svg" viewBox="0 0 24 24"><path d="${path}"></path></svg>`;
+                };
+
+                // Structure: Label | Custom Icon Select | Preview Bar | Edit Icon | Hidden Input
                 wrapper.innerHTML = `
                     <span class="color-label">${type}</span>
+                    
+                    <div class="custom-select" id="custom-select-${type}">
+                        <div class="select-selected">
+                             ${savedIcon ? getIconSvg(savedIcon) : ''} <span>${savedIcon || 'No Icon'}</span>
+                        </div>
+                        <div class="select-items select-hide">
+                             <div data-value="">No Icon</div>
+                             ${Object.keys(CONFIG.ICONS).map(k => `
+                                 <div data-value="${k}">
+                                     ${getIconSvg(k)} <span>${k}</span>
+                                 </div>
+                             `).join('')}
+                        </div>
+                    </div>
+                    <input type="hidden" name="icon-${type}" value="${savedIcon}" class="icon-input-hidden">
+
                     <div class="color-preview" style="background-color: ${savedColor};" id="preview-${type}"></div>
                     <label for="color-input-${type}" class="color-edit-icon" title="Change Color">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -876,19 +909,73 @@ document.addEventListener('DOMContentLoaded', () => {
                             <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
                         </svg>
                     </label>
-                    <input type="color" id="color-input-${type}" name="color-${type}" value="${savedColor}" class="color-input-hidden">
+                    <input type="color" id="color-input-${type}" name="color-${type}" value="${savedColor}" class="color-input-hidden-picker" style="display:none;">
                 `;
 
-                // Add event listener to update preview immediately on change
-                const input = wrapper.querySelector('input');
+                // Add event listener to update preview immediately on change (for color)
+                const input = wrapper.querySelector('input[type="color"]');
                 const preview = wrapper.querySelector('.color-preview');
                 input.addEventListener('input', (e) => {
                     preview.style.backgroundColor = e.target.value;
                 });
 
+                // Custom Select Logic
+                const customSelect = wrapper.querySelector('.custom-select');
+                const selectedDiv = customSelect.querySelector('.select-selected');
+                const itemsDiv = customSelect.querySelector('.select-items');
+                const hiddenInput = wrapper.querySelector('.icon-input-hidden');
+
+                selectedDiv.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    closeAllSelect(selectedDiv);
+                    itemsDiv.classList.toggle('select-hide');
+                    selectedDiv.classList.toggle('select-arrow-active');
+                });
+
+                const options = itemsDiv.querySelectorAll('div');
+                options.forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const val = option.getAttribute('data-value');
+                        const text = option.textContent.trim();
+                        const svgHtml = val ? getIconSvg(val) : '';
+
+                        selectedDiv.innerHTML = `${svgHtml} <span>${val || 'No Icon'}</span>`;
+                        hiddenInput.value = val;
+
+                        itemsDiv.classList.add('select-hide');
+                        selectedDiv.classList.remove('select-arrow-active');
+                    });
+                });
+
                 colorContainer.appendChild(wrapper);
             });
+
+            // Close all selects if clicked outside
+            document.addEventListener('click', closeAllSelect);
         }
+
+        function closeAllSelect(elm) {
+            const items = document.getElementsByClassName("select-items");
+            const selected = document.getElementsByClassName("select-selected");
+            for (let i = 0; i < selected.length; i++) {
+                if (elm !== selected[i]) {
+                    selected[i].classList.remove("select-arrow-active");
+                }
+            }
+            for (let i = 0; i < items.length; i++) {
+                if (elm !== selected[i]) { // logic check: actually items are children, but we want to close all EXCEPT the current one if passed
+                    // But easier: close ALL if elm is null. If elm is passed, don't close its list? 
+                    // The standard w3schools pattern:
+                    // ArrNo.push(i)
+                }
+                // Simpler: Just hide all. attempt to re-open if it was the target is handled by toggle
+                if (!elm || !elm.parentNode.contains(items[i])) {
+                    items[i].classList.add("select-hide");
+                }
+            }
+        }
+
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -907,13 +994,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 newColors[type] = input.value;
             });
 
+
+            // Collect icons
+            const newIcons = {};
+            const iconInputs = colorContainer.querySelectorAll('input.icon-input-hidden');
+            iconInputs.forEach(input => {
+                const type = input.name.replace('icon-', '');
+                if (input.value) {
+                    newIcons[type] = input.value;
+                }
+            });
+
             // Save to storage
             // Note: window.timelineData is kept as is, only metadata changes
             storage.updateStorySettings(activeStory.id, {
                 name: newName,
                 description: newDesc
             }, {
-                colors: newColors
+                colors: newColors,
+                icons: newIcons
             });
 
             // Force refresh of header and chart

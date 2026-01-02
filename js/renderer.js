@@ -33,6 +33,7 @@ export class TimelineRenderer {
             customDomain = options.domain || null;
             this.isDrilledDown = options.isDrilledDown || false;
             this.typeColors = options.typeColors || CONFIG.TYPE_COLORS;
+            this.typeIcons = options.typeIcons || {};
         }
 
         const allEvents = layoutData.flatMap(d => d.events);
@@ -363,6 +364,20 @@ export class TimelineRenderer {
                     }
                 });
 
+            // Draw Icon inside the bar
+            eventGroups.each((d, i, nodes) => {
+                const iconName = this.typeIcons[d.type ? d.type.toLowerCase() : ''];
+                if (iconName && CONFIG.ICONS[iconName]) {
+                    d3.select(nodes[i]).append("path")
+                        .attr("class", "event-icon")
+                        .attr("d", CONFIG.ICONS[iconName])
+                        .attr("fill", "white")
+                        .attr("fill-opacity", 0.9)
+                        .attr("transform", "translate(6, 4) scale(0.7)") // Scale 24px to ~16.8px, fit in 24px bar
+                        .style("pointer-events", "none");
+                }
+            });
+
             eventGroups.append("text").attr("class", "bar-label").attr("x", 4).attr("y", CONFIG.BAR_HEIGHT + 16).text(d => d.title);
 
             // Draw event triangles (for point events without end dates)
@@ -391,7 +406,19 @@ export class TimelineRenderer {
 
             // Create a downward-pointing triangle relative to (0,0) (the tip)
             // Points: top-left, top-right, bottom-center (0,0)
-            const pathD = `M ${-triangleSize / 2},${-triangleSize} L ${triangleSize / 2},${-triangleSize} L 0,0 Z`;
+            let pathD = `M ${-triangleSize / 2},${-triangleSize} L ${triangleSize / 2},${-triangleSize} L 0,0 Z`;
+            let transform = "";
+            let scale = 1;
+
+            const iconName = this.typeIcons[event.type ? event.type.toLowerCase() : ''];
+            if (iconName && CONFIG.ICONS[iconName]) {
+                pathD = CONFIG.ICONS[iconName];
+                // Icon is 24x24. We want to center it horizontally on (0,0) and have it sit on top of the line.
+                // The line is at y=0.
+                // So translate x by -12 to center.
+                // Translate y by -24 to sit on top.
+                transform = "translate(-12, -26) scale(1)";
+            }
 
             triangleG.append("path")
                 .attr("class", "event-triangle")
@@ -399,6 +426,7 @@ export class TimelineRenderer {
                 .attr("fill", getEventColor(event.type, this.typeColors))
                 .attr("stroke", "#fff")
                 .attr("stroke-width", 1.5)
+                .attr("transform", transform) // Apply icon transform if any
                 .attr("data-id", event.id)
                 .style("cursor", "pointer")
                 .on("mouseenter", (e) => this.handleEventHover(e, event))
@@ -525,7 +553,13 @@ export class TimelineRenderer {
             // If local map is suppressed because panel is open, show hint?
             const mapHint = (hasMap && this.isMapPanelOpen) ? `<br><em style='color: #ccc; font-size: 0.8em'>Shown on map panel</em>` : "";
 
-            const content = `<span class="tooltip-title">${d.title}</span>` +
+            // Icon for Tooltip
+            const iconName = this.typeIcons && this.typeIcons[d.type ? d.type.toLowerCase() : ''];
+            const iconHtml = (iconName && CONFIG.ICONS[iconName]) ?
+                `<svg viewBox="0 0 24 24" width="16" height="16" style="vertical-align: sub; margin-right: 6px; fill: currentColor;"><path d="${CONFIG.ICONS[iconName]}"></path></svg>` :
+                '';
+
+            const content = `<span class="tooltip-title">${iconHtml}${d.title}</span>` +
                 `<strong>Type:</strong> ${d.type}<br>` +
                 `<strong>Period:</strong> ${d.start} to ${d.end || 'Ongoing'}<br><br>` +
                 `${d.description}${mapHint}`;
