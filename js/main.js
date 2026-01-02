@@ -673,6 +673,92 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initCreateStoryUI();
 
+    // --- Load Story UI Logic ---
+    function initLoadStoryUI() {
+        const modal = document.getElementById('load-story-modal');
+        const openBtn = document.getElementById('load-story-btn');
+        const closeBtn = document.getElementById('close-load-modal-btn');
+        const listContainer = document.getElementById('story-list-container');
+
+        const openModal = () => {
+            modal.classList.remove('hidden');
+            renderStoryList();
+        };
+
+        const closeModal = () => {
+            modal.classList.add('hidden');
+        };
+
+        const renderStoryList = () => {
+            const stories = storage.getStories();
+            // Sort by last modified desc
+            stories.sort((a, b) => b.lastModified - a.lastModified);
+
+            if (stories.length === 0) {
+                listContainer.innerHTML = '<div class="empty-state">No saved stories found. Create one!</div>';
+                return;
+            }
+
+            // Get active story ID to highlight
+            const activeStory = storage.getActiveStory();
+            const activeId = activeStory ? activeStory.id : null;
+
+            listContainer.innerHTML = stories.map(s => {
+                const dateStr = new Date(s.lastModified).toLocaleString();
+                const activeClass = (s.id === activeId) ? 'active-story-item' : '';
+                return `
+                    <li class="story-item ${activeClass}" data-id="${s.id}">
+                        <div class="story-info">
+                            <div class="story-title">${s.name}</div>
+                            <div class="story-desc">${s.description || 'No description'}</div>
+                            <div class="story-meta">Last modified: ${dateStr} &middot; ${s.eventCount} events</div>
+                        </div>
+                        <button class="btn btn-sm btn-primary load-btn" data-id="${s.id}">Load</button>
+                    </li>
+                `;
+            }).join('');
+
+            // Add Click Listeners
+            listContainer.querySelectorAll('.load-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent li click if any
+                    const id = e.target.dataset.id;
+                    loadStory(id);
+                });
+            });
+
+            // Also allow clicking the row
+            listContainer.querySelectorAll('.story-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    // if clicked button, ignore (handled above)
+                    if (e.target.tagName === 'BUTTON') return;
+                    const id = item.dataset.id;
+                    loadStory(id);
+                });
+            });
+        };
+
+        const loadStory = (id) => {
+            const story = storage.setActiveStory(id);
+            if (story) {
+                window.timelineData = story.data;
+                renderTimeline();
+                console.log(`[Main] Loaded story: ${story.name}`);
+                closeModal();
+            }
+        };
+
+        if (openBtn) openBtn.addEventListener('click', openModal);
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+        // Close on outside click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+    }
+
+    initLoadStoryUI();
+
     // --- Initialization Logic ---
     const activeStory = storage.getActiveStory();
     if (activeStory) {

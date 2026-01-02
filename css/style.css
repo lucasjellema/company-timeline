@@ -618,3 +618,61 @@ main {
 .context-menu-item.delete:hover {
     background: rgba(239, 68, 68, 0.1);
 }
+
+/* Story List Styles */
+.story-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.story-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+}
+
+.story-item:last-child {
+    border-bottom: none;
+}
+
+.story-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.story-item.active-story-item {
+    background: rgba(99, 102, 241, 0.1);
+    border-left: 3px solid var(--primary);
+}
+
+.story-info {
+    flex: 1;
+}
+
+.story-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--text-main);
+}
+
+.story-desc {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.story-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+}

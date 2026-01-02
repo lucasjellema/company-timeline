@@ -33,6 +33,7 @@ export class TimelineStorage {
         return Object.values(this.cache.stories).map(s => ({
             id: s.id,
             name: s.name,
+            description: s.description,
             lastModified: s.lastModified,
             eventCount: s.data.length
         }));
