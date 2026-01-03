@@ -78,3 +78,54 @@ start,end,title,description,type,level0,level1,level2,lattitude,longitude
 2022-11-20,2022-12-18,2022 World Cup,"Hosted by Qatar; Lionel Messi finally lifts the trophy for Argentina.",tournament,International Football,World Cup,WC 2022,25.4503,51.4883
 2024-06-14,2024-07-14,Euro 2024,"Hosted by Germany; Spain wins their 4th Euro title, a new record.",tournament,International Football,UEFA Euro,Euro 2024,52.5147,13.2394
 2026-06-11,2026-07-19,2026 World Cup,"The first 48-team tournament, hosted by the USA, Canada, and Mexico.",tournament,International Football,World Cup,WC 2026,40.8128,-74.0742
+start,end,title,description,type,level0,level1,level2,lattitude,longitude
+2004-07,2007-09,Mourinho First Reign,"Jose Mourinho arrives as 'The Special One', winning two consecutive PL titles.",reign,Premier League,Chelsea,Coaching,51.4817,-0.1910
+2005-05,2005-05,Chelsea PL Title,"Chelsea win their first top-flight title in 50 years, setting defensive records.",national championship,Premier League,Chelsea,Titles,51.4817,-0.1910
+2016-07,2018-07,Antonio Conte Era,"Conte introduces the 3-4-3 to England, winning the Premier League in his first season.",reign,Premier League,Chelsea,Coaching,51.4817,-0.1910
+2012-05-19,2012-05-19,Drogba's Finale,"Didier Drogba scores the winning penalty in Munich to give Chelsea their first UCL.",european cup,Premier League,Chelsea,Europe,48.2188,11.6247
+2004-06,2010-06,Rafael Benitez Era,"Benitez leads Liverpool to two UCL finals, winning one in 2005.",reign,Premier League,Liverpool,Coaching,53.4308,-2.9608
+2024-06,2026,The Arne Slot Transition,"Arne Slot succeeds Klopp, implementing a more controlled possession-based style.",reign,Premier League,Liverpool,Coaching,53.4308,-2.9608
+2013-07,2015-06,Manuel Pellegrini Reign,"Pellegrini wins a PL title and League Cup double in his debut season with City.",reign,Premier League,Manchester City,Coaching,53.4831,-2.2004
+2021-05,2021-05,City 5th PL Title,"Manchester City reclaim the title from Liverpool, starting a period of total dominance.",national championship,Premier League,Manchester City,Titles,53.4831,-2.2004
+2022-06,2022-06,Erling Haaland Signing,"City sign the Norwegian striker, who goes on to break the PL single-season goal record.",transfer,Premier League,Manchester City,Incident,53.4831,-2.2004
+2016-05,2016-05,Louis van Gaal FA Cup,"Van Gaal wins the FA Cup before being replaced, ending a 3-year trophy drought.",reign,Premier League,Manchester United,Coaching,53.4631,-2.2913
+2016-07,2018-12,Jose Mourinho Man Utd Era,"Mourinho wins the Europa League and League Cup, finishing 2nd in the PL.",reign,Premier League,Manchester United,Coaching,53.4631,-2.2913
+2018-12,2021-11,Ole Gunnar Solskjaer Era,"The former striker returns as manager, leading the club to back-to-back top-4 finishes.",reign,Premier League,Manchester United,Coaching,53.4631,-2.2913
+2010-05,2010-05,Ajax 30th Title,"Ajax win their 30th title, allowing them to wear the 'third star' on their jersey.",national championship,Eredivisie,Ajax,Titles,52.3142,4.9427
+2017-05,2017-12,Marcel Keizer Period,"A brief, difficult reign following the Nouri tragedy and Europa League final.",reign,Eredivisie,Ajax,Coaching,52.3142,4.9427
+2017-12,2022-05,Erik ten Hag Era,"Ten Hag restores Ajax's domestic dominance and global reputation for attacking play.",reign,Eredivisie,Ajax,Coaching,52.3142,4.9427
+2002,2006,Guus Hiddink Success,"Hiddink's second spell at PSV, reaching the 2005 UCL semi-final.",reign,Eredivisie,PSV,Coaching,51.4417,5.4674
+2018-07,2019-12,Mark van Bommel Reign,"A period of high-intensity football that started with a record-breaking win streak.",reign,Eredivisie,PSV,Coaching,51.4417,5.4674
+2022-07,2023-05,Ruud van Nistelrooy Era,"The legendary striker leads PSV to a KNVB Cup win before a sudden departure.",reign,Eredivisie,PSV,Coaching,51.4417,5.4674
+2015-07,2019-05,Giovanni van Bronckhorst Era,"Gio leads his boyhood club to their first Eredivisie title in the 21st century.",reign,Eredivisie,Feyenoord,Coaching,51.8944,4.5181
+2023-05,2023-05,Feyenoord 16th Title,"Feyenoord win the league with a 3-0 win over Go Ahead Eagles, clinching the trophy.",national championship,Eredivisie,Feyenoord,Titles,51.8944,4.5181
+2005-07,2007-05,Felix Magath Bayern Era,"Magath wins consecutive domestic doubles, a first in German football history.",reign,Bundesliga,Bayern Munich,Coaching,48.2188,11.6247
+2009-07,2011-04,Louis van Gaal Bayern Era,"Van Gaal introduces a possession style and promotes youth like Muller and Alaba.",reign,Bundesliga,Bayern Munich,Coaching,48.2188,11.6247
+2011-07,2013-06,Jupp Heynckes Treble Era,"Heynckes leads Bayern to a historic clean sweep of all major trophies in 2013.",reign,Bundesliga,Bayern Munich,Coaching,48.2188,11.6247
+2013-07,2016-06,Pep Guardiola Bayern Era,"Guardiola wins three straight Bundesligas, revolutionizing German tactical play.",reign,Bundesliga,Bayern Munich,Coaching,48.2188,11.6247
+2019-11,2021-06,Hansi Flick Sextuple,"Flick takes over mid-season and wins every possible trophy in a calendar year.",reign,Bundesliga,Bayern Munich,Coaching,48.2188,11.6247
+2023-03,2024-06,Thomas Tuchel Period,"A turbulent era including a last-minute title win in 2023 and a UCL semi-final.",reign,Bundesliga,Bayern Munich,Coaching,48.2188,11.6247
+2015-07,2017-05,Thomas Tuchel BVB Era,"Tuchel wins the DFB-Pokal and maintains Dortmund's status as a top European side.",reign,Bundesliga,Dortmund,Coaching,51.4926,7.4519
+2021-07,2022-05,Marco Rose Era,"A single-season reign focused on transition after the departure of Jadon Sancho.",reign,Bundesliga,Dortmund,Coaching,51.4926,7.4519
+2022-07,2024-06,Edin Terzic Reign,"The fan-favorite coach leads BVB to a UCL final and a narrow title miss in 2023.",reign,Bundesliga,Dortmund,Coaching,51.4926,7.4519
+2024-05,2024-05,Leverkusen Undefeated Season,"Bayer Leverkusen become the first team in Bundesliga history to finish a season unbeaten.",national championship,Bundesliga,Bayer Leverkusen,Titles,51.0383,7.0022
+2003-07,2008-05,Frank Rijkaard Era,"Rijkaard builds the team around Ronaldinho, winning the 2006 Champions League.",reign,Primera Division,FC Barcelona,Coaching,41.3809,2.1228
+2014-07,2017-06,Luis Enrique Era,"The MSN (Messi, Suarez, Neymar) era results in a second historic treble in 2015.",reign,Primera Division,FC Barcelona,Coaching,41.3809,2.1228
+2021-11,2024-05,Xavi Hernandez Era,"The legendary midfielder returns to coach, winning La Liga in his first full season.",reign,Primera Division,FC Barcelona,Coaching,41.3809,2.1228
+2024-07,2026,Hansi Flick Barca Era,"Flick brings 'Gegenpressing' to Barcelona, leading to a strong 2024/25 start.",reign,Primera Division,FC Barcelona,Coaching,41.3809,2.1228
+2010-05,2013-06,Jose Mourinho Real Era,"Mourinho ends Barca's dominance by winning the 'League of Records' with 100 points.",reign,Primera Division,Real Madrid,Coaching,40.4531,-3.6883
+2021-06,2026,Carlo Ancelotti Second Spell,"Ancelotti returns to win two more UCL titles and multiple La Liga trophies.",reign,Primera Division,Real Madrid,Coaching,40.4531,-3.6883
+2021-05,2021-05,Atleti 11th Title,"Luis Suarez scores the winner on the final day to secure the title for Simeone.",national championship,Primera Division,Atletico Madrid,Titles,40.4017,-3.7206
+2011-05,2014-07,Antonio Conte Juve Era,"Conte starts the nine-year streak, including an undefeated 2011/12 season.",reign,Serie A,Juventus,Coaching,45.1095,7.6413
+2014-07,2019-05,Massimiliano Allegri First Reign,"Allegri wins five consecutive doubles and reaches two Champions League finals.",reign,Serie A,Juventus,Coaching,45.1095,7.6413
+2019-06,2020-08,Maurizio Sarri Year,"Sarri wins the final title of the nine-year run before being replaced by Pirlo.",reign,Serie A,Juventus,Coaching,45.1095,7.6413
+2019-05,2021-05,Antonio Conte Inter Era,"Conte breaks Juventus' streak by winning the Scudetto with Inter Milan.",reign,Serie A,Inter Milan,Coaching,45.4781,9.1240
+2021-06,2026,Simone Inzaghi Era,"Inzaghi wins multiple cups and the 20th league title, reaching a UCL final.",reign,Serie A,Inter Milan,Coaching,45.4781,9.1240
+2001,2009,Carlo Ancelotti Milan Era,"A legendary era winning two UCL titles (2003, 2007) and one Serie A title.",reign,Serie A,AC Milan,Coaching,45.4781,9.1240
+2019-10,2024-05,Stefano Pioli Era,"Pioli stabilizes Milan and leads them to the 2022 Scudetto.",reign,Serie A,AC Milan,Coaching,45.4781,9.1240
+2024-06,2026,Paulo Fonseca Era,"Fonseca takes over the Rossoneri to lead a new tactical cycle.",reign,Serie A,AC Milan,Coaching,45.4781,9.1240
+2008-06-29,2012-07-01,Spain's Global Reign,"Spain becomes the first team to win three major international trophies in a row.",reign,International Football,Global Dominance,,,
+2014-07-08,2014-07-08,The Mineirazo,"Germany beats hosts Brazil 7-1, the most shocking result in World Cup history.",incident,International Football,World Cup,WC 2014,-19.8659,-43.9711
+2021-07-11,2021-07-11,England's Penalty Heartbreak,"Italy defeats England at Wembley on penalties, extending England's trophy wait.",incident,International Football,Euro,Euro 2020,51.5560,-0.2795
+2022-12-18,2022-12-18,The Greatest Final Ever,"Argentina beat France 4-2 on penalties after a 3-3 draw in Lusail.",winner,International Football,World Cup,WC 2022,25.5061,51.4811
+2026-06-11,2026-06-11,World Cup 48-Team Kickoff,"The first match of the expanded 48-team World Cup takes place in Mexico City.",tournament,International Football,World Cup,WC 2026,19.3029,-99.1505
