@@ -44,6 +44,77 @@ export const parseDate = (dateStr) => {
     return new Date(dateStr);
 };
 
+const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+const getOrdinal = (n) => {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+};
+
+const parseDateComponents = (dateStr) => {
+    if (!dateStr) return null;
+    const parts = dateStr.trim().split('-');
+    if (parts.length === 1) return { year: parts[0], precision: 'year' };
+    if (parts.length === 2) return { year: parts[0], month: parseInt(parts[1]), precision: 'month' };
+    if (parts.length === 3) return { year: parts[0], month: parseInt(parts[1]), day: parseInt(parts[2]), precision: 'day' };
+    return null;
+};
+
+const formatSingleDate = (d) => {
+    if (d.precision === 'year') return d.year;
+    const monthName = MONTH_NAMES[d.month - 1];
+    if (d.precision === 'month') return `${monthName} ${d.year}`;
+    return `${getOrdinal(d.day)} ${monthName} ${d.year}`;
+};
+
+export const formatTooltipDate = (startStr, endStr) => {
+    if (!startStr) return '';
+    const start = parseDateComponents(startStr);
+    const end = parseDateComponents(endStr);
+
+    if (!end) {
+        return formatSingleDate(start) + ' - Ongoing';
+    }
+
+    // Check if start and end are exactly the same
+    if (startStr === endStr) {
+        return formatSingleDate(start);
+    }
+
+    if (start.year === end.year) {
+        const monthNameStart = (start.month) ? MONTH_NAMES[start.month - 1] : '';
+        const monthNameEnd = (end.month) ? MONTH_NAMES[end.month - 1] : '';
+
+        if (start.month === end.month) {
+            // Same month
+            if (start.precision === 'day' && end.precision === 'day') {
+                // 10th - 20th May 2023
+                return `${getOrdinal(start.day)} - ${getOrdinal(end.day)} ${monthNameEnd} ${end.year}`;
+            }
+        } else {
+            // Different month, same year
+            if (start.precision === 'day' && end.precision === 'day') {
+                // 10th May - 20th June 2023
+                return `${getOrdinal(start.day)} ${monthNameStart} - ${getOrdinal(end.day)} ${monthNameEnd} ${end.year}`;
+            }
+            if (start.precision === 'month' && end.precision === 'month') {
+                // May - June 2023
+                return `${monthNameStart} - ${monthNameEnd} ${end.year}`;
+            }
+            // If one is day and other is month? e.g. May - 10th June 2023
+            if (start.precision === 'month' && end.precision === 'day') {
+                return `${monthNameStart} - ${getOrdinal(end.day)} ${monthNameEnd} ${end.year}`;
+            }
+            if (start.precision === 'day' && end.precision === 'month') {
+                return `${getOrdinal(start.day)} ${monthNameStart} - ${monthNameEnd} ${end.year}`;
+            }
+        }
+    }
+
+    return `${formatSingleDate(start)} - ${formatSingleDate(end)}`;
+};
+
 export const formatDate = (date) => {
     return `${date.getFullYear()}-${date.getMonth() + 1}`;
 };

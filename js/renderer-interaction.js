@@ -1,4 +1,5 @@
 import { CONFIG } from './config.js';
+import { formatTooltipDate } from './utils.js';
 
 export function drawSlider(renderer, svg) {
     const sliderX = renderer.xScale(renderer.sliderDate);
@@ -57,7 +58,7 @@ export function handleEventHover(renderer, e, d) { // Renamed slightly to accept
 
     let content = `
             <span class="tooltip-title">${d.title}</span>
-            <div style="margin-bottom:8px; font-size: 0.9em"><strong>Type:</strong> ${d.type} &middot; <strong>Period:</strong> ${d.start} to ${d.end || 'Ongoing'}</div>
+            <div style="margin-bottom:8px; font-size: 0.9em"><strong>Type:</strong> ${d.type} &middot; <strong>Period:</strong> ${formatTooltipDate(d.start, d.end)}</div>
             <div style="margin-bottom:10px">${d.description}</div>`
 
     // Conditional logic: Show map in tooltip ONLY if panel is closed
