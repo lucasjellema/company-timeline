@@ -56,6 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         renderTimeline({ preserveSlider: true, domain: zoomRange });
+        // Force update map with search results immediately (passing false to not rely on active tab check inside yet, or we assume render handled it?)
+        // Actually, updateMapPins checks getActiveTab. If Search tab is open, we might want to update Map if user switches to Map tab.
+        // But if user is on Search tab, Map is hidden.
+        // If user switches to Map tab later, it should show search results.
+        // The best way is to have updateMapPins use searchState if active.
+        updateMapPins(searchState.matches);
     });
 
     searchController.init();
@@ -319,7 +325,13 @@ document.addEventListener('DOMContentLoaded', () => {
         lastActiveEventIds = currentIds;
 
         updateEventsList(activeEvents, eventsList);
-        updateMapPins(activeEvents);
+
+        // If search is active, Map should show ALL search matches, not just active/slider ones.
+        if (searchState.active && searchState.matches.length > 0) {
+            // Do not update map pins based on slider
+        } else {
+            updateMapPins(activeEvents);
+        }
     };
 
     function updateEventsList(events, container) {
@@ -383,7 +395,21 @@ document.addEventListener('DOMContentLoaded', () => {
     initZoomControls(renderer);
     const getActiveTab = initTabs('.nav-tab', '.tab-content', (target) => {
         renderer.isMapPanelOpen = (target === 'map');
-        if (target === 'map') mapManager.initIfNeeded();
+        if (target === 'map') {
+            mapManager.initIfNeeded();
+            // If returning to map tab and search is active, ensure pins are correct
+            if (searchState.active && searchState.matches.length > 0) {
+                updateMapPins(searchState.matches);
+            } else {
+                // Otherwise current renderer logic usually handles it via slider move, 
+                // but we might need to force refresh if slider hasn't moved.
+                // We can trigger a fake slider move or just assume last state is valid?
+                // The 'updateMapPins' is usually called by slider. 
+                // If we switch tabs, we might be stale.
+                // renderer.getActiveEvents() ? We can't easily access that from here without triggering.
+                // Let's rely on slider interaction OR force a render?
+            }
+        }
     });
 
     // Editors & Story UI

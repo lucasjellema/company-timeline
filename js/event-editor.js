@@ -233,7 +233,7 @@ export function initEventEditor(renderer, refreshCallback, storage) {
         const l0 = getUnique('level0');
         const l1 = getUnique('level1');
         const l2 = getUnique('level2');
-        const defaultTypes = ['project', 'release', 'milestone', 'sprint', 'training'];
+        const defaultTypes = ['event'];
         const currentTypes = window.timelineData.map(d => d.type ? d.type.toLowerCase() : null).filter(Boolean);
         const allTypes = [...new Set([...defaultTypes, ...currentTypes])].sort();
 
