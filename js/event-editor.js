@@ -68,18 +68,22 @@ export function initEventEditor(renderer, refreshCallback, storage) {
         // Event specific actions
         bindMenuAction(document.getElementById('ctx-edit'), () => {
             if (currentContextEventId !== null && window.timelineData) {
-                const eventData = window.timelineData[currentContextEventId];
-                if (eventData) {
-                    openModal(true, eventData, currentContextEventId);
+                const index = window.timelineData.findIndex(e => e.id === currentContextEventId);
+                if (index > -1) {
+                    const eventData = window.timelineData[index];
+                    openModal(true, eventData, index);
                 }
             }
         }).style.display = 'flex';
 
         bindMenuAction(document.getElementById('ctx-delete'), () => {
             if (currentContextEventId !== null && window.timelineData) {
-                if (confirm('Are you sure you want to delete this event?')) {
-                    window.timelineData.splice(currentContextEventId, 1);
-                    refreshCallback();
+                const index = window.timelineData.findIndex(e => e.id === currentContextEventId);
+                if (index > -1) {
+                    if (confirm('Are you sure you want to delete this event?')) {
+                        window.timelineData.splice(index, 1);
+                        refreshCallback();
+                    }
                 }
             }
         }).style.display = 'flex';
