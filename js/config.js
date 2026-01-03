@@ -15,19 +15,13 @@ export const CONFIG = {
 
     // Default color palette for events
     COLORS: {
-        training: '#10B981',   // Emerald
-        release: '#F59E0B',    // Amber
-        project: '#6366F1',    // Indigo
-        sprint: '#EC4899',     // Pink
+        event: '#EC4899',     // Pink
         default: '#94A3B8'     // Slate
     },
 
     // Specific color mapping by event type
     TYPE_COLORS: {
-        training: '#10B981',
-        release: '#F59E0B',
-        project: '#6366F1',
-        sprint: '#EC4899'
+        event: '#EC4899'
     },
     // SVG path data for various icons used in point events or bar overlays
     ICONS: {
