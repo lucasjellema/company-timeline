@@ -1,0 +1,81 @@
+start,end,title,description,type,level0,level1,level2,lattitude,longitude
+1939-09-01,1945-05-08,European Theater,"The main theater of operations in Europe, involving the Axis and Allied powers.",war,Europe,,,,
+1939-09-01,1945-05-08,Western Front,"Military operations in Western Europe, including France and the Low Countries.",front,Europe,Western Front,,,
+1938-09-30,,Munich Conference,"Agreement permitting German annexation of the Sudetenland, Czechoslovakia.",conference,Europe,Diplomacy,Pre-War,48.1374,11.5755
+1939-09-01,,Invasion of Poland,"German forces invade Poland, marking the start of World War II in Europe.",invasion,Europe,Western Front,Invasion,52.23,21.01
+1940-05-10,1940-06-25,Battle of France,"The German invasion of France and the Low Countries, leading to the fall of Paris.",campaign,Europe,Western Front,Invasion,48.85,2.35
+1940-05-26,1940-06-04,Dunkirk Evacuation,"Operation Dynamo: the evacuation of Allied soldiers from the beaches of Dunkirk, France.",operation,Europe,Western Front,Evacuation,51.03,2.37
+1940-07-10,1940-10-31,Battle of Britain,"An intense air campaign fought over the UK between the RAF and the Luftwaffe.",battle,Europe,Western Front,Air War,51.50,-0.12
+1944-06-06,,D-Day,"The Allied landings in Normandy, launching the liberation of Western Europe.",invasion,Europe,Western Front,Liberation,49.36,-0.87
+1944-12-16,1945-01-25,Battle of the Bulge,"The last major German offensive campaign on the Western Front, Ardennes.",battle,Europe,Western Front,Counter-offensive,50.12,5.92
+1945-05-07,,German Surrender,"General Alfred Jodl signs the unconditional surrender of all German forces, Reims.",surrender,Europe,Western Front,Victory,49.45,4.03
+1941-06-22,1945-05-09,Eastern Front,"The massive conflict between the Axis powers and the Soviet Union.",front,Europe,Eastern Front,,,
+1941-06-22,,Operation Barbarossa,"The German invasion of the Soviet Union begins, involving millions of troops.",invasion,Europe,Eastern Front,Invasion,53.90,27.56
+1942-08-23,1943-02-02,Battle of Stalingrad,"A major turning point where Soviet forces defeated the German Sixth Army.",battle,Europe,Eastern Front,Siege,48.70,44.51
+1943-07-05,1943-08-23,Battle of Kursk,"The largest tank battle in history, resulting in a decisive Soviet victory.",battle,Europe,Eastern Front,Offensive,51.73,36.19
+1945-04-16,1945-05-02,Battle of Berlin,"The final major offensive of the European theater, resulting in the fall of Berlin.",battle,Europe,Eastern Front,Fall of Berlin,52.52,13.40
+1941-12-07,1945-09-02,Far East Theater,"The conflict across East Asia, Southeast Asia, and the Pacific Ocean.",war,Far East,,,,
+1941-12-07,1945-08-15,Pacific Ocean Front,"Naval and island-hopping campaigns across the Pacific Ocean.",front,Far East,Pacific,,,
+1941-12-07,,Pearl Harbor,"The Japanese surprise attack on the US Naval Base in Hawaii, USA.",invasion,Far East,Pacific,Attack,21.36,-157.95
+1942-06-04,1942-06-07,Battle of Midway,"A crucial naval battle where the US Navy defeated the Imperial Japanese Navy.",battle,Far East,Pacific,Naval Battle,28.20,-177.37
+1942-08-07,1943-02-09,Guadalcanal Campaign,"The first major land offensive by Allied forces against Japan, Solomon Islands.",campaign,Far East,Pacific,Island Hopping,-9.44,159.97
+1944-10-23,1944-10-26,Battle of Leyte Gulf,"The largest naval battle of WWII, resulting in an Allied victory in the Philippines.",battle,Far East,Pacific,Naval Battle,10.50,125.00
+1945-02-19,1945-03-26,Battle of Iwo Jima,"A major battle in which the US Marine Corps captured the island of Iwo Jima.",battle,Far East,Pacific,Invasion,24.78,141.32
+1945-08-06,,Hiroshima Bombing,"The first use of an atomic bomb in warfare, dropped by the United States.",bombing,Far East,Pacific,Nuclear,34.38,132.45
+1945-08-09,,Nagasaki Bombing,"The second atomic bomb dropped on Japan, by the United States.",bombing,Far East,Pacific,Nuclear,32.75,129.86
+1945-09-02,,Japanese Surrender,"Japan signs the formal instrument of surrender aboard the USS Missouri.",surrender,Far East,Pacific,Victory,35.45,139.76
+1937-07-07,1945-09-09,China Burma India Theater,"Land operations across mainland Asia, including China and India.",front,Far East,CBI,,,
+1944-03,1944-07,Battle of Imphal,"Japanese attempt to invade India, which resulted in a disastrous defeat.",battle,Far East,CBI,India,24.81,93.94
+1940-06-10,1945-05-02,Other Theaters,"Operations in Africa, the Middle East, and the Mediterranean.",war,Others,,,,
+1940-06-10,1943-05-13,North African Campaign,"The desert war between the Axis (Afrikakorps) and the Allies (8th Army).",front,Others,North Africa,,,
+1943-01-14,1943-01-24,Casablanca Conference,"Allied strategy meeting in Casablanca, Morocco; demand for unconditional surrender.",conference,Others,Diplomacy,Strategy,33.5731,-7.5898
+1942-10-23,1942-11-11,Second Battle of El Alamein,"The turning point of the Western Desert Campaign in Egypt.",battle,Others,North Africa,Offensive,30.83,28.95
+1942-11-08,1942-11-16,Operation Torch,"The British-American invasion of French North Africa (Morocco and Algeria).",invasion,Others,North Africa,Invasion,35.75,-5.80
+1943-07-10,1945-05-02,Italian Front,"The Allied invasion, conquest, and liberation of Italy.",front,Others,Mediterranean,,,
+1943-07-10,1943-08-17,Invasion of Sicily,"Operation Husky: the Allied landing on the island of Sicily, Italy.",invasion,Others,Mediterranean,Invasion,37.50,14.00
+1944-01-17,1944-05-18,Battle of Monte Cassino,"A series of four costly assaults by the Allies against the Winter Line, Italy.",battle,Others,Mediterranean,Siege,41.49,13.81
+1945-02-04,1945-02-11,Yalta Conference,"The 'Big Three' meet in Crimea, USSR to plan the post-war world.",conference,Europe,Diplomacy,Post-War,44.4795,34.1495
+1945-07-17,1945-08-02,Potsdam Conference,"Truman, Stalin, and Churchill/Attlee meet in Germany to finalize peace terms.",conference,Europe,Diplomacy,Post-War,52.3989,13.0645
+1941-08-25,1941-09-17,Invasion of Iran,"Anglo-Soviet invasion to secure oil fields and the 'Persian Corridor'.",invasion,Others,Middle East,Occupation,35.68,51.38
+1939-09-03,1945-05-08,Battle of the Atlantic,"The longest continuous naval campaign, focused on Allied supply convoys.",campaign,Europe,Naval,Convoy,,
+1940-04-09,1940-06-10,Norwegian Campaign,"German invasion of Denmark and Norway to secure iron ore routes.",campaign,Europe,Western Front,Invasion,59.91,10.75
+1941-05-24,,Sinking of the Hood,"The German battleship Bismarck sinks the pride of the Royal Navy, Denmark Strait.",battle,Europe,Naval,Atlantic,63.00,-32.00
+1941-05-27,,Sinking of the Bismarck,"British naval and air forces sink the German battleship Bismarck, North Atlantic.",battle,Europe,Naval,Atlantic,48.16,-16.20
+1942-01-20,,Wannsee Conference,"Nazi officials meet in Berlin to coordinate the 'Final Solution'.",conference,Europe,Global,Holocaust,52.43,13.16
+1942-05-04,1942-05-08,Battle of the Coral Sea,"The first naval battle fought entirely by carrier-based aircraft.",battle,Far East,Pacific,Naval Battle,-12.00,154.00
+1943-11-28,1943-12-01,Tehran Conference,"The first meeting of Stalin, FDR, and Churchill in Iran.",conference,Others,Diplomacy,Strategy,35.68,51.38
+1944-07-20,,July 20 Plot,"An assassination attempt against Adolf Hitler by German officers, East Prussia.",event,Europe,Domestic,Resistance,54.14,21.49
+1945-04-12,,Death of FDR,"President Franklin D. Roosevelt dies; Harry Truman becomes US President.",event,Others,Domestic,Leadership,32.88,-84.85
+1945-04-30,,Suicide of Hitler,"Adolf Hitler commits suicide in his bunker in Berlin, Germany.",event,Europe,Eastern Front,Fall of Berlin,52.51,13.38
+1945-11-20,1946-10-01,Nuremberg Trials,"The military tribunals for the prosecution of prominent Nazi leaders, Germany.",trial,Europe,Global,Justice,49.44,11.04
+1941-12-11,,Germany Declares War on US,"Hitler declares war on the United States, following Pearl Harbor.",declaration,Europe,Western Front,Diplomacy,52.52,13.40
+1941-10-02,1942-01-07,Battle of Moscow,"Soviet defense of the capital city and the first major German retreat.",battle,Europe,Eastern Front,Defense,55.75,37.61
+1941-09-08,1944-01-27,Siege of Leningrad,"A brutal 872-day siege of the Soviet city by German forces.",siege,Europe,Eastern Front,Siege,59.93,30.33
+1944-06-22,1944-08-19,Operation Bagration,"Major Soviet offensive that destroyed the German Army Group Center.",campaign,Europe,Eastern Front,Offensive,53.90,27.56
+1941-12-08,1942-02-15,Fall of Singapore,"The surrender of the British base to Japanese forces, Southeast Asia.",battle,Far East,Pacific,Invasion,1.35,103.81
+1942-04-18,,Doolittle Raid,"The first US air raid on Tokyo, Japan, following Pearl Harbor.",bombing,Far East,Pacific,Air War,35.67,139.65
+1944-06-19,1944-06-20,Battle of the Philippine Sea,"A massive naval air battle known as the 'Great Marianas Turkey Shoot'.",battle,Far East,Pacific,Naval Battle,15.00,135.00
+1945-04-01,1945-06-22,Battle of Okinawa,"The largest amphibious assault in the Pacific theater, near Japan.",battle,Far East,Pacific,Invasion,26.21,127.67
+1937-12-13,1938-01-31,Nanking Massacre,"Widespread atrocities committed by Japanese forces in Nanking, China.",event,Far East,CBI,China,32.06,118.79
+1941-04-10,1941-12-07,Siege of Tobruk,"Allied defense of the Libyan port city against the Afrikakorps.",siege,Others,North Africa,Siege,32.08,23.94
+1944-01-22,1944-06-05,Battle of Anzio,"Allied landing behind German lines near Rome, Italy.",battle,Others,Mediterranean,Invasion,41.44,12.62
+1944-06-04,,Liberation of Rome,"Allied forces enter Rome after months of stalemate in Italy.",event,Others,Mediterranean,Liberation,41.90,12.49
+1939-12-13,,Battle of the River Plate,"The first naval battle of the war, off the coast of Uruguay.",battle,Europe,Naval,Global,-34.80,-56.30
+1941-08-14,,Atlantic Charter,"Policy statement issued by Churchill and FDR setting post-war goals.",conference,Europe,Global,Diplomacy,47.00,-52.00
+1944-07-01,1944-07-22,Bretton Woods Conference,"Establishment of the post-war financial system, New Hampshire, USA.",conference,Others,Global,Diplomacy,44.25,-71.44
+1945-06-26,,UN Charter Signed,"Establishment of the United Nations, San Francisco, USA.",conference,Others,Global,Diplomacy,37.77,-122.41
+1945-07-16,,Trinity Test,"The first successful detonation of a nuclear weapon, New Mexico, USA.",event,Others,Global,Nuclear,33.67,-106.47
+1941-10,1945-11,The Manhattan Project,"The top-secret development of the atomic bomb in the United States.",project,Others,Global,Nuclear,35.88,-106.29
+1939-11-30,1940-03-12,The Winter War,"Conflict between the Soviet Union and Finland over territory.",campaign,Europe,Eastern Front,Finland,60.16,24.93
+1942-03,1942-06,Invasion of Burma,"Japanese forces seize Burma to cut the Allied supply route to China.",invasion,Far East,CBI,Invasion,16.86,96.19
+1945-01-27,,Liberation of Auschwitz,"Soviet forces discover and liberate the Nazi death camp in Poland.",event,Europe,Eastern Front,Holocaust,50.03,19.20
+1940-09-07,1941-05-11,The Blitz,"Sustained strategic bombing of London and other British cities.",bombing,Europe,Western Front,Air War,51.50,-0.12
+1944-08-25,,Liberation of Paris,"Allied and Free French forces reclaim the capital of France.",event,Europe,Western Front,Liberation,48.85,2.35
+1944-09-17,1944-09-25,Operation Market Garden,"Failed Allied paratrooper operation to capture bridges in the Netherlands.",battle,Europe,Western Front,Offensive,51.98,5.91
+1941-12-08,1942-04-09,Battle of Bataan,"The defense and subsequent fall of the Bataan Peninsula, Philippines.",battle,Far East,Pacific,Defense,14.58,120.45
+1942-04-09,1942-04-14,Bataan Death March,"Forced march of US and Filipino POWs after the surrender of Bataan.",event,Far East,Pacific,Atrocity,14.58,120.45
+1940-06-10,,Italy Declares War,"Mussolini declares war on Britain and France, joining the Axis.",declaration,Others,Mediterranean,Diplomacy,41.90,12.49
+1943-09-03,,Italian Armistice,"The Kingdom of Italy signs a secret armistice with Allied powers.",surrender,Others,Mediterranean,Diplomacy,37.07,15.28
+1941-06-08,1941-07-14,Syria-Lebanon Campaign,"Allied invasion to prevent Vichy French territory from being used by Axis.",campaign,Others,Middle East,Invasion,33.51,36.29
+1941-05-20,1941-06-01,Battle of Crete,"The first primarily airborne invasion in history, by German paratroopers.",battle,Europe,Mediterranean,Invasion,35.33,25.14
+1945-08-15,,V-J Day,"Japan announces surrender, effectively ending World War II hostilities.",surrender,Far East,Pacific,Victory,35.68,139.76
