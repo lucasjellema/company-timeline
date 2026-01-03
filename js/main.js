@@ -359,10 +359,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         events.forEach(d => {
             if (isMapOpen) {
+                const activeStory = storage.getActiveStory();
+                const typeIcons = (activeStory && activeStory.settings && activeStory.settings.icons) ? activeStory.settings.icons : {};
+
                 const pt = mapManager.addEventPin(d, false, {
                     onHover: (id) => renderer.highlightEvent(id),
                     onBlur: (id) => renderer.unhighlightEvent(id)
-                });
+                }, typeIcons);
                 if (pt) boundsPoints.push(pt);
             }
         });
@@ -375,7 +378,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Map Hover -> Timeline Highlight
     renderer.onEventHover = (e, d) => {
         if (getActiveTab() === 'map') {
-            mapManager.addEventPin(d, true); // Pan to it
+            const activeStory = storage.getActiveStory();
+            const typeIcons = (activeStory && activeStory.settings && activeStory.settings.icons) ? activeStory.settings.icons : {};
+
+            mapManager.addEventPin(d, true, {}, typeIcons); // Pan to it
             // return false; // To show tooltip? code said return false handles it.
         }
         return false;

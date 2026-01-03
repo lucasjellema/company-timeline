@@ -1,4 +1,5 @@
 import { formatTooltipDate } from './utils.js';
+import { CONFIG } from './config.js';
 
 export class MapManager {
     constructor(mapContainerId) {
@@ -46,7 +47,7 @@ export class MapManager {
         }).addTo(this.map);
     }
 
-    addEventPin(d, shouldPan = false, callbacks = {}) {
+    addEventPin(d, shouldPan = false, callbacks = {}, typeIcons = {}) {
         if (!this.map) this.initIfNeeded();
 
         const lat = parseFloat(d.lattitude || d.latitude);
@@ -55,8 +56,16 @@ export class MapManager {
         if (isNaN(lat) || isNaN(lng)) return;
 
         const marker = L.marker([lat, lng]).addTo(this.map);
+
+        const iconName = typeIcons && typeIcons[d.type ? d.type.toLowerCase() : ''];
+        const iconPath = (iconName && CONFIG.ICONS[iconName]) ? CONFIG.ICONS[iconName] : null;
+
+        const iconHtml = iconPath ?
+            `<svg viewBox="0 0 24 24" width="16" height="16" style="vertical-align: sub; margin-right: 6px; fill: currentColor;"><path d="${iconPath}"></path></svg>` :
+            '';
+
         marker.bindPopup(`
-            <strong>${d.title}</strong><br>
+            <strong>${iconHtml}${d.title}</strong><br>
             Type: ${d.type}<br>
             ${formatTooltipDate(d.start, d.end)}<br>
             <div style="font-size:0.9em; margin-top:4px">${d.description || ''}</div>
