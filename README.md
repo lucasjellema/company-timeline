@@ -24,6 +24,7 @@ A premium, interactive company timeline visualization tool powered by **D3.js**.
 - **CSV Integration**: Upload your own data or download a sample template to get started instantly.
 - **Responsive Design**: Adapts to various screen sizes with automatic re-rendering.
 - **Strategic Drill Down**: Double-click any top-level category (Level 0) to instantly filter the timeline and focus on that specific department or stream. A context-aware "Back" button allows for easy navigation back to the overview.
+- **Resizable Interface**: Interactive splitter allows users to seamlessly resize the side panel. The timeline visualization automatically adjusts its scale and layout to fill the remaining space in real-time.
 
 
 ## 🚀 Getting Started

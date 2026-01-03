@@ -20,7 +20,8 @@ The Company Timeline Visualization is a client-side, single-page application (SP
 ```
 ├── index.html           # Application Entry Point
 ├── css/
-│   └── style.css        # Global styles and visualization theme
+│   ├── style.css        # Global styles and visualization theme
+│   └── resizing.css     # Utility styles for split-view resizing state
 ├── js/
 │   ├── main.js          # Application Orchestrator
 │   ├── layout-engine.js # Data Processing & Layout Logic
@@ -43,6 +44,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
   - Handles CSV file uploads and loading of sample data.
   - Updates the Side Panel based on the renderer's slider state.
   - **Map Controller**: Manages the Leaflet instance and synchronizes markers with the slider's active events.
+  - **Splitter Controller**: Manages the resizable split-view layout. Uses a throttled `requestAnimationFrame` loop to notify the `TimelineRenderer` of size changes, ensuring smooth 60fps responsive scaling.
   - **Tab Switching**: Toggles between "Events" list and "Map" view.
   - **Drill Down State**: Manages the `activeL0Category` state. Filters the raw dataset dynamically before passing it to the Layout Engine when a category is selected.
 
