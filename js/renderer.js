@@ -43,6 +43,8 @@ export class TimelineRenderer {
             this.typeColors = options.typeColors || CONFIG.TYPE_COLORS;
             this.typeIcons = options.typeIcons || {};
             this.collapsedGroups = new Set(options.collapsedGroups || []);
+            this.highlightedEventIds = options.highlightedEventIds || null;
+            this.hiddenEventIds = options.hiddenEventIds || null;
         }
 
         const allEvents = layoutData.flatMap(d => d.events);

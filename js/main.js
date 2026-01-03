@@ -1,5 +1,5 @@
 import { CONFIG, SAMPLE_CSV } from './config.js';
-import { parseDate } from './utils.js';
+import { parseDate, ensureDataIds } from './utils.js';
 import { processTimelineData } from './layout-engine.js';
 import { TimelineRenderer } from './renderer.js';
 import { TimelineStorage } from './storage.js';
@@ -7,6 +7,7 @@ import { MapManager } from './map-manager.js';
 import { initSplitter, initTabs, initZoomControls } from './ui-controls.js';
 import { initEventEditor } from './event-editor.js';
 import { initStoryUI } from './story-ui.js';
+import { SearchController } from './search-controller.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const renderer = new TimelineRenderer('#timeline-viz');
@@ -16,6 +17,48 @@ document.addEventListener('DOMContentLoaded', () => {
     // State
     // window.timelineData is used globally by other modules (a legacy pattern we kept for refactor ease)
     let activeL0Category = null;
+    let searchState = {
+        active: false,
+        criteria: null,
+        matches: [],
+        zoomRange: null
+    };
+
+    const searchController = new SearchController(storage, (criteria, matches) => {
+        if (!criteria) {
+            searchState = { active: false, criteria: null, matches: [], zoomRange: null };
+            renderTimeline({ preserveSlider: true }); // Reset view
+            return;
+        }
+
+        // Calculate zoom range from matches
+        let zoomRange = null;
+        if (matches.length > 0) {
+            const start = d3.min(matches, d => d.startDate);
+            const end = d3.max(matches, d => d.endDate || d.startDate); // Handle point events
+            if (start && end) {
+                // Add some buffer (10%)
+                const span = end - start;
+                // If span is 0 (single point), add 1 month buffer
+                if (span === 0) {
+                    zoomRange = [d3.timeMonth.offset(start, -1), d3.timeMonth.offset(start, 1)];
+                } else {
+                    zoomRange = [new Date(start.getTime() - span * 0.1), new Date(end.getTime() + span * 0.1)];
+                }
+            }
+        }
+
+        searchState = {
+            active: true,
+            criteria,
+            matches,
+            zoomRange
+        };
+
+        renderTimeline({ preserveSlider: true, domain: zoomRange });
+    });
+
+    searchController.init();
 
     // --- Core Render Logic ---
     function renderTimeline(options = {}) {
@@ -23,6 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 1. Filter Data
         let dataToProcess = window.timelineData || [];
+
+        // L0 Drilldown Filter
         if (activeL0Category) {
             dataToProcess = dataToProcess.filter(d => d.level0 === activeL0Category);
             if (dataToProcess.length === 0) {
@@ -31,9 +76,23 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Search "Hide" Filter
+        if (searchState.active && searchState.criteria.hideNonMatching) {
+            // matches contains the full objects, but we might want to filter by ID for safety or just use matches
+            // However, matches were found against the FULL dataset.
+            // If we are drilled down, we should intersect matches with current view?
+            // The requirement says "left panel is updated accordingly".
+            // If I drill down AND search, it should probably respect both (intersection).
+            // But matches were returned from SearchController based on FULL data.
+
+            const matchIds = new Set(searchState.matches.map(d => d.id));
+            dataToProcess = dataToProcess.filter(d => matchIds.has(d.id));
+        }
+
         // 3. Get Configs (moved up to support layout filtering)
         const activeStory = storage.getActiveStory();
-        let customDomain = null;
+        let customDomain = options.domain || null; // Allow passing domain in options (for zoom)
+
         let mergedColors = CONFIG.TYPE_COLORS;
         let mergedIcons = {};
         let collapsedGroups = [];
@@ -43,7 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (activeStory) {
             updateHeader(activeStory);
 
-            if (activeStory.startDate && activeStory.endDate) {
+            // Only use story domain if NO custom domain passed (e.g. from search zoom)
+            if (!customDomain && activeStory.startDate && activeStory.endDate) {
                 const s = parseDate(activeStory.startDate);
                 const e = parseDate(activeStory.endDate);
                 if (s && e) customDomain = [s, e];
@@ -60,6 +120,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // 2. Process Layout
         const layout = processTimelineData(dataToProcess, collapsedGroups, groupOrder, collapsedLevel1s);
 
+        // Calculate highlighted IDs for rendering
+        let highlightedEventIds = null;
+        if (searchState.active && !searchState.criteria.hideNonMatching) {
+            highlightedEventIds = new Set(searchState.matches.map(d => d.id));
+        }
+
         // 4. Render
         renderer.render(layout, {
             preserveSlider,
@@ -67,7 +133,8 @@ document.addEventListener('DOMContentLoaded', () => {
             isDrilledDown: !!activeL0Category,
             typeColors: mergedColors,
             typeIcons: mergedIcons,
-            collapsedGroups: collapsedGroups
+            collapsedGroups: collapsedGroups,
+            highlightedEventIds: highlightedEventIds
         });
     }
 
@@ -94,6 +161,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (activeStory && window.timelineData) {
             storage.saveActiveStory(window.timelineData);
         }
+
+        // Refresh search types as data might have changed
+        if (searchController) searchController.loadEventTypes();
 
         renderTimeline(options);
     }
@@ -324,11 +394,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const startStory = storage.getActiveStory();
     if (startStory) {
         window.timelineData = startStory.data;
+        if (ensureDataIds(window.timelineData)) {
+            storage.saveActiveStory(window.timelineData); // Persist IDs
+        }
+        searchController.loadEventTypes();
         renderTimeline();
     } else {
         const data = d3.csvParse(SAMPLE_CSV);
+        ensureDataIds(data);
         storage.createStory("Sample Project Story", data);
         window.timelineData = data;
+        searchController.loadEventTypes();
         renderTimeline();
     }
 

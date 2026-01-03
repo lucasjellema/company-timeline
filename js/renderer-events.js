@@ -145,9 +145,14 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
             // Logic upstream (layout-engine) has already filtered 'active' events for this level.
         }
 
+        const eventsToDraw = level.events.filter(d => {
+            if (renderer.hiddenEventIds && renderer.hiddenEventIds.has(d.id)) return false;
+            return true;
+        });
+
         // Draw regular timeline bars
         const eventGroups = levelG.selectAll(".event-g")
-            .data(level.events).enter().append("g").attr("class", "event-g")
+            .data(eventsToDraw).enter().append("g").attr("class", "event-g")
             .attr("transform", d => `translate(${xScale(d.startDate)}, ${CONSTANTS.EVENT.START_Y_OFFSET + d.rowIndex * (CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING)})`);
 
         const viewportWidth = renderer.container.node().clientWidth;
@@ -156,6 +161,16 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
 
         eventGroups.each((d, i, nodes) => {
             const g = d3.select(nodes[i]);
+
+            // Highlight Logic
+            let opacity = 1;
+            if (renderer.highlightedEventIds && renderer.highlightedEventIds.size > 0) {
+                if (!renderer.highlightedEventIds.has(d.id)) {
+                    opacity = 0.1; // Dim non-matching
+                }
+            }
+            g.style("opacity", opacity);
+
             const w = Math.max(0, xScale(d.endDate) - xScale(d.startDate));
             const isSmall = w < threshold;
 
@@ -268,6 +283,8 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
     const triangleSize = CONSTANTS.EVENT.TRIANGLE_SIZE;
 
     level.pointEvents.forEach(event => {
+        if (renderer.hiddenEventIds && renderer.hiddenEventIds.has(event.id)) return;
+
         const x = xScale(event.startDate);
 
         if (isNaN(x)) return; // Skip if date invalid (redundant check but safe)
@@ -280,6 +297,15 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
         const triangleG = levelG.append("g")
             .attr("class", "event-triangle-group")
             .attr("transform", `translate(${x}, ${barY})`);
+
+        // Highlight Logic
+        let opacity = 1;
+        if (renderer.highlightedEventIds && renderer.highlightedEventIds.size > 0) {
+            if (!renderer.highlightedEventIds.has(event.id)) {
+                opacity = 0.1; // Dim non-matching
+            }
+        }
+        triangleG.style("opacity", opacity);
 
         // Create a downward-pointing triangle relative to (0,0) (the tip)
         // Points: top-left, top-right, bottom-center (0,0)

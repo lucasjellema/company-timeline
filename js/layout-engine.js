@@ -8,7 +8,8 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
 
         return {
             ...d,
-            id: i,
+            ...d,
+            id: d.id || `gen-${i}`, // Use existing ID or generate one based on index
             startDate: startDate,
             // For point events, use 1 day duration for layout collision/overlap checks
             endDate: endDate || (startDate ? d3.timeDay.offset(startDate, 1) : null),

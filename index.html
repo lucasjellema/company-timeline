@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/resizing.css">
+    <link rel="stylesheet" href="css/search.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -122,6 +123,7 @@
             <aside id="side-panel" class="side-panel">
                 <div class="panel-nav">
                     <button class="nav-tab active" data-tab="events">Events</button>
+                    <button class="nav-tab" data-tab="search">Search</button>
                     <button class="nav-tab" data-tab="map">Map</button>
                 </div>
 
@@ -132,6 +134,48 @@
                     </div>
                     <div id="active-events-list" class="events-list">
                         <div class="empty-state">Drag the slider to see events active at a point in time.</div>
+                    </div>
+                </div>
+
+                <div id="tab-search" class="tab-content">
+                    <div class="panel-header">
+                        <h3>Search & Filter</h3>
+                        <button id="clear-search-btn" class="btn-xs btn-secondary">Clear</button>
+                    </div>
+                    <div class="search-controls">
+                        <div class="form-group small-gap">
+                            <label for="search-text">Keywords</label>
+                            <input type="text" id="search-text" placeholder="Title, desc, group..."
+                                class="form-control">
+                        </div>
+
+                        <div class="form-group small-gap">
+                            <label>Event Types</label>
+                            <div id="search-types-container" class="checkbox-grid">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="form-group small-gap">
+                            <label>Duration (days)</label>
+                            <div class="flex-row">
+                                <input type="number" id="search-min-duration" placeholder="Min" class="form-control">
+                                <span class="separator">-</span>
+                                <input type="number" id="search-max-duration" placeholder="Max" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group checkbox-row">
+                            <input type="checkbox" id="search-hide-non-matching">
+                            <label for="search-hide-non-matching">Hide non-matching events</label>
+                        </div>
+
+                        <div class="form-actions-panel">
+                            <button id="apply-search-btn" class="btn btn-primary btn-block">Search & Zoom</button>
+                        </div>
+                    </div>
+                    <div id="search-results-stats" class="search-stats hidden">
+                        Found <span id="search-match-count">0</span> events.
                     </div>
                 </div>
 

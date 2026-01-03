@@ -126,3 +126,14 @@ export const createTooltip = () => {
         }
     };
 };
+
+export const ensureDataIds = (data) => {
+    let modified = false;
+    data.forEach((d, i) => {
+        if (!d.id) {
+            d.id = `evt-${Date.now()}-${i}`; // Simple sortable ID
+            modified = true;
+        }
+    });
+    return modified;
+};

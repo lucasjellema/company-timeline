@@ -1,6 +1,7 @@
 import { TimelineStorage } from './storage.js';
 import { initSettingsUI } from './story-settings.js';
 import { CONFIG } from './config.js';
+import { ensureDataIds } from './utils.js';
 
 export function initStoryUI(storage, refreshCallback) {
     initCreateStoryUI(storage, refreshCallback);
@@ -84,6 +85,7 @@ function initShippedStoriesUI(storage, refreshCallback) {
 
             if (Array.isArray(data)) {
                 // Raw Events Array
+                ensureDataIds(data);
                 storyObj = {
                     name: storyConfig.name,
                     description: storyConfig.description,
@@ -334,10 +336,12 @@ function initImportExportUI(storage, refreshCallback) {
                     if (confirm(`Importing CSV. Merge ${data.length} events into the current story "${activeStory ? activeStory.name : 'New Story'}"?`)) {
                         let mergedData = data;
                         if (activeStory && Array.isArray(activeStory.data)) {
+                            ensureDataIds(data);
                             mergedData = [...activeStory.data, ...data];
                             storage.saveActiveStory(mergedData);
                         } else {
                             const name = `Imported Story ${new Date().toLocaleTimeString()}`;
+                            ensureDataIds(data);
                             storage.createStory(name, data);
                         }
 
@@ -364,6 +368,7 @@ function initImportExportUI(storage, refreshCallback) {
                     const story = JSON.parse(event.target.result);
                     if (story && Array.isArray(story.data)) {
                         if (confirm(`Replace active story with "${story.name || 'Uploaded Story'}"?`)) {
+                            ensureDataIds(story.data);
                             storage.importStory(story);
                             window.timelineData = story.data;
                             console.log("Story imported:", story.name);
