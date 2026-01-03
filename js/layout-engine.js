@@ -1,6 +1,6 @@
 import { parseDate } from './utils.js';
 
-export function processTimelineData(data, collapsedGroups = [], groupOrder = []) {
+export function processTimelineData(data, collapsedGroups = [], groupOrder = [], collapsedLevel1s = []) {
     const events = data.map((d, i) => {
         const startDate = parseDate(d.start);
         const endDate = parseDate(d.end);
@@ -49,9 +49,20 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [])
     sortedLevel0.forEach(level0 => {
         let allLevelItems = groups.get(level0);
 
-        // Filter if collapsed: Keep only items WITHOUT level1 (top-level items)
+        // Filter if collapsed (Level 0): Keep only items WITHOUT level1 (top-level items)
         if (collapsedGroups.includes(level0)) {
             allLevelItems = allLevelItems.filter(item => !item.level1);
+        } else {
+            // Filter if Level 1 is collapsed
+            allLevelItems = allLevelItems.filter(item => {
+                if (!item.level1) return true;
+                const key = `${item.level0}|${item.level1}`;
+                if (collapsedLevel1s.includes(key)) {
+                    // If L1 is collapsed, hide items that have Level 2 (children of L1)
+                    return !item.level2;
+                }
+                return true;
+            });
         }
 
         // Separate events from regular timeline items

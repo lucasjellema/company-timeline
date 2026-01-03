@@ -2,7 +2,7 @@ import { processTimelineData } from './layout-engine.js';
 import { TimelineStorage } from './storage.js';
 import { CONFIG } from './config.js';
 
-export function initEventEditor(renderer, refreshCallback) {
+export function initEventEditor(renderer, refreshCallback, storage) {
     const modal = document.getElementById('add-event-modal');
     const openBtn = document.getElementById('add-event-btn');
     const closeBtn = document.getElementById('close-modal-btn');
@@ -18,14 +18,33 @@ export function initEventEditor(renderer, refreshCallback) {
 
     // Context Menu Elements
     const contextMenu = document.getElementById('context-menu');
-    const ctxEdit = document.getElementById('ctx-edit');
-    const ctxDelete = document.getElementById('ctx-delete');
+    // const ctxEdit = document.getElementById('ctx-edit'); // These will be dynamically re-bound
+    // const ctxDelete = document.getElementById('ctx-delete'); // These will be dynamically re-bound
+
+    // New Refs for L1 collapse/expand
+    // const ctxExpandL1 = document.getElementById('ctx-expand-l1'); // These will be dynamically re-bound
+    // const ctxCollapseL1 = document.getElementById('ctx-collapse-l1'); // These will be dynamically re-bound
+
     let currentContextEventId = null;
+    let currentContextEvent = null; // Store full event object
+
+    // Helper for binding menu actions (similar to main.js pattern could be used, but here valid)
+    const bindMenuAction = (el, callback) => {
+        if (!el) return;
+        const newEl = el.cloneNode(true);
+        el.parentNode.replaceChild(newEl, el);
+        newEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            contextMenu.classList.add('hidden');
+            if (callback) callback();
+        });
+        return newEl; // Return reference if needed
+    };
 
     // --- Context Menu Logic ---
-    // --- Context Menu Logic ---
     renderer.onEventContextMenu = (e, d) => {
-        currentContextEventId = d.id; // Corresponds to index in timelineData if mapped correctly
+        currentContextEventId = d.id;
+        currentContextEvent = d;
 
         const x = e.pageX;
         const y = e.pageY;
@@ -34,22 +53,82 @@ export function initEventEditor(renderer, refreshCallback) {
         contextMenu.style.top = `${y}px`;
         contextMenu.classList.remove('hidden');
 
-        // Hide Category specific options
+        // Hide Category specific options logic (already present via ID lookup in main.js but here we manage Event context)
+        // Ensure "Group" Move options are hidden
         const btnUp = document.getElementById('ctx-move-up');
         const btnDown = document.getElementById('ctx-move-down');
         const btnExpand = document.getElementById('ctx-expand');
         const btnCollapse = document.getElementById('ctx-collapse');
-        const btnEdit = document.getElementById('ctx-edit');
-        const btnDelete = document.getElementById('ctx-delete');
 
         if (btnUp) btnUp.style.display = 'none';
         if (btnDown) btnDown.style.display = 'none';
         if (btnExpand) btnExpand.style.display = 'none';
         if (btnCollapse) btnCollapse.style.display = 'none';
 
-        // Show Event specific options
-        if (btnEdit) btnEdit.style.display = 'flex';
-        if (btnDelete) btnDelete.style.display = 'flex';
+        // Event specific actions
+        bindMenuAction(document.getElementById('ctx-edit'), () => {
+            if (currentContextEventId !== null && window.timelineData) {
+                const eventData = window.timelineData[currentContextEventId];
+                if (eventData) {
+                    openModal(true, eventData, currentContextEventId);
+                }
+            }
+        }).style.display = 'flex';
+
+        bindMenuAction(document.getElementById('ctx-delete'), () => {
+            if (currentContextEventId !== null && window.timelineData) {
+                if (confirm('Are you sure you want to delete this event?')) {
+                    window.timelineData.splice(currentContextEventId, 1);
+                    refreshCallback();
+                }
+            }
+        }).style.display = 'flex';
+
+        // L1 Group specific actions
+        const hasL1 = !!d.level1;
+        const ctxExpandL1 = document.getElementById('ctx-expand-l1');
+        const ctxCollapseL1 = document.getElementById('ctx-collapse-l1');
+
+        if (hasL1) {
+            const activeStory = storage ? storage.getActiveStory() : null;
+            const collapsedLevel1s = (activeStory && activeStory.settings && activeStory.settings.collapsedLevel1s) || [];
+            const key = `${d.level0}|${d.level1}`;
+            const isL1Collapsed = collapsedLevel1s.includes(key);
+
+            if (ctxExpandL1) {
+                bindMenuAction(ctxExpandL1, () => {
+                    const currentActiveStory = storage.getActiveStory();
+                    if (!currentActiveStory) return;
+                    let currentCollapsedLevel1s = (currentActiveStory.settings && currentActiveStory.settings.collapsedLevel1s) ? [...currentActiveStory.settings.collapsedLevel1s] : [];
+                    const currentKey = `${currentContextEvent.level0}|${currentContextEvent.level1}`;
+                    const idx = currentCollapsedLevel1s.indexOf(currentKey);
+                    if (idx > -1) {
+                        currentCollapsedLevel1s.splice(idx, 1);
+                        storage.updateStorySettings(currentActiveStory.id, {}, { collapsedLevel1s: currentCollapsedLevel1s });
+                        refreshCallback();
+                    }
+                }).style.display = isL1Collapsed ? 'flex' : 'none';
+                // Update text dynamically? "Expand [L1]"
+                // ctxExpandL1.childNodes[2].textContent = ` Expand ${d.level1}`; 
+            }
+            if (ctxCollapseL1) {
+                bindMenuAction(ctxCollapseL1, () => {
+                    const currentActiveStory = storage.getActiveStory();
+                    if (!currentActiveStory) return;
+                    let currentCollapsedLevel1s = (currentActiveStory.settings && currentActiveStory.settings.collapsedLevel1s) ? [...currentActiveStory.settings.collapsedLevel1s] : [];
+                    const currentKey = `${currentContextEvent.level0}|${currentContextEvent.level1}`;
+                    if (!currentCollapsedLevel1s.includes(currentKey)) {
+                        currentCollapsedLevel1s.push(currentKey);
+                        storage.updateStorySettings(currentActiveStory.id, {}, { collapsedLevel1s: currentCollapsedLevel1s });
+                        refreshCallback();
+                    }
+                }).style.display = !isL1Collapsed ? 'flex' : 'none';
+                // ctxCollapseL1.childNodes[2].textContent = ` Collapse ${d.level1}`;
+            }
+        } else {
+            if (ctxExpandL1) ctxExpandL1.style.display = 'none';
+            if (ctxCollapseL1) ctxCollapseL1.style.display = 'none';
+        }
 
         const hideMenu = () => {
             contextMenu.classList.add('hidden');
@@ -57,24 +136,6 @@ export function initEventEditor(renderer, refreshCallback) {
         };
         document.addEventListener('click', hideMenu);
     };
-
-    ctxDelete.addEventListener('click', () => {
-        if (currentContextEventId !== null && window.timelineData) {
-            if (confirm('Are you sure you want to delete this event?')) {
-                window.timelineData.splice(currentContextEventId, 1);
-                refreshCallback();
-            }
-        }
-    });
-
-    ctxEdit.addEventListener('click', () => {
-        if (currentContextEventId !== null && window.timelineData) {
-            const eventData = window.timelineData[currentContextEventId];
-            if (eventData) {
-                openModal(true, eventData, currentContextEventId);
-            }
-        }
-    });
 
     // --- Modal Logic ---
 

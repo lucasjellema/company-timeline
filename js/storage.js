@@ -144,4 +144,39 @@ export class TimelineStorage {
         console.log(`[Storage] Imported story: ${story.name} (${story.id})`);
         return story;
     }
+
+    deleteStory(id) {
+        if (!this.cache.stories[id]) return false;
+
+        delete this.cache.stories[id];
+
+        // If we deleted the active story, clear the reference
+        if (this.cache.activeStoryId === id) {
+            this.cache.activeStoryId = null;
+        }
+
+        this._saveToStorage();
+        console.log(`[Storage] Deleted story: ${id}`);
+        return true;
+    }
+
+    cloneStory(id) {
+        const sourceStory = this.cache.stories[id];
+        if (!sourceStory) return null;
+
+        const newId = 'story_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+
+        // Deep copy the story object
+        const newStory = JSON.parse(JSON.stringify(sourceStory));
+
+        newStory.id = newId;
+        newStory.name = `${sourceStory.name} (Copy)`;
+        newStory.lastModified = Date.now();
+
+        this.cache.stories[newId] = newStory;
+        this._saveToStorage();
+
+        console.log(`[Storage] Cloned story: ${sourceStory.name} -> ${newStory.name}`);
+        return newStory;
+    }
 }

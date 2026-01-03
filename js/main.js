@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let mergedIcons = {};
         let collapsedGroups = [];
         let groupOrder = [];
+        let collapsedLevel1s = [];
 
         if (activeStory) {
             updateHeader(activeStory);
@@ -52,11 +53,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (activeStory.settings.icons) mergedIcons = { ...activeStory.settings.icons };
                 if (activeStory.settings.collapsedGroups) collapsedGroups = activeStory.settings.collapsedGroups;
                 if (activeStory.settings.groupOrder) groupOrder = activeStory.settings.groupOrder;
+                if (activeStory.settings.collapsedLevel1s) collapsedLevel1s = activeStory.settings.collapsedLevel1s;
             }
         }
 
         // 2. Process Layout
-        const layout = processTimelineData(dataToProcess, collapsedGroups, groupOrder);
+        const layout = processTimelineData(dataToProcess, collapsedGroups, groupOrder, collapsedLevel1s);
 
         // 4. Render
         renderer.render(layout, {
@@ -97,6 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Interactivity Wiring ---
+
+    // Editors & Story UI
+    initEventEditor(renderer, refreshHandler, storage);
+    initStoryUI(storage, refreshHandler);
 
     // Drill-down
     renderer.onCategoryDblClick = (category) => {
