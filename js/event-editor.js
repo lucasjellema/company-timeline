@@ -229,6 +229,17 @@ export function initEventEditor(renderer, refreshCallback, storage) {
     closeBtn.addEventListener('click', closeModal);
     cancelBtn.addEventListener('click', closeModal);
 
+    // Copy Date Button Logic
+    const copyDateBtn = document.getElementById('copy-date-btn');
+    if (copyDateBtn) {
+        copyDateBtn.addEventListener('click', () => {
+            const startVal = document.getElementById('event-start').value;
+            if (startVal) {
+                document.getElementById('event-end').value = startVal;
+            }
+        });
+    }
+
     // Populate Datalists
     function populateDropdowns() {
         if (!window.timelineData) return;

@@ -4,23 +4,76 @@ import { formatTooltipDate } from './utils.js';
 export function drawSlider(renderer, svg) {
     const sliderX = renderer.xScale(renderer.sliderDate);
     const sliderG = svg.append("g").attr("class", "slider-group");
-    sliderG.append("line").attr("class", "time-slider-line").attr("x1", sliderX).attr("x2", sliderX).attr("y1", CONFIG.PADDING.TOP - 30).attr("y2", renderer.totalHeight);
-    sliderG.append("rect").attr("class", "time-slider-hitbox").attr("x", sliderX - 10).attr("y", CONFIG.PADDING.TOP - 40).attr("width", 20).attr("height", 30);
-    sliderG.append("circle").attr("class", "time-slider-handle").attr("cx", sliderX).attr("cy", CONFIG.PADDING.TOP - 25).attr("r", 6).call(d3.drag().on("drag", (event) => {
-        const newDate = renderer.xScale.invert(event.x);
-        if (newDate >= renderer.xScale.domain()[0] && newDate <= renderer.xScale.domain()[1]) {
-            renderer.sliderDate = newDate;
-            updateSliderUI(renderer, sliderG);
-            updateActiveEvents(renderer);
-            renderer.keepSliderInView(false);
-        }
-    }));
+
+    // Main vertical line
+    sliderG.append("line")
+        .attr("class", "time-slider-line")
+        .attr("x1", sliderX)
+        .attr("x2", sliderX)
+        .attr("y1", CONFIG.PADDING.TOP - 30)
+        .attr("y2", renderer.totalHeight);
+
+    // Hitbox for the top part (keep existing behavior for top interaction area?)
+    // Actually, maybe we want a hit box for the whole line or just around handles?
+    // The user request emphasizes "handlers". Let's stick to handles.
+    // We will keep the original top hitbox for continuity if users clicked near the top.
+    sliderG.append("rect")
+        .attr("class", "time-slider-hitbox")
+        .attr("x", sliderX - 10)
+        .attr("y", CONFIG.PADDING.TOP - 40)
+        .attr("width", 20)
+        .attr("height", 30);
+
+    // Calculate handle positions
+    const startY = CONFIG.PADDING.TOP - CONFIG.SLIDER.TOP_OFFSET;
+    const endY = renderer.totalHeight - CONFIG.SLIDER.BOTTOM_OFFSET;
+    const handles = [startY];
+
+    // Add end handle if story is tall enough
+    if (endY - startY > CONFIG.SLIDER.MIN_HEIGHT_FOR_END_HANDLE) {
+        handles.push(endY);
+    }
+
+    // Add intermediate handles every ~500px, but sort them so they are in order
+    // We start adding from startY + 500
+    let nextY = startY + CONFIG.SLIDER.HANDLE_SPACING;
+    while (nextY < endY - CONFIG.SLIDER.GAP_FROM_END) { // Maintain gap from end
+        handles.push(nextY);
+        nextY += CONFIG.SLIDER.HANDLE_SPACING;
+    }
+
+    // Sort handles for consistent DOM order (though not strictly necessary for functionality)
+    handles.sort((a, b) => a - b);
+
+    // Define drag behavior
+    const dragBehavior = d3.drag()
+        .on("drag", (event) => {
+            const newDate = renderer.xScale.invert(event.x);
+            if (newDate >= renderer.xScale.domain()[0] && newDate <= renderer.xScale.domain()[1]) {
+                renderer.sliderDate = newDate;
+                updateSliderUI(renderer, sliderG);
+                updateActiveEvents(renderer);
+                renderer.keepSliderInView(false);
+            }
+        });
+
+    // Create handles
+    sliderG.selectAll(".time-slider-handle")
+        .data(handles)
+        .enter()
+        .append("circle")
+        .attr("class", "time-slider-handle")
+        .attr("cx", sliderX)
+        .attr("cy", d => d)
+        .attr("r", 6)
+        .style("cursor", "ew-resize") // Add cursor style hint
+        .call(dragBehavior);
 }
 
 export function updateSliderUI(renderer, sliderG) {
     const x = renderer.xScale(renderer.sliderDate);
     sliderG.select(".time-slider-line").attr("x1", x).attr("x2", x);
-    sliderG.select(".time-slider-handle").attr("cx", x);
+    sliderG.selectAll(".time-slider-handle").attr("cx", x);
     sliderG.select(".time-slider-hitbox").attr("x", x - 10);
 }
 

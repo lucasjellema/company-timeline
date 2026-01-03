@@ -13,6 +13,15 @@ export const CONFIG = {
     LEVEL_SPACING: 60,// Vertical gap between major Level 0 categories
     LEVEL_COLLAPSED_HEIGHT: 40, // Height of a collapsed Level 0 category
 
+    // Configuration for the time slider and its handles
+    SLIDER: {
+        HANDLE_SPACING: 500, // Vertical pixels between intermediate handles
+        MIN_HEIGHT_FOR_END_HANDLE: 100, // Minimum height (end - start) required to show an end handle
+        TOP_OFFSET: 25, // Offset from Top Padding for the start handle
+        BOTTOM_OFFSET: 20, // Offset from Total Height for the end handle
+        GAP_FROM_END: 100 // Buffer space to avoid crowding the end handle
+    },
+
     // Default color palette for events
     COLORS: {
         event: '#EC4899',     // Pink
