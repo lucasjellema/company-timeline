@@ -78,6 +78,13 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                 if (renderer.onCategoryDblClick) {
                     renderer.onCategoryDblClick(level.level0);
                 }
+            })
+            .on("contextmenu", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (renderer.onCategoryContextMenu) {
+                    renderer.onCategoryContextMenu(e, level.level0);
+                }
             });
 
         // Back Button (only if drilled down and callback exists)
@@ -120,14 +127,22 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                 .attr("y", CONSTANTS.LEVEL.TITLE_Y)
                 .text(level.level0);
         } else {
+            const titleText = level.collapsed ? `${level.level0} (+)` : level.level0;
             labelG.append("text")
                 .attr("class", "level-label")
                 .attr("x", CONSTANTS.LEVEL.TITLE_X_DEFAULT)
                 .attr("y", CONSTANTS.LEVEL.TITLE_Y)
-                .text(level.level0);
+                .style("font-style", level.collapsed ? "italic" : "normal")
+                .style("opacity", level.collapsed ? 0.7 : 1)
+                .text(titleText);
 
             // Add tooltip prompt for drilldown?
-            labelG.append("title").text(CONSTANTS.TOOLTIP.PROMPT);
+            labelG.append("title").text("Double-click to drill down, right-click to toggle collapse");
+        }
+
+        if (level.collapsed) {
+            // Do not return. We want to draw visible events for collapsed groups.
+            // Logic upstream (layout-engine) has already filtered 'active' events for this level.
         }
 
         // Draw regular timeline bars

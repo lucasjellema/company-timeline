@@ -31,14 +31,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // 2. Process Layout
-        const layout = processTimelineData(dataToProcess);
-
-        // 3. Get Configs
+        // 3. Get Configs (moved up to support layout filtering)
         const activeStory = storage.getActiveStory();
         let customDomain = null;
         let mergedColors = CONFIG.TYPE_COLORS;
         let mergedIcons = {};
+        let collapsedGroups = [];
+        let groupOrder = [];
 
         if (activeStory) {
             updateHeader(activeStory);
@@ -51,8 +50,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (activeStory.settings) {
                 if (activeStory.settings.colors) mergedColors = { ...CONFIG.TYPE_COLORS, ...activeStory.settings.colors };
                 if (activeStory.settings.icons) mergedIcons = { ...activeStory.settings.icons };
+                if (activeStory.settings.collapsedGroups) collapsedGroups = activeStory.settings.collapsedGroups;
+                if (activeStory.settings.groupOrder) groupOrder = activeStory.settings.groupOrder;
             }
         }
+
+        // 2. Process Layout
+        const layout = processTimelineData(dataToProcess, collapsedGroups, groupOrder);
 
         // 4. Render
         renderer.render(layout, {
@@ -60,7 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
             domain: customDomain,
             isDrilledDown: !!activeL0Category,
             typeColors: mergedColors,
-            typeIcons: mergedIcons
+            typeIcons: mergedIcons,
+            collapsedGroups: collapsedGroups
         });
     }
 
@@ -96,6 +101,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Drill-down
     renderer.onCategoryDblClick = (category) => {
         console.log("Drilling down to:", category);
+
+        // Auto-expand if collapsed
+        const activeStory = storage.getActiveStory();
+        if (activeStory && activeStory.settings && activeStory.settings.collapsedGroups) {
+            const collapsedGroups = [...activeStory.settings.collapsedGroups];
+            const idx = collapsedGroups.indexOf(category);
+            if (idx > -1) {
+                collapsedGroups.splice(idx, 1);
+                storage.updateStorySettings(activeStory.id, {}, { collapsedGroups });
+                console.log(`Auto-expanding ${category} for drill-down`);
+            }
+        }
+
         activeL0Category = category;
         renderTimeline({ preserveSlider: true });
     };
@@ -104,6 +122,109 @@ document.addEventListener('DOMContentLoaded', () => {
         activeL0Category = null;
         renderTimeline({ preserveSlider: true });
     };
+
+    // Collapse/Expand/Move Context Menu
+    const ctxMenu = document.getElementById('context-menu');
+    let ctxMenuContext = null; // Store context (category, etc)
+
+    // Global click to hide menu
+    document.addEventListener('click', (e) => {
+        if (!ctxMenu.classList.contains('hidden')) {
+            ctxMenu.classList.add('hidden');
+        }
+    });
+
+    renderer.onCategoryContextMenu = (e, category) => {
+        const activeStory = storage.getActiveStory();
+        if (!activeStory) return;
+
+        // Prevent browser menu
+        // Event default prevention is handled in renderer-events.js, but good to be safe if passed
+        // e is now passed
+
+        ctxMenu.classList.remove('hidden');
+        ctxMenu.style.left = `${e.pageX}px`;
+        ctxMenu.style.top = `${e.pageY}px`;
+
+        // Determine state
+        let collapsedGroups = (activeStory.settings && activeStory.settings.collapsedGroups) ? [...activeStory.settings.collapsedGroups] : [];
+        const isCollapsed = collapsedGroups.includes(category);
+
+        const currentOrder = renderer.layoutData.map(l => l.level0);
+        const idx = currentOrder.indexOf(category);
+        const canMoveUp = idx > 0;
+        const canMoveDown = idx < currentOrder.length - 1;
+
+        // Show/Hide Items
+        const btnUp = document.getElementById('ctx-move-up');
+        const btnDown = document.getElementById('ctx-move-down');
+        const btnExpand = document.getElementById('ctx-expand');
+        const btnCollapse = document.getElementById('ctx-collapse');
+        const btnEdit = document.getElementById('ctx-edit'); // Used for events? Hide for category
+        const btnDelete = document.getElementById('ctx-delete'); // Used for events? Hide for category
+
+        if (btnUp) btnUp.style.display = canMoveUp ? 'flex' : 'none';
+        if (btnDown) btnDown.style.display = canMoveDown ? 'flex' : 'none';
+        if (btnExpand) btnExpand.style.display = isCollapsed ? 'flex' : 'none';
+        if (btnCollapse) btnCollapse.style.display = !isCollapsed ? 'flex' : 'none';
+
+        // Hide event-specific items if they exist
+        if (btnEdit) btnEdit.style.display = 'none';
+        if (btnDelete) btnDelete.style.display = 'none';
+
+        ctxMenuContext = { category, idx, currentOrder, activeStory };
+    };
+
+    // Bind Menu Actions (One-time binding usually preferred, but here simple if guarded)
+    // We can just bind globally and use ctxMenuContext
+
+    const bindMenuAction = (id, callback) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        // Clone to remove old listeners
+        const newEl = el.cloneNode(true);
+        el.parentNode.replaceChild(newEl, el);
+        newEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            ctxMenu.classList.add('hidden');
+            if (ctxMenuContext) callback(ctxMenuContext);
+        });
+    };
+
+    bindMenuAction('ctx-move-up', ({ currentOrder, idx, activeStory }) => {
+        if (idx <= 0) return;
+        const newOrder = [...currentOrder];
+        [newOrder[idx - 1], newOrder[idx]] = [newOrder[idx], newOrder[idx - 1]];
+        storage.updateStorySettings(activeStory.id, {}, { groupOrder: newOrder });
+        renderTimeline({ preserveSlider: true });
+    });
+
+    bindMenuAction('ctx-move-down', ({ currentOrder, idx, activeStory }) => {
+        if (idx >= currentOrder.length - 1) return;
+        const newOrder = [...currentOrder];
+        [newOrder[idx + 1], newOrder[idx]] = [newOrder[idx], newOrder[idx + 1]];
+        storage.updateStorySettings(activeStory.id, {}, { groupOrder: newOrder });
+        renderTimeline({ preserveSlider: true });
+    });
+
+    bindMenuAction('ctx-expand', ({ category, activeStory }) => {
+        let collapsedGroups = (activeStory.settings && activeStory.settings.collapsedGroups) ? [...activeStory.settings.collapsedGroups] : [];
+        const idx = collapsedGroups.indexOf(category);
+        if (idx > -1) {
+            collapsedGroups.splice(idx, 1);
+            storage.updateStorySettings(activeStory.id, {}, { collapsedGroups });
+            renderTimeline({ preserveSlider: true });
+        }
+    });
+
+    bindMenuAction('ctx-collapse', ({ category, activeStory }) => {
+        let collapsedGroups = (activeStory.settings && activeStory.settings.collapsedGroups) ? [...activeStory.settings.collapsedGroups] : [];
+        if (!collapsedGroups.includes(category)) {
+            collapsedGroups.push(category);
+            storage.updateStorySettings(activeStory.id, {}, { collapsedGroups });
+            renderTimeline({ preserveSlider: true });
+        }
+    });
 
     // Slider Move & Map Sync
     const dateLabel = document.getElementById('current-slider-date');

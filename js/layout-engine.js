@@ -1,6 +1,6 @@
 import { parseDate } from './utils.js';
 
-export function processTimelineData(data) {
+export function processTimelineData(data, collapsedGroups = [], groupOrder = []) {
     const events = data.map((d, i) => {
         const startDate = parseDate(d.start);
         const endDate = parseDate(d.end);
@@ -19,10 +19,27 @@ export function processTimelineData(data) {
     // Group by level0
     const groups = d3.group(events, d => d.level0);
 
-    // Sort levels: "company" first, then alphabetical
+    // Sort levels: groupOrder > Company > Alphabetical
     const sortedLevel0 = Array.from(groups.keys()).sort((a, b) => {
+        const indexA = groupOrder.indexOf(a);
+        const indexB = groupOrder.indexOf(b);
+
+        // 1. If both are in the manual order list, respect that order
+        if (indexA !== -1 && indexB !== -1) {
+            return indexA - indexB;
+        }
+
+        // 2. If only A is in list, it comes first
+        if (indexA !== -1) return -1;
+
+        // 3. If only B is in list, it comes first
+        if (indexB !== -1) return 1;
+
+        // 4. Fallback: "Company" at top (if not manually ordered)
         if (a.toLowerCase() === 'company') return -1;
         if (b.toLowerCase() === 'company') return 1;
+
+        // 5. Fallback: Alphabetical
         return a.localeCompare(b);
     });
 
@@ -30,7 +47,12 @@ export function processTimelineData(data) {
     let currentYOffset = 0;
 
     sortedLevel0.forEach(level0 => {
-        const allLevelItems = groups.get(level0);
+        let allLevelItems = groups.get(level0);
+
+        // Filter if collapsed: Keep only items WITHOUT level1 (top-level items)
+        if (collapsedGroups.includes(level0)) {
+            allLevelItems = allLevelItems.filter(item => !item.level1);
+        }
 
         // Separate events from regular timeline items
         const levelEvents = allLevelItems.filter(item => !item.isEvent);
@@ -99,7 +121,7 @@ export function processTimelineData(data) {
             level0,
             events: levelEvents,
             pointEvents: levelPointEvents,
-            rowCount: Math.max(rows.length, 1),
+            rowCount: rows.length, // Allow 0 rows if empty
             yOffset: 0,
             topBarY: 45
         });

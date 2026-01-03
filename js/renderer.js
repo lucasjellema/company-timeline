@@ -42,6 +42,7 @@ export class TimelineRenderer {
             this.isDrilledDown = options.isDrilledDown || false;
             this.typeColors = options.typeColors || CONFIG.TYPE_COLORS;
             this.typeIcons = options.typeIcons || {};
+            this.collapsedGroups = new Set(options.collapsedGroups || []);
         }
 
         const allEvents = layoutData.flatMap(d => d.events);
@@ -79,7 +80,22 @@ export class TimelineRenderer {
         this.totalHeight = CONFIG.PADDING.TOP;
         layoutData.forEach(level => {
             level.yStart = this.totalHeight;
-            level.height = level.rowCount * (CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING) + CONFIG.LEVEL_SPACING;
+            level.collapsed = this.collapsedGroups.has(level.level0);
+
+            // Standard height based on rows (now potentially 0 or low if filtered)
+            let standardHeight = level.rowCount * (CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING) + CONFIG.LEVEL_SPACING;
+
+            // If empty AND collapsed, enforce minimum height
+            // If it has events (L0 visible events), standardHeight will be > 0 (1 row = 24+45+60 = 129px... wait 60 is padding)
+            if (level.collapsed && level.events.length === 0 && level.pointEvents.length === 0) {
+                level.height = CONFIG.LEVEL_COLLAPSED_HEIGHT;
+            } else {
+                // Even if it has 0 rows but we are NOT collapsed (shouldn't happen for valid L0 unless deleted data), 
+                // we might want a minimum or just standard.
+                // If rowCount is 0, height is just LEVEL_SPACING (60).
+                // We want at least enough to see the title.
+                level.height = Math.max(standardHeight, CONFIG.LEVEL_COLLAPSED_HEIGHT);
+            }
             this.totalHeight += level.height;
         });
         this.totalHeight += CONFIG.PADDING.BOTTOM;

@@ -23,9 +23,9 @@ export function initEventEditor(renderer, refreshCallback) {
     let currentContextEventId = null;
 
     // --- Context Menu Logic ---
+    // --- Context Menu Logic ---
     renderer.onEventContextMenu = (e, d) => {
         currentContextEventId = d.id; // Corresponds to index in timelineData if mapped correctly
-        // Note: d.id needs to be reliable index or ID. In main currently it maps to index.
 
         const x = e.pageX;
         const y = e.pageY;
@@ -33,6 +33,23 @@ export function initEventEditor(renderer, refreshCallback) {
         contextMenu.style.left = `${x}px`;
         contextMenu.style.top = `${y}px`;
         contextMenu.classList.remove('hidden');
+
+        // Hide Category specific options
+        const btnUp = document.getElementById('ctx-move-up');
+        const btnDown = document.getElementById('ctx-move-down');
+        const btnExpand = document.getElementById('ctx-expand');
+        const btnCollapse = document.getElementById('ctx-collapse');
+        const btnEdit = document.getElementById('ctx-edit');
+        const btnDelete = document.getElementById('ctx-delete');
+
+        if (btnUp) btnUp.style.display = 'none';
+        if (btnDown) btnDown.style.display = 'none';
+        if (btnExpand) btnExpand.style.display = 'none';
+        if (btnCollapse) btnCollapse.style.display = 'none';
+
+        // Show Event specific options
+        if (btnEdit) btnEdit.style.display = 'flex';
+        if (btnDelete) btnDelete.style.display = 'flex';
 
         const hideMenu = () => {
             contextMenu.classList.add('hidden');
