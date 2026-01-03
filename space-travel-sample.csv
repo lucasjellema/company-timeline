@@ -1,0 +1,80 @@
+start,end,title,description,type,level0,level1,level2,latitude,longitude
+1957,2024,USSR / Russia,The history of Soviet and Russian space exploration from Sputnik to the modern Roscosmos era.,program,USSR / Russia,,,,
+1958,2024,USA,The history of United States space exploration led by NASA and private partners.,program,USA,,,,
+1975,2024,Europe,European space efforts coordinated primarily through the European Space Agency (ESA).,program,Europe,,,,
+1970,2024,China,The development of the Chinese space program from the first satellite to the Tiangong station.,program,China,,,,
+1960,2024,Others,Space exploration efforts by other nations including India (ISRO) and Japan (JAXA).,program,Others,,,,
+1957-10-04,1957-10-04,Sputnik 1,The first artificial Earth satellite launched by the USSR. It orbited for three weeks before its batteries died.,milestone,USSR / Russia,Unmanned,Sputnik,45.9,63.3
+1957-11-03,1957-11-03,Sputnik 2 (Laika),The first spacecraft to carry a living animal (the dog Laika) into orbit.,milestone,USSR / Russia,Unmanned,Sputnik,45.9,63.3
+1961-04-12,1961-04-12,Vostok 1,Yuri Gagarin becomes the first human in space and the first to orbit the Earth.,milestone,USSR / Russia,Vostok,,45.9,63.3
+1963-06-16,1963-06-16,Vostok 6,Valentina Tereshkova becomes the first woman in space.,milestone,USSR / Russia,Vostok,,45.9,63.3
+1964-10-12,1964-10-13,Voskhod 1,The first spaceflight to carry more than one crewman into orbit.,milestone,USSR / Russia,Voskhod,,45.9,63.3
+1965-03-18,1965-03-18,Voskhod 2,Alexei Leonov performs the first extravehicular activity (spacewalk) in history.,milestone,USSR / Russia,Voskhod,,45.9,63.3
+1967-04-23,1967-04-24,Soyuz 1,The first crewed flight of the Soyuz vehicle. Ended in tragedy with the death of Vladimir Komarov.,milestone,USSR / Russia,Soyuz,,45.9,63.3
+1971-04-19,1971-04-19,Salyut 1 Launch,The world's first space station launched by the Soviet Union.,project,USSR / Russia,Salyut,,45.9,63.3
+1971-06-06,1971-06-29,Soyuz 11 / Salyut 1,The first and only crew to board Salyut 1. The crew died during reentry due to cabin depressurization.,milestone,USSR / Russia,Salyut,Missions,45.9,63.3
+1975-07-15,1975-07-24,Apollo-Soyuz Test Project,The first joint US-Soviet space flight. A symbol of detente during the Cold War.,project,USSR / Russia,Soyuz,,28.5,-80.6
+1986-02-20,2001-03-23,Mir Space Station,The first modular space station. It held the record for the longest continuous human presence in space.,project,USSR / Russia,Mir,,45.9,63.3
+1988-11-15,1988-11-15,Buran Flight,The first and only orbital flight of the Soviet space shuttle.,milestone,USSR / Russia,Buran,,45.9,63.3
+1998-11-20,2024,Zarya Module (ISS),The first module of the International Space Station launched by Russia.,project,USSR / Russia,ISS,,45.9,63.3
+1958-01-31,1958-01-31,Explorer 1,The first satellite launched by the United States. Discovered the Van Allen radiation belts.,milestone,USA,Unmanned,,28.4,-80.5
+1958,1963,Project Mercury,The first human spaceflight program of the United States.,project,USA,Mercury,,,
+1961-05-05,1961-05-05,Freedom 7,Alan Shepard becomes the first American in space during a sub-orbital flight.,milestone,USA,Mercury,,28.4,-80.5
+1962-02-20,1962-02-20,Friendship 7,John Glenn becomes the first American to orbit the Earth.,milestone,USA,Mercury,,28.4,-80.5
+1961,1966,Project Gemini,NASA's second human spaceflight program focusing on docking and long-duration flights.,project,USA,Gemini,,,
+1965-06-03,1965-06-03,Gemini 4,Ed White performs the first American spacewalk.,milestone,USA,Gemini,,28.4,-80.5
+1966-03-16,1966-03-16,Gemini 8,First docking of two spacecraft in orbit (Armstrong and Scott).,milestone,USA,Gemini,,28.4,-80.5
+1961,1972,Project Apollo,The US program to land humans on the Moon and return them safely to Earth.,project,USA,Apollo,,,
+1968-12-21,1968-12-27,Apollo 8,The first crewed spacecraft to leave Earth orbit and orbit the Moon.,milestone,USA,Apollo,,28.5,-80.6
+1969-07-16,1969-07-24,Apollo 11,The first crewed lunar landing. Neil Armstrong and Buzz Aldrin walk on the Moon.,milestone,USA,Apollo,,28.5,-80.6
+1970-04-11,1970-04-17,Apollo 13,A "successful failure" where the crew returned safely after an oxygen tank explosion.,milestone,USA,Apollo,,28.5,-80.6
+1972-12-07,1972-12-19,Apollo 17,The final crewed mission to the Moon.,milestone,USA,Apollo,,28.5,-80.6
+1973-05-14,1979-07-11,Skylab Program,The first United States space station.,project,USA,Skylab,,,
+1981,2011,Space Shuttle Program,Reusable spacecraft system for Earth orbital missions.,project,USA,Space Shuttle,,,
+1981-04-12,1981-04-14,STS-1 (Columbia),The first orbital flight of the Space Shuttle.,milestone,USA,Space Shuttle,,28.5,-80.6
+1986-01-28,1986-01-28,STS-51-L (Challenger),The Challenger disaster resulted in the loss of all seven crew members.,milestone,USA,Space Shuttle,,28.5,-80.6
+1990-04-24,2024,Hubble Space Telescope,Deployment of the premier optical space observatory.,milestone,USA,Unmanned,Observatories,28.5,-80.6
+1997-07-04,1997-09-27,Mars Pathfinder,The first successful rover (Sojourner) on Mars.,milestone,USA,Unmanned,Mars,,
+2003-02-01,2003-02-01,STS-107 (Columbia),The loss of Space Shuttle Columbia during reentry.,milestone,USA,Space Shuttle,,28.5,-80.6
+2011-08-05,2017-09-15,Juno Mission,A mission to study Jupiter's composition and gravity field.,project,USA,Unmanned,Planetary,,
+2012-08-06,2024,Curiosity Rover,A large rover exploring Gale Crater on Mars.,milestone,USA,Unmanned,Mars,,
+2021-12-25,2024,James Webb Space Telescope,Successor to Hubble, observing the universe in infrared.,milestone,USA,Unmanned,Observatories,,
+1975-05-30,2024,ESA Formation,The establishment of the European Space Agency.,milestone,Europe,,,,
+1979-12-24,1979-12-24,Ariane 1 Launch,The first successful launch of the Ariane rocket series.,milestone,Europe,Launchers,,5.2,-52.7
+1986-03-14,1986-03-14,Giotto (Halley's Comet),ESA mission that obtained the first close-up images of a comet nucleus.,milestone,Europe,Unmanned,Cometary,,
+2003-06-02,2024,Mars Express,Europe's first mission to another planet.,project,Europe,Unmanned,Mars,,
+2004-03-02,2016-09-30,Rosetta Mission,First spacecraft to orbit a comet and land a probe (Philae).,project,Europe,Unmanned,Cometary,,
+2016-03-14,2024,ExoMars,A joint project between ESA and Roscosmos to search for life on Mars.,project,Europe,Unmanned,Mars,,
+1970-04-24,1970-04-24,Dong Fang Hong I,China's first satellite launch.,milestone,China,Unmanned,,,
+2003-10-15,2003-10-16,Shenzhou 5,China's first crewed spaceflight, carrying Yang Liwei.,milestone,China,Shenzhou,,41.1,100.2
+2007-10-24,2009-03-01,Chang'e 1,China's first lunar orbiter mission.,project,China,Chang'e,,28.2,102.0
+2013-12-14,2013-12-14,Chang'e 3,The first soft landing on the Moon since 1976.,milestone,China,Chang'e,,28.2,102.0
+2019-01-03,2019-01-03,Chang'e 4,The first landing on the far side of the Moon.,milestone,China,Chang'e,,28.2,102.0
+2021-04-29,2024,Tianhe Core Module,The launch of the first module of the Tiangong Space Station.,milestone,China,Tiangong,,,
+2021-05-14,2024,Zhurong Rover,China's first rover to land on Mars as part of Tianwen-1.,milestone,China,Unmanned,Mars,,
+1963-11-21,1963-11-21,First Indian Rocket,The launch of a Nike-Apache sounding rocket from Thumba.,milestone,Others,ISRO,,8.5,76.9
+1975-04-19,1975-04-19,Aryabhata Satellite,India's first satellite, launched by the USSR.,milestone,Others,ISRO,,,
+1970-02-11,1970-02-11,Osumi,Japan's first satellite launch.,milestone,Others,JAXA,,31.2,131.0
+2008-10-22,2009-08-28,Chandrayaan-1,India's first lunar probe.,project,Others,ISRO,Lunar,,
+2014-09-24,2024,Mars Orbiter Mission (Mangalyaan),India's first interplanetary mission to Mars.,milestone,Others,ISRO,Mars,,
+2010-05-21,2010-12-08,IKAROS,Japan's first successful demonstration of solar sail technology.,milestone,Others,JAXA,,,
+2023-08-23,2023-08-23,Chandrayaan-3,India becomes the first to land near the lunar south pole.,milestone,Others,ISRO,Lunar,,28.5,77.2
+1960-04-01,1960-04-01,TIROS-1,The first successful weather satellite (USA).,milestone,USA,Unmanned,Applications,,
+1962-07-10,1962-07-10,Telstar 1,The first active communications satellite (USA).,milestone,USA,Unmanned,Applications,,
+1972-07-23,2024,Landsat Program,Continuous global record of Earth's land surface.,project,USA,Unmanned,Applications,,
+1977-08-20,2024,Voyager 2,Space probe launched to study the outer planets and interstellar space.,milestone,USA,Unmanned,Planetary,,
+1977-09-05,2024,Voyager 1,The farthest human-made object from Earth.,milestone,USA,Unmanned,Planetary,,
+1990-10-06,2009-06-30,Ulysses,Joint ESA-NASA mission to study the Sun's poles.,project,Europe,Unmanned,Solar,,
+1995-12-02,2024,SOHO,Solar and Heliospheric Observatory monitoring the Sun.,project,Europe,Unmanned,Solar,,
+2014-11-12,2014-11-12,Philae Landing,The first landing on a comet (67P).,milestone,Europe,Unmanned,Cometary,,
+1966-02-03,1966-02-03,Luna 9,The first spacecraft to achieve a soft landing on the Moon (USSR).,milestone,USSR / Russia,Unmanned,Luna,45.9,63.3
+1970-09-12,1970-09-24,Luna 16,The first robotic sample return from the Moon.,milestone,USSR / Russia,Unmanned,Luna,45.9,63.3
+1970-11-17,1971-09-14,Lunokhod 1,The first remote-controlled robot to land on another world.,milestone,USSR / Russia,Unmanned,Luna,45.9,63.3
+1971-11-27,1971-11-27,Mars 2,First human-made object to reach the surface of Mars (Crash).,milestone,USSR / Russia,Unmanned,Mars,,
+1971-12-02,1971-12-02,Mars 3,First soft landing on Mars (USSR), though it failed after 20 seconds.,milestone,USSR / Russia,Unmanned,Mars,,
+1984-12-15,1986-03-06,Vega 1,Mission to Venus and Halley's Comet.,project,USSR / Russia,Unmanned,,,
+2000-10-31,2000-11-02,Expedition 1,The first long-term residents arrive at the ISS.,milestone,USA,ISS,,45.9,63.3
+2015-07-14,2015-07-14,New Horizons Pluto Flyby,The first close-up images of Pluto.,milestone,USA,Unmanned,Planetary,,
+2020-05-30,2020-05-31,Crew Dragon Demo-2,The first crewed orbital flight from US soil since 2011 (SpaceX).,milestone,USA,Commercial,,,
+2022-11-16,2022-12-11,Artemis I,Uncrewed test flight of the SLS and Orion toward the Moon.,milestone,USA,Apollo,Artemis,28.5,-80.6
+2024-01-19,2024-01-19,SLIM Landing,Japan becomes the fifth nation to soft-land on the Moon.,milestone,Others,JAXA,Lunar,31.2,131.0

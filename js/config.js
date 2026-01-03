@@ -84,12 +84,17 @@ export const CONFIG = {
         {
             name: "History of Tech Companies",
             file: "history_of_tech_companies.json",
-            description: "A timeline of major technology companies and their milestones."
+            description: "A timeline of major technology companies (Microsoft, Google, Apple, IBM, Oracle) and their milestones."
         },
         {
             name: "World War II",
             file: "world_war_ii.json",
             description: "Key events and battles of the Second World War."
+        },
+        {
+            name: "Space Travel",
+            file: "space_travel.json",
+            description: "A comprehensive timeline of human space exploration, from the early Space Race to modern Mars missions."
         }
     ]
 };
