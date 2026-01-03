@@ -1,3 +1,5 @@
+import { formatTooltipDate } from './utils.js';
+
 export class MapManager {
     constructor(mapContainerId) {
         this.mapContainerId = mapContainerId;
@@ -56,7 +58,7 @@ export class MapManager {
         marker.bindPopup(`
             <strong>${d.title}</strong><br>
             Type: ${d.type}<br>
-            ${d.startDate ? d.startDate.toLocaleDateString() : ''} - ${d.endDate ? d.endDate.toLocaleDateString() : 'Active'}<br>
+            ${formatTooltipDate(d.start, d.end)}<br>
             <div style="font-size:0.9em; margin-top:4px">${d.description || ''}</div>
          `);
 
