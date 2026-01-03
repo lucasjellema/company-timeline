@@ -95,6 +95,11 @@ export const CONFIG = {
             name: "Space Travel",
             file: "space_travel.json",
             description: "A comprehensive timeline of human space exploration, from the early Space Race to modern Mars missions."
+        },
+        {
+            name: "Two decades (and a bit) of Football",
+            file: "two_decades__and_a_bit__of_football_.jsonspace_travel.json",
+            description: "Major events in international football (soccer) from 2000 to 2026, including World Cups, European Championships, and notable player milestones."
         }
     ]
 };

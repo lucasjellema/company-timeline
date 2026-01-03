@@ -1,0 +1,80 @@
+start,end,title,description,type,level0,level1,level2,lattitude,longitude
+2005,2026,Premier League,"Major historical records for the English top flight, including the dominant eras of Man Utd, Man City, and Liverpool.",league,Premier League,,,,
+2005,2026,Manchester United,"One of England's most successful clubs, transitioning from the Ferguson era to a long rebuilding phase.",club,Premier League,Manchester United,,,
+1986-11,2013-05,Sir Alex Ferguson Reign,"The definitive era of the club, winning 13 league titles and a 2008 Champions League title.",reign,Premier League,Manchester United,Coaching,53.4631,-2.2913
+2008-05-21,2008-05-21,UCL Champions,"United defeat Chelsea on penalties in Moscow to win their third European Cup.",european cup,Premier League,Manchester United,Europe,55.7158,37.5536
+2009-07,2009-07,Ronaldo Record Transfer,"Cristiano Ronaldo leaves for Real Madrid for a world-record fee of £80 million.",transfer,Premier League,Manchester United,Incident,40.4531,-3.6883
+2013-05-19,2013-05-19,Ferguson Retirement,"Sir Alex Ferguson manages his 1,500th and final game, a 5-5 draw with West Brom.",incident,Premier League,Manchester United,Coaching,52.5091,-1.9639
+2024-11,2026,Ruben Amorim Era,"Manchester United appoint Ruben Amorim to lead a new tactical era for the club.",reign,Premier League,Manchester United,Coaching,53.4631,-2.2913
+2005,2026,Liverpool FC,"The resurgence of the Reds into a global powerhouse under Klopp and the transition to Arne Slot.",club,Premier League,Liverpool,,,
+2005-05-25,2005-05-25,Miracle of Istanbul,"Liverpool recover from 3-0 down at half-time to beat AC Milan in the UCL final.",european cup,Premier League,Liverpool,Europe,41.0744,28.7656
+2015-10,2024-05,Jurgen Klopp Era,"A golden era resulting in a Premier League title, a Champions League, and multiple cups.",reign,Premier League,Liverpool,Coaching,53.4308,-2.9608
+2016-12,2016-12,Anfield Main Stand Open,"Liverpool complete the expansion of the Main Stand, increasing capacity significantly.",stadium,Premier League,Liverpool,Stadium,53.4308,-2.9608
+2020-06-25,2020-06-25,PL Champions,"Liverpool secure their first league title in 30 years, finishing with 99 points.",national championship,Premier League,Liverpool,Titles,53.4308,-2.9608
+2005,2026,Manchester City,"The rise of the Citizens following the 2008 takeover to become multi-time champions.",club,Premier League,Manchester City,,,
+2008-09-01,2008-09-01,ADUG Takeover,"The Abu Dhabi United Group buys the club, initiating a massive investment program.",incident,Premier League,Manchester City,History,53.4831,-2.2004
+2012-05-13,2012-05-13,Aguerooooo Goal,"Sergio Aguero scores at 93:20 to win the league title in the final seconds.",national championship,Premier League,Manchester City,Titles,53.4831,-2.2004
+2016-07,2026,Pep Guardiola Era,"Guardiola implements a new philosophy, winning four consecutive titles (2021-2024).",reign,Premier League,Manchester City,Coaching,53.4831,-2.2004
+2023-06-10,2023-06-10,The Treble,"City defeat Inter Milan to win the UCL and complete a historic continental treble.",european cup,Premier League,Manchester City,Europe,41.0744,28.7656
+2015-08,2016-05,Leicester City Miracle,"Leicester City win the Premier League at 5000/1 odds, the biggest shock in history.",national championship,Premier League,,,,
+2005,2026,Eredivisie,"History of the Dutch top tier, focused on the Big Three and unique title winners.",league,Eredivisie,,,,
+2005,2026,AFC Ajax,"The Amsterdam club's era of youth development and return to European prominence.",club,Eredivisie,Ajax,,,
+2010-12,2016-05,Frank de Boer Reign,"De Boer leads Ajax to four consecutive Eredivisie titles between 2011 and 2014.",reign,Eredivisie,Ajax,Coaching,52.3142,4.9427
+2018-04,2018-04,Cruyff Arena Renaming,"The Amsterdam Arena is officially renamed the Johan Cruyff Arena to honor the legend.",stadium,Eredivisie,Ajax,Stadium,52.3142,4.9427
+2019-05-08,2019-05-08,UCL Semi-Final Heartbreak,"Ajax fall to Tottenham in the final seconds, ending a historic run to the semi-finals.",european cup,Eredivisie,Ajax,Europe,52.3142,4.9427
+2005,2026,PSV Eindhoven,"The Eindhoven giants' periods of dominance and recent record-breaking performance.",club,Eredivisie,PSV,,,
+2013-07,2018-06,Phillip Cocu Reign,"Cocu leads PSV to three Eredivisie titles, breaking the Ajax dominance.",reign,Eredivisie,PSV,Coaching,51.4417,5.4674
+2024-05-05,2024-05-05,25th Eredivisie Title,"PSV clinch the title with a dominant season under Peter Bosz, losing only once.",national championship,Eredivisie,PSV,Titles,51.4417,5.4674
+2005,2026,Feyenoord,"The Rotterdam side's revival from financial trouble to champions under Kuyt and Slot.",club,Eredivisie,Feyenoord,,,
+2017-05-14,2017-05-14,The Kuyt Hat-trick,"Dirk Kuyt scores three to win Feyenoord their first title in 18 years.",national championship,Eredivisie,Feyenoord,Titles,51.8944,4.5181
+2021-07,2024-05,Arne Slot Era,"Slot transforms Feyenoord's style, winning the 2023 title and a KNVB Cup.",reign,Eredivisie,Feyenoord,Coaching,51.8944,4.5181
+2009-05,2009-05,AZ Alkmaar Title,"Louis van Gaal leads AZ to a surprise title, the first outside the Big Three since 1981.",national championship,Eredivisie,,,,
+2005,2026,Bundesliga,"German football records, characterized by Bayern's long reign and the rise of rivals.",league,Bundesliga,,,,
+2005,2026,Bayern Munich,"The most successful German club, dominating the league for over a decade.",club,Bundesliga,Bayern Munich,,,
+2005-05-31,2005-05-31,Allianz Arena Move,"Bayern move from the Olympiastadion to the new, color-changing Allianz Arena.",stadium,Bundesliga,Bayern Munich,Stadium,48.2188,11.6247
+2013-05-25,2013-05-25,UCL Champions,"Bayern beat Dortmund 2-1 at Wembley to win the UCL and secure the first German treble.",european cup,Bundesliga,Bayern Munich,Europe,51.5560,-0.2795
+2012-08,2023-05,11 Consecutive Titles,"Bayern win every Bundesliga title for 11 years, a record in major European leagues.",national championship,Bundesliga,Bayern Munich,Titles,48.2188,11.6247
+2005,2026,Borussia Dortmund,"The club of the 'Yellow Wall', known for high-octane football and developing stars.",club,Bundesliga,Dortmund,,,
+2008-07,2015-06,Jurgen Klopp Era,"Klopp wins two Bundesliga titles and reaches a Champions League final.",reign,Bundesliga,Dortmund,Coaching,51.4926,7.4519
+2017-04-11,2017-04-11,Team Bus Bombing,"A targeted attack on the team bus before a UCL match against Monaco.",incident,Bundesliga,Dortmund,Incident,51.4926,7.4519
+2005,2026,Bayer Leverkusen,"The transformation from 'Neverkusen' to undefeated champions.",club,Bundesliga,Bayer Leverkusen,,,
+2022-10,2026,Xabi Alonso Era,"Alonso takes Leverkusen to their first-ever league title and an unbeaten season.",reign,Bundesliga,Bayer Leverkusen,Coaching,51.0383,7.0022
+2024-04-14,2024-04-14,Invincible Title,"Leverkusen clinch the Bundesliga, finishing the entire league season undefeated.",national championship,Bundesliga,Bayer Leverkusen,Titles,51.0383,7.0022
+2005,2026,Primera Division,"Records for Spain's top flight, featuring the Messi-Ronaldo rivalry era.",league,Primera Division,,,,
+2005,2026,Real Madrid,"The era of the Galacticos, the Decima, and the three-peat UCL winners.",club,Primera Division,Real Madrid,,,
+2009-07-06,2009-07-06,Ronaldo Signing,"Cristiano Ronaldo joins for £80m, beginning a record-shattering 9-year stint.",transfer,Primera Division,Real Madrid,Incident,40.4531,-3.6883
+2014-05-24,2014-05-24,La Decima,"Real Madrid win their 10th European Cup, defeating Atletico in extra time.",european cup,Primera Division,Real Madrid,Europe,38.7527,-9.1847
+2016-01,2018-05,Zinedine Zidane Reign,"Zidane leads the club to an unprecedented three consecutive UCL titles.",reign,Primera Division,Real Madrid,Coaching,40.4531,-3.6883
+2005,2026,FC Barcelona,"The tiki-taka revolution and the peak of the Lionel Messi era.",club,Primera Division,FC Barcelona,,,
+2008-07,2012-06,Pep Guardiola Era,"Barca win 14 trophies in 4 years, including two UCL titles and the 2009 sextuple.",reign,Primera Division,FC Barcelona,Coaching,41.3809,2.1228
+2021-08-05,2021-08-05,Messi Farewell,"Lionel Messi leaves the club due to financial crisis, joining PSG.",incident,Primera Division,FC Barcelona,Incident,41.3809,2.1228
+2023-06,2026,Camp Nou Rebuild,"Barcelona move to the Olympic Stadium while the Camp Nou undergoes massive renovation.",stadium,Primera Division,FC Barcelona,Stadium,41.3650,2.1550
+2005,2026,Atletico Madrid,"The emergence of Atletico as the 'Third Force' in Spanish football.",club,Primera Division,Atletico Madrid,,,
+2011-12,2026,Diego Simeone Era,"The longest-serving manager in Europe, turning Atleti into defensive masters.",reign,Primera Division,Atletico Madrid,Coaching,40.4362,-3.5995
+2017-09-16,2017-09-16,Metropolitano Opening,"Atleti move from the Vicente Calderon to the modern Wanda Metropolitano.",stadium,Primera Division,Atletico Madrid,Stadium,40.4362,-3.5995
+2005,2026,Serie A,"Records for the Italian league, from the Calciopoli scandal to the Napoli revival.",league,Serie A,,,,
+2005,2026,Juventus,"Italy's 'Old Lady', from relegation to Serie B to nine straight titles.",club,Serie A,Juventus,,,
+2006-07-14,2006-07-14,Calciopoli Relegation,"Juventus are stripped of titles and relegated to Serie B for match-fixing.",incident,Serie A,Juventus,History,45.1095,7.6413
+2011-09-08,2011-09-08,Juventus Stadium Opening,"Juventus open the first modern, club-owned stadium in Italy.",stadium,Serie A,Juventus,Stadium,45.1095,7.6413
+2011-08,2020-08,The 9-Year Scudetto Run,"Juventus win every Serie A title from 2012 to 2020.",national championship,Serie A,Juventus,Titles,45.1095,7.6413
+2005,2026,Inter Milan,"The Nerazzurri's rollercoaster of the 2010 Treble and recent return to stars.",club,Serie A,Inter Milan,,,
+2008-06,2010-05,Jose Mourinho Era,"Mourinho leads Inter to the first and only Italian treble in 2010.",reign,Serie A,Inter Milan,Coaching,45.4781,9.1240
+2024-04-22,2024-04-22,The Second Star Title,"Inter win their 20th league title, earning the second star on their crest.",national championship,Serie A,Inter Milan,Titles,45.4781,9.1240
+2005,2026,AC Milan,"The Rossoneri's European triumphs and the 2022 return to league glory.",club,Serie A,AC Milan,,,
+2007-05-23,2007-05-23,Athens Victory,"Milan defeat Liverpool 2-1 to win their 7th European Cup.",european cup,Serie A,AC Milan,Europe,38.0361,23.7822
+2022-05-22,2022-05-22,Scudetto After 11 Years,"Milan win the league on the final day, sparking massive celebrations.",national championship,Serie A,AC Milan,Titles,44.6290,10.6300
+2023-05-04,2023-05-04,Napoli Title Glory,"Napoli win their first league title since 1990, leading to a city-wide party.",national championship,Serie A,,,,
+2005,2026,International Football,"Global and continental national team competitions, including World Cups and Euros.",league,International Football,,,,
+2006-06-09,2006-07-09,2006 World Cup,"Hosted by Germany, concluding with Italy's victory over France.",tournament,International Football,World Cup,WC 2006,52.5146,13.3500
+2006-07-09,2006-07-09,Italy World Champions,"Italy beat France on penalties; Zidane is sent off for a headbutt.",winner,International Football,World Cup,WC 2006,52.5147,13.2394
+2008-06-07,2008-06-29,Euro 2008,"Hosted by Austria and Switzerland, won by a dominant Spanish side.",tournament,International Football,UEFA Euro,Euro 2008,48.2082,16.3738
+2010-06-11,2010-07-11,2010 World Cup,"The first World Cup in Africa, famous for the vuvuzela and Spain's win.",tournament,International Football,World Cup,WC 2010,-26.2348,27.9824
+2012-06-08,2012-07-01,Euro 2012,"Poland and Ukraine host; Spain becomes the first to defend the Euro title.",tournament,International Football,UEFA Euro,Euro 2012,50.4501,30.5234
+2014-06-12,2014-07-13,2014 World Cup,"Hosted by Brazil, featuring the historic 7-1 semi-final loss of the hosts.",tournament,International Football,World Cup,WC 2014,-22.9121,-43.2302
+2014-07-13,2014-07-13,Germany World Champions,"Mario Gotze scores in the 113th minute to beat Argentina 1-0.",winner,International Football,World Cup,WC 2014,-22.9121,-43.2302
+2016-06-10,2016-07-10,Euro 2016,"Hosted by France and won by Portugal, their first major international trophy.",tournament,International Football,UEFA Euro,Euro 2016,48.9244,2.3601
+2018-06-14,2018-07-15,2018 World Cup,"Hosted by Russia; France wins their second star with a 4-2 win in the final.",tournament,International Football,World Cup,WC 2018,55.7158,37.5536
+2021-06-11,2021-07-11,Euro 2020,"Delayed until 2021; held across Europe and won by Italy at Wembley.",tournament,International Football,UEFA Euro,Euro 2020,51.5560,-0.2795
+2022-11-20,2022-12-18,2022 World Cup,"Hosted by Qatar; Lionel Messi finally lifts the trophy for Argentina.",tournament,International Football,World Cup,WC 2022,25.4503,51.4883
+2024-06-14,2024-07-14,Euro 2024,"Hosted by Germany; Spain wins their 4th Euro title, a new record.",tournament,International Football,UEFA Euro,Euro 2024,52.5147,13.2394
+2026-06-11,2026-07-19,2026 World Cup,"The first 48-team tournament, hosted by the USA, Canada, and Mexico.",tournament,International Football,World Cup,WC 2026,40.8128,-74.0742

@@ -5,10 +5,21 @@ Create 50 records; 25 for singular events and 25 for periods with a duration of 
 ## World War II history
 Generate historical records for World War II. Three theaters: Europe, Far East, Others (Africa, iddle East and elsewere). ultiple fronts in each theater. Events include invasions, battles, declarations, surrender.
 Create 50 records; 25 for singular events and 25 for periods with a duration of months or years.
-Space History 
+
+
+## Space History 
 Generate historical records for Space explorations. Level 0 groups for USSR / Russia, USA, : Europe, China, Others . For USA for example discern programs Mercury, Gemini, Apollo, Skylab, Space Shuttle, unmanned. Similar for USSR.
 
 Create 80 records; make a mix between singular events and multiple day/month/year programs. 
+
+## Football History 
+Generate historical records for some major European football leagues over the period 2005-2026: Premier League, Eredivisie, Bundesliga, Primera Division, Serie A. Include the top 3 clubs from each league. For each club, include events for their trainer/coach and his "reign". For each club, include events for national championship and European cup. Include events for moving into a stadium. Include events for other really important developments (top transfer, major incident, death of a player)  
+
+ For each league, include events for national championship when not won by the one of the top 3 clubs. 
+
+
+Create 100+; make a mix between singular events and multiple day/month/year programs. 
+
 
 ## Generic instruction:
 Desired format: a csv document with records that each describe an event - either a singular, one day event or an event that lasts a period of months or years. 
