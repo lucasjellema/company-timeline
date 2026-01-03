@@ -62,7 +62,8 @@ export const CONFIG = {
         airplane: "M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z",
         rocket: "M9.19 6.35c-2.04 2.29-3.44 5.58-3.57 5.89L2 10.69l4.05-4.05c.47-.47 1.15-.68 1.81-.55zM11.17 17s3.74-1.55 5.89-3.7c5.4-5.4 4.5-9.62 4.21-10.94-.23-1.03-1.03-1.84-2.06-2.06-1.31-.29-5.54-1.18-10.94 4.21-2.15 2.15-3.7 5.89-3.7 5.89L11.17 17zm6.48-2.19c-2.29 2.04-5.58 3.44-5.89 3.57L13.31 22l4.05-4.05c.47-.47.68-1.15.55-1.81zM9 12c0 1.66-1.34 3-3 3S3 13.66 3 12s1.34-3 3-3 3 1.34 3 3z",
         cart: "M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z",
-        legal: "M1 21h12v2H1zM5.245 8.07l2.83-2.827 14.14 14.142-2.828 2.828zM12.317 1l5.657 5.656-2.83 2.83-5.654-5.66zM3.825 9.485l5.657 5.657-2.828 2.828-5.657-5.657z"
+        legal: "M1 21h12v2H1zM5.245 8.07l2.83-2.827 14.14 14.142-2.828 2.828zM12.317 1l5.657 5.656-2.83 2.83-5.654-5.66zM3.825 9.485l5.657 5.657-2.828 2.828-5.657-5.657z",
+        meeting: "M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"
     },
     // 1.0-1.5x: Years
     // 1.5-3x: Quarters
@@ -73,7 +74,21 @@ export const CONFIG = {
         WEEKLY_THRESHOLD: 12, // Zoom factor threshold to switch to Weekly view
         MONTHLY_THRESHOLD: 6, // Zoom factor threshold to switch to Monthly view
         QUARTERLY_THRESHOLD: 3 // Zoom factor threshold to switch to Quarterly view
-    }
+    },
+
+    // Pre-packaged stories available in the /data directory
+    SHIPPED_STORIES: [
+        {
+            name: "History of Tech Companies",
+            file: "history_of_tech_companies.json",
+            description: "A timeline of major technology companies and their milestones."
+        },
+        {
+            name: "World War II",
+            file: "world_war_ii.json",
+            description: "Key events and battles of the Second World War."
+        }
+    ]
 };
 
 export const SAMPLE_CSV = `start,end,title,description,type,level0,level1,level2,lattitude,longitude

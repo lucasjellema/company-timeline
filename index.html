@@ -403,8 +403,40 @@
                 </button>
             </div>
             <div class="modal-body">
+                <div style="margin-bottom: 1rem; display: flex; justify-content: flex-end;">
+                    <button id="browse-shipped-btn" class="btn btn-secondary btn-sm">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" style="margin-right: 4px;">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                        Browse Shipped Stories
+                    </button>
+                </div>
                 <ul id="story-list-container" class="story-list">
                     <!-- Stories will be populated here -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shipped Stories Modal -->
+    <div id="shipped-stories-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Shipped Stories</h2>
+                <button id="close-shipped-modal-btn" class="btn-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Select a pre-packaged story to import and
+                    load.</p>
+                <ul id="shipped-story-list" class="story-list">
+                    <!-- Shipped stories will be populated here -->
                 </ul>
             </div>
         </div>

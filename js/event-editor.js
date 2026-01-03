@@ -92,7 +92,12 @@ export function initEventEditor(renderer, refreshCallback, storage) {
         if (hasL1) {
             const activeStory = storage ? storage.getActiveStory() : null;
             const collapsedLevel1s = (activeStory && activeStory.settings && activeStory.settings.collapsedLevel1s) || [];
-            const key = `${d.level0}|${d.level1}`;
+
+            // Robust key generation
+            const l0 = (d.level0 || "").trim();
+            const l1 = (d.level1 || "").trim();
+            const key = `${l0}|${l1}`;
+
             const isL1Collapsed = collapsedLevel1s.includes(key);
 
             if (ctxExpandL1) {
@@ -100,7 +105,11 @@ export function initEventEditor(renderer, refreshCallback, storage) {
                     const currentActiveStory = storage.getActiveStory();
                     if (!currentActiveStory) return;
                     let currentCollapsedLevel1s = (currentActiveStory.settings && currentActiveStory.settings.collapsedLevel1s) ? [...currentActiveStory.settings.collapsedLevel1s] : [];
-                    const currentKey = `${currentContextEvent.level0}|${currentContextEvent.level1}`;
+                    // Key for closure context
+                    const cL0 = (currentContextEvent.level0 || "").trim();
+                    const cL1 = (currentContextEvent.level1 || "").trim();
+                    const currentKey = `${cL0}|${cL1}`;
+
                     const idx = currentCollapsedLevel1s.indexOf(currentKey);
                     if (idx > -1) {
                         currentCollapsedLevel1s.splice(idx, 1);
@@ -116,7 +125,11 @@ export function initEventEditor(renderer, refreshCallback, storage) {
                     const currentActiveStory = storage.getActiveStory();
                     if (!currentActiveStory) return;
                     let currentCollapsedLevel1s = (currentActiveStory.settings && currentActiveStory.settings.collapsedLevel1s) ? [...currentActiveStory.settings.collapsedLevel1s] : [];
-                    const currentKey = `${currentContextEvent.level0}|${currentContextEvent.level1}`;
+
+                    const cL0 = (currentContextEvent.level0 || "").trim();
+                    const cL1 = (currentContextEvent.level1 || "").trim();
+                    const currentKey = `${cL0}|${cL1}`;
+
                     if (!currentCollapsedLevel1s.includes(currentKey)) {
                         currentCollapsedLevel1s.push(currentKey);
                         storage.updateStorySettings(currentActiveStory.id, {}, { collapsedLevel1s: currentCollapsedLevel1s });

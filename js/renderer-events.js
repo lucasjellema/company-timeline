@@ -270,6 +270,8 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
     level.pointEvents.forEach(event => {
         const x = xScale(event.startDate);
 
+        if (isNaN(x)) return; // Skip if date invalid (redundant check but safe)
+
         // Calculate Y based on the row index assigned by layout-engine
         // Position so tip touches top of the virtual bar
         const barY = level.topBarY + event.rowIndex * (CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING);

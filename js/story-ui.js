@@ -1,11 +1,125 @@
 import { TimelineStorage } from './storage.js';
 import { initSettingsUI } from './story-settings.js';
+import { CONFIG } from './config.js';
 
 export function initStoryUI(storage, refreshCallback) {
     initCreateStoryUI(storage, refreshCallback);
     initLoadStoryUI(storage, refreshCallback);
     initSettingsUI(storage, refreshCallback);
     initImportExportUI(storage, refreshCallback);
+    initShippedStoriesUI(storage, refreshCallback);
+}
+
+function initShippedStoriesUI(storage, refreshCallback) {
+    const modal = document.getElementById('shipped-stories-modal');
+    const closeBtn = document.getElementById('close-shipped-modal-btn');
+    const listContainer = document.getElementById('shipped-story-list');
+    const browseBtn = document.getElementById('browse-shipped-btn');
+    const loadModal = document.getElementById('load-story-modal');
+
+    // Open from Load Modal
+    if (browseBtn) {
+        browseBtn.addEventListener('click', () => {
+            loadModal.classList.add('hidden');
+            modal.classList.remove('hidden');
+            renderShippedList();
+        });
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+    }
+
+    // Close on overlay click
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.add('hidden');
+        });
+    }
+
+    const renderShippedList = () => {
+        const stories = CONFIG.SHIPPED_STORIES || [];
+        if (stories.length === 0) {
+            listContainer.innerHTML = '<div class="empty-state">No shipped stories found.</div>';
+            return;
+        }
+
+        listContainer.innerHTML = stories.map((s, idx) => `
+            <li class="story-item" data-idx="${idx}">
+                <div class="story-info">
+                    <div class="story-title">${s.name}</div>
+                    <div class="story-desc">${s.description || ''}</div>
+                </div>
+                <button class="btn btn-sm btn-primary import-btn" data-idx="${idx}">Import</button>
+            </li>
+        `).join('');
+
+        listContainer.querySelectorAll('.import-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                importAndLoad(stories[e.target.dataset.idx]);
+            });
+        });
+
+        listContainer.querySelectorAll('.story-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') return;
+                importAndLoad(stories[item.dataset.idx]);
+            });
+        });
+    };
+
+    const importAndLoad = async (storyConfig) => {
+        try {
+            const res = await fetch(`data/${storyConfig.file}`);
+            if (!res.ok) throw new Error(`Failed to load ${storyConfig.file}`);
+            let data = await res.json();
+
+            // Handle wrapper if present (e.g. if file is { story: { ... } } or just { ... })
+            // Assuming the file IS the story object or an array of events.
+
+            let storyObj;
+
+            if (Array.isArray(data)) {
+                // Raw Events Array
+                storyObj = {
+                    name: storyConfig.name,
+                    description: storyConfig.description,
+                    data: data
+                };
+                // Allow storage to create
+                storage.createStory(storyObj.name, storyObj.data, { description: storyObj.description });
+            } else {
+                // Full Story Object
+                storyObj = data;
+                // Force new ID to treat as template import
+                storyObj.id = null;
+                // Ensure name/desc if missing
+                if (!storyObj.name) storyObj.name = storyConfig.name;
+                if (!storyObj.description) storyObj.description = storyConfig.description;
+
+                storage.importStory(storyObj);
+            }
+
+            // Activate
+            // storage.createStory and importStory both set the active ID internally.
+            // We just need to load the data into global state and refresh.
+            // But wait, createStory returns the story object. importStory returns it too.
+            // So we can just use the memory object or fetch active.
+
+            const activeStory = storage.getActiveStory();
+            window.timelineData = activeStory.data;
+            refreshCallback({ resetView: true });
+
+            modal.classList.add('hidden');
+
+        } catch (err) {
+            console.error(err);
+            alert("Failed to load story: " + err.message);
+        }
+    };
 }
 
 function initCreateStoryUI(storage, refreshCallback) {

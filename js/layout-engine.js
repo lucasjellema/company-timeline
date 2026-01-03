@@ -11,10 +11,10 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
             id: i,
             startDate: startDate,
             // For point events, use 1 day duration for layout collision/overlap checks
-            endDate: endDate || d3.timeDay.offset(startDate, 1),
+            endDate: endDate || (startDate ? d3.timeDay.offset(startDate, 1) : null),
             isEvent: isEvent
         };
-    });
+    }).filter(e => e.startDate instanceof Date && !isNaN(e.startDate));
 
     // Group by level0
     const groups = d3.group(events, d => d.level0);
@@ -56,10 +56,17 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
             // Filter if Level 1 is collapsed
             allLevelItems = allLevelItems.filter(item => {
                 if (!item.level1) return true;
-                const key = `${item.level0}|${item.level1}`;
+
+                // Robust key generation
+                const l0 = (item.level0 || "").trim();
+                const l1 = (item.level1 || "").trim();
+                const key = `${l0}|${l1}`;
+
                 if (collapsedLevel1s.includes(key)) {
                     // If L1 is collapsed, hide items that have Level 2 (children of L1)
-                    return !item.level2;
+                    // Treat whitespace-only level2 as "no level 2"
+                    const hasLevel2 = item.level2 && String(item.level2).trim().length > 0;
+                    return !hasLevel2;
                 }
                 return true;
             });

@@ -100,9 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Interactivity Wiring ---
 
-    // Editors & Story UI
-    initEventEditor(renderer, refreshHandler, storage);
-    initStoryUI(storage, refreshHandler);
+
 
     // Drill-down
     renderer.onCategoryDblClick = (category) => {
@@ -177,6 +175,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Hide event-specific items if they exist
         if (btnEdit) btnEdit.style.display = 'none';
         if (btnDelete) btnDelete.style.display = 'none';
+
+        // Hide L1-specific items
+        const btnBExpandL1 = document.getElementById('ctx-expand-l1');
+        const btnBCollapseL1 = document.getElementById('ctx-collapse-l1');
+        if (btnBExpandL1) btnBExpandL1.style.display = 'none';
+        if (btnBCollapseL1) btnBCollapseL1.style.display = 'none';
 
         ctxMenuContext = { category, idx, currentOrder, activeStory };
     };
@@ -313,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Editors & Story UI
-    initEventEditor(renderer, refreshHandler);
+    initEventEditor(renderer, refreshHandler, storage);
     initStoryUI(storage, refreshHandler);
 
     // --- Initial Load ---
