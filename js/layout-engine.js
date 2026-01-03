@@ -45,7 +45,6 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
     });
 
     const layout = [];
-    let currentYOffset = 0;
 
     sortedLevel0.forEach(level0 => {
         let allLevelItems = groups.get(level0);
@@ -73,74 +72,103 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
             });
         }
 
-        // Separate events from regular timeline items
-        const levelEvents = allLevelItems.filter(item => !item.isEvent);
-        const levelPointEvents = allLevelItems.filter(item => item.isEvent);
+        // --- NEW LOGIC: Group by Level 1 ---
+        // 1. Group items by Level 1
+        const level1Groups = d3.group(allLevelItems, d => d.level1 || " _misc_ "); // Group by L1
 
-        // Sort regular events by start date, then duration (desc)
-        levelEvents.sort((a, b) => a.startDate - b.startDate || (b.endDate - b.startDate) - (a.endDate - a.startDate));
+        // 2. Sort Level 1 Groups via their Start Date
+        const sortedL1Keys = Array.from(level1Groups.keys()).sort((k1, k2) => {
+            const items1 = level1Groups.get(k1);
+            const items2 = level1Groups.get(k2);
+            const min1 = d3.min(items1, d => d.startDate);
+            const min2 = d3.min(items2, d => d.startDate);
 
-        const rows = []; // array of arrays (events in each row)
-
-        // Only layout regular events in rows
-        levelEvents.forEach(event => {
-            let placed = false;
-            for (let i = 0; i < rows.length; i++) {
-                if (!overlapsWithRow(event, rows[i])) {
-                    rows[i].push(event);
-                    event.rowIndex = i;
-                    placed = true;
-                    break;
-                }
-            }
-            if (!placed) {
-                event.rowIndex = rows.length;
-                rows.push([event]);
-            }
+            if (!min1) return 1;
+            if (!min2) return -1;
+            return min1 - min2;
         });
 
-        // Force all point events to be on the top row (visually above)
-        // Update: Try to attach to a related bar (same level1, level2)
-        levelPointEvents.forEach(pointEvent => {
-            // Default to top if no match
-            pointEvent.rowIndex = 0;
+        let currentLevel0RowIndex = 0; // Tracks the Y-offset (in rows) for the entire L0 container
 
-            const candidates = levelEvents.filter(bar =>
-                bar.level1 === pointEvent.level1 &&
-                bar.level2 === pointEvent.level2
-            );
+        const finalLevelEvents = [];
+        const finalPointEvents = [];
 
-            if (candidates.length > 0) {
-                // 1. Try to find overlapping bar
-                const overlap = candidates.find(bar =>
-                    pointEvent.startDate >= bar.startDate && pointEvent.startDate <= bar.endDate
+        sortedL1Keys.forEach(l1Key => {
+            const groupItems = level1Groups.get(l1Key);
+
+            // Separate bars and points
+            const groupBars = groupItems.filter(item => !item.isEvent);
+            const groupPoints = groupItems.filter(item => item.isEvent);
+
+            // Sort bars by start date
+            groupBars.sort((a, b) => a.startDate - b.startDate || (b.endDate - b.startDate) - (a.endDate - a.startDate));
+
+            // Pack bars into rows specific to this Level 1 block
+            const blockRows = [];
+            groupBars.forEach(event => {
+                let placed = false;
+                for (let i = 0; i < blockRows.length; i++) {
+                    if (!overlapsWithRow(event, blockRows[i])) {
+                        blockRows[i].push(event);
+                        event.rowIndex = currentLevel0RowIndex + i;
+                        placed = true;
+                        break;
+                    }
+                }
+                if (!placed) {
+                    event.rowIndex = currentLevel0RowIndex + blockRows.length;
+                    blockRows.push([event]);
+                }
+            });
+
+            // Position Point Events
+            groupPoints.forEach(pointEvent => {
+                pointEvent.rowIndex = currentLevel0RowIndex;
+
+                const candidates = groupBars.filter(bar =>
+                    (bar.level2 === pointEvent.level2) ||
+                    (!bar.level2)
                 );
 
-                if (overlap) {
-                    pointEvent.rowIndex = overlap.rowIndex;
-                } else {
-                    // 2. If no overlap, find closest bar by start date distance
-                    // (Useful for kickoffs slightly before, or wrap-ups slightly after)
-                    let closest = candidates[0];
-                    let minDiff = Math.abs(pointEvent.startDate - closest.startDate);
+                if (candidates.length > 0) {
+                    // Try to find overlap first
+                    const overlap = candidates.find(bar =>
+                        pointEvent.startDate >= bar.startDate && pointEvent.startDate <= bar.endDate
+                    );
 
-                    for (let i = 1; i < candidates.length; i++) {
-                        const diff = Math.abs(pointEvent.startDate - candidates[i].startDate);
-                        if (diff < minDiff) {
-                            minDiff = diff;
-                            closest = candidates[i];
+                    if (overlap) {
+                        pointEvent.rowIndex = overlap.rowIndex;
+                    } else {
+                        let closest = candidates[0];
+                        let minDiff = Math.abs(pointEvent.startDate - closest.startDate);
+
+                        for (let i = 1; i < candidates.length; i++) {
+                            const diff = Math.abs(pointEvent.startDate - candidates[i].startDate);
+                            if (diff < minDiff) {
+                                minDiff = diff;
+                                closest = candidates[i];
+                            }
                         }
+                        pointEvent.rowIndex = closest.rowIndex;
                     }
-                    pointEvent.rowIndex = closest.rowIndex;
                 }
-            }
+            });
+
+            finalLevelEvents.push(...groupBars);
+            finalPointEvents.push(...groupPoints);
+
+            // Increment offset by the height of this block
+            let rowsUsed = blockRows.length;
+            if (rowsUsed === 0 && groupPoints.length > 0) rowsUsed = 1; // Reserve space if points exist but no bars
+
+            currentLevel0RowIndex += rowsUsed;
         });
 
         layout.push({
             level0,
-            events: levelEvents,
-            pointEvents: levelPointEvents,
-            rowCount: rows.length, // Allow 0 rows if empty
+            events: finalLevelEvents,
+            pointEvents: finalPointEvents,
+            rowCount: currentLevel0RowIndex,
             yOffset: 0,
             topBarY: 45
         });
