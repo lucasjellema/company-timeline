@@ -102,7 +102,10 @@ start,end,title,description,type,level0,level1,level2
 - `css/style.css` - Custom styles and design system.
 - `js/`
   - `main.js` - Application orchestration and event handling.
-  - `renderer.js` - D3 visualization logic and rendering.
+  - `renderer.js` - D3 visualization coordinator.
+  - `renderer-axis.js` - Timeline axis rendering.
+  - `renderer-events.js` - Event bars and point drawing logic.
+  - `renderer-interaction.js` - User interaction handling (zoom, click, hover).
   - `layout-engine.js` - Data processing and hierarchical layout calculations.
   - `config.js` - Centralized configuration and constants.
   - `utils.js` - Helper functions.

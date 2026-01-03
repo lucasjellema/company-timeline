@@ -24,7 +24,10 @@ The Company Timeline Visualization is a client-side, single-page application (SP
 ├── js/
 │   ├── main.js          # Application Orchestrator
 │   ├── layout-engine.js # Data Processing & Layout Logic
-│   ├── renderer.js      # D3 Visualization & Interaction
+│   ├── renderer.js      # D3 Visualization Coordinator
+│   ├── renderer-axis.js # Axis & Grid Rendering
+│   ├── renderer-events.js # Event & Timeline Item Rendering
+│   ├── renderer-interaction.js # Zoom, Pan, & Interaction Logic
 │   ├── config.js        # Configuration Constants
 │   └── utils.js         # Shared Utilities
 └── sample.csv           # Default dataset
@@ -53,9 +56,13 @@ The Company Timeline Visualization is a client-side, single-page application (SP
   5. **Output**: Returns a hierarchical object structure containing coordinate metadata for the renderer.
 
 ### 3. Timeline Renderer (`renderer.js`)
-- **Responsibility**: Manages the D3 SVG canvas and handles all visual drawing and direct manipulation.
+- **Responsibility**: Coordinates the rendering process, delegating specific tasks to specialized sub-modules to maintain clean separation of concerns.
+- **Sub-Modules**:
+  - **`renderer-axis.js`**: Handles drawing of the time axis, grid lines, and tick formatting based on zoom level.
+  - **`renderer-events.js`**: Manages the drawing of timeline bars, event triangles, and their visual styling.
+  - **`renderer-interaction.js`**: Handles user interactions like zooming, panning, and event hovering.
 - **Key Features**:
-  - **Drawing**: Renders Axes (Year/Quarter/Month/Week), Group Backgrounds, Timeline Bars, and Event Triangles.
+  - **Drawing**: Renders Axes (Year/Quarter/Month/Week), Group Backgrounds, Timeline Bars, and Event Triangles via sub-modules.
   - **Zooming**: Implements a semantic zoom that changes axis granularity based on the zoom factor.
   - **Interactive Slider**: Manages the draggable vertical line. Calculates which events (duration bars and point milestones) are "active" at the slider's position.
   - **Tooltips**: Handles mouseover events to show detailed metadata. Includes logic to "lock" interactive tooltips to allow traversing bars.

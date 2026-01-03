@@ -55,14 +55,16 @@ export function handleEventHover(renderer, e, d) { // Renamed slightly to accept
     const lng = parseFloat(d.longitude || d.longtitude);
     const hasMap = !isNaN(lat) && !isNaN(lng);
 
+    let content = `
+            <span class="tooltip-title">${d.title}</span>
+            <div style="margin-bottom:8px; font-size: 0.9em"><strong>Type:</strong> ${d.type} &middot; <strong>Period:</strong> ${d.start} to ${d.end || 'Ongoing'}</div>
+            <div style="margin-bottom:10px">${d.description}</div>`
+
     // Conditional logic: Show map in tooltip ONLY if panel is closed
     if (hasMap && !renderer.isMapPanelOpen) {
         renderer.activeMapEventId = d.id;
         const mapId = `map-${d.id}`;
-        const content = `
-            <span class="tooltip-title">${d.title}</span>
-            <div style="margin-bottom:8px; font-size: 0.9em"><strong>Type:</strong> ${d.type} &middot; <strong>Period:</strong> ${d.start} to ${d.end || 'Ongoing'}</div>
-            <div style="margin-bottom:10px">${d.description}</div>
+        content += `
             <div id="${mapId}" style="width: 400px; height: 300px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); background: #333;"></div>
             `;
 
@@ -102,10 +104,7 @@ export function handleEventHover(renderer, e, d) { // Renamed slightly to accept
             `<svg viewBox="0 0 24 24" width="16" height="16" style="vertical-align: sub; margin-right: 6px; fill: currentColor;"><path d="${CONFIG.ICONS[iconName]}"></path></svg>` :
             '';
 
-        const content = `<span class="tooltip-title">${iconHtml}${d.title}</span>` +
-            `<strong>Type:</strong> ${d.type}<br>` +
-            `<strong>Period:</strong> ${d.start} to ${d.end || 'Ongoing'}<br><br>` +
-            `${d.description}${mapHint}`;
+        content += `${mapHint}`;
 
         renderer.tooltip.show(e, content, false);
     }

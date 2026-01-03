@@ -1,12 +1,74 @@
 import { CONFIG } from './config.js';
 import { getEventColor } from './utils.js';
 
+const CONSTANTS = {
+    // Layout constants for the timeline levels (L0, L1, etc. containers)
+    LEVEL: {
+        BG_HEIGHT_OFFSET: 15,     // Reduction in height for the level background rect (padding at bottom)
+        SEPARATOR_OFFSET: 10,     // Vertical offset from bottom for the separator line
+        TITLE_X_DEFAULT: 20,      // X position of the level title text in normal view
+        TITLE_X_DRILLED: 35,      // X position of the level title text when drilled down (shifted for back button)
+        TITLE_Y: 25,              // Y position of the level title text
+        BACK_BTN_OFFSET_Y: 15     // Y offset for the back button group relative to the label group
+    },
+    // Constants for the "Back" button appearing when drilled down
+    BACK_BUTTON: {
+        RADIUS: 10,               // Radius of the back button circle
+        CX: 10,                   // Center X of the back button circle
+        CY: 5,                    // Center Y of the back button circle
+        FILL_DEFAULT: "rgba(255,255,255,0.1)", // Default background color
+        FILL_HOVER: "rgba(255,255,255,0.3)",   // Background color on hover
+        STROKE: "#666",           // Stroke color for the button circle
+        STROKE_WIDTH: 1,          // Stroke width for the button circle
+        ICON_PATH: "M 12 5 L 8 9 L 12 13",     // SVG path data for the left arrow icon
+        ICON_STROKE: "#fff",      // Color of the arrow icon
+        ICON_FILL: "none",        // Fill of the arrow icon (none since it's a line)
+        ICON_TRANSLATE: "translate(0, -4)"     // Adjustment to center the arrow within the circle
+    },
+    // Tooltip related constants
+    TOOLTIP: {
+        PROMPT: "Double-click to drill down"   // Tooltip text for level labels
+    },
+    // Event rendering constants (Bars and Points)
+    EVENT: {
+        START_Y_OFFSET: 50,       // Vertical offset where the first row of events starts within a level
+        SMALL_THRESHOLD: 0.03,    // Events taking up less than 3% of viewport width are rendered as icons/points
+        TRIANGLE_SIZE: 10,        // Size of the triangle shape for point events
+        ICON_OFFSET_X: -12,       // Horizontal offset to center a 24px icon
+        ICON_OFFSET_Y: -19,       // Vertical offset to make the icon sit on top of the timeline row
+        ICON_STROKE: "#fff",      // Stroke color for event icons/shapes
+        ICON_STROKE_WIDTH: 1.5,   // Stroke width for event icons/shapes
+        LABEL_Y_OFFSET_GAP: 8,    // Gap between the icon and the text label
+        LABEL_Y_OFFSET_EXTRA: 2, // Additional offset for label positioning
+        LABEL_FONT_SIZE: "9px",   // Font size for event labels
+        LABEL_COLOR: "var(--text-muted)",      // CSS variable for label color
+        LABEL_TRUNCATE_LIMIT: 15, // Character count threshold to trigger truncation
+        LABEL_TRUNCATE_LENGTH: 12,// Number of characters to keep when truncating
+        BAR_MIN_WIDTH: 8,         // Minimum width in pixels for an event bar
+        BAR_ICON_OPACITY: 0.9,    // Opacity of the icon inside an event bar
+        BAR_ICON_TRANSFORM: "translate(6, 4) scale(0.7)", // Positioning and scaling for icon inside bar
+        BAR_ICON_FILL: "white",   // Color of the icon inside the bar
+        BAR_LABEL_X_OFFSET: 4,    // Horizontal padding for the label inside the bar
+        BAR_LABEL_Y_PAD: 10       // Vertical padding for the label relative to bar height
+    }
+};
+
 export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
     layoutData.forEach((level) => {
         const levelG = svg.append("g").attr("transform", `translate(0, ${level.yStart})`);
 
-        levelG.append("rect").attr("class", "level-bg").attr("width", renderer.width).attr("height", level.height - 15);
-        levelG.append("line").attr("class", "level-separator").attr("x1", 0).attr("x2", renderer.width).attr("y1", level.height - 10).attr("y2", level.height - 10);
+        levelG.append("rect")
+            .attr("class", "level-bg")
+            .attr("width", renderer.width)
+            .attr("height", level.height - CONSTANTS.LEVEL.BG_HEIGHT_OFFSET);
+
+        levelG.append("line")
+            .attr("class", "level-separator")
+            .attr("x1", 0)
+            .attr("x2", renderer.width)
+            .attr("y1", level.height - CONSTANTS.LEVEL.SEPARATOR_OFFSET)
+            .attr("y2", level.height - CONSTANTS.LEVEL.SEPARATOR_OFFSET);
+
         // Level Label Group with Interaction
         const labelG = levelG.append("g")
             .attr("class", "level-title-group")
@@ -22,7 +84,7 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
         if (renderer.isDrilledDown) {
             const backBtn = labelG.append("g")
                 .attr("class", "back-button-icon")
-                .attr("transform", "translate(0, 15)") // Positioned relative to text baseline
+                .attr("transform", `translate(0, ${CONSTANTS.LEVEL.BACK_BTN_OFFSET_Y})`) // Positioned relative to text baseline
                 .on("click", (e) => {
                     e.stopPropagation();
                     if (renderer.onBackButtonClick) renderer.onBackButtonClick();
@@ -30,43 +92,52 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
 
             // Circle background
             backBtn.append("circle")
-                .attr("r", 10)
-                .attr("cx", 10)
-                .attr("cy", 5)
-                .attr("fill", "rgba(255,255,255,0.1)")
-                .attr("stroke", "#666")
-                .attr("stroke-width", 1);
+                .attr("r", CONSTANTS.BACK_BUTTON.RADIUS)
+                .attr("cx", CONSTANTS.BACK_BUTTON.CX)
+                .attr("cy", CONSTANTS.BACK_BUTTON.CY)
+                .attr("fill", CONSTANTS.BACK_BUTTON.FILL_DEFAULT)
+                .attr("stroke", CONSTANTS.BACK_BUTTON.STROKE)
+                .attr("stroke-width", CONSTANTS.BACK_BUTTON.STROKE_WIDTH);
 
             // Arrow Path
             backBtn.append("path")
-                .attr("d", "M 12 5 L 8 9 L 12 13") // Simple Left Arrow
-                .attr("stroke", "#fff")
-                .attr("fill", "none")
-                .attr("transform", "translate(0, -4)"); // Adjust to center in circle
+                .attr("d", CONSTANTS.BACK_BUTTON.ICON_PATH) // Simple Left Arrow
+                .attr("stroke", CONSTANTS.BACK_BUTTON.ICON_STROKE)
+                .attr("fill", CONSTANTS.BACK_BUTTON.ICON_FILL)
+                .attr("transform", CONSTANTS.BACK_BUTTON.ICON_TRANSLATE); // Adjust to center in circle
 
             // Add hover effect
             backBtn.on("mouseenter", function () {
-                d3.select(this).select("circle").attr("fill", "rgba(255,255,255,0.3)");
+                d3.select(this).select("circle").attr("fill", CONSTANTS.BACK_BUTTON.FILL_HOVER);
             }).on("mouseleave", function () {
-                d3.select(this).select("circle").attr("fill", "rgba(255,255,255,0.1)");
+                d3.select(this).select("circle").attr("fill", CONSTANTS.BACK_BUTTON.FILL_DEFAULT);
             });
 
             // Shift text to the right
-            labelG.append("text").attr("class", "level-label").attr("x", 35).attr("y", 25).text(level.level0);
+            labelG.append("text")
+                .attr("class", "level-label")
+                .attr("x", CONSTANTS.LEVEL.TITLE_X_DRILLED)
+                .attr("y", CONSTANTS.LEVEL.TITLE_Y)
+                .text(level.level0);
         } else {
-            labelG.append("text").attr("class", "level-label").attr("x", 20).attr("y", 25).text(level.level0);
+            labelG.append("text")
+                .attr("class", "level-label")
+                .attr("x", CONSTANTS.LEVEL.TITLE_X_DEFAULT)
+                .attr("y", CONSTANTS.LEVEL.TITLE_Y)
+                .text(level.level0);
+
             // Add tooltip prompt for drilldown?
-            labelG.append("title").text("Double-click to drill down");
+            labelG.append("title").text(CONSTANTS.TOOLTIP.PROMPT);
         }
 
         // Draw regular timeline bars
         const eventGroups = levelG.selectAll(".event-g")
             .data(level.events).enter().append("g").attr("class", "event-g")
-            .attr("transform", d => `translate(${xScale(d.startDate)}, ${45 + d.rowIndex * (CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING)})`);
+            .attr("transform", d => `translate(${xScale(d.startDate)}, ${CONSTANTS.EVENT.START_Y_OFFSET + d.rowIndex * (CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING)})`);
 
         const viewportWidth = renderer.container.node().clientWidth;
-        const threshold = viewportWidth * 0.03;
-        const triangleSize = 10;
+        const threshold = viewportWidth * CONSTANTS.EVENT.SMALL_THRESHOLD;
+        const triangleSize = CONSTANTS.EVENT.TRIANGLE_SIZE;
 
         eventGroups.each((d, i, nodes) => {
             const g = d3.select(nodes[i]);
@@ -81,7 +152,7 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
 
                 if (iconName && CONFIG.ICONS[iconName]) {
                     pathD = CONFIG.ICONS[iconName];
-                    iconGroupTransform = "translate(-12, -26) scale(1)";
+                    iconGroupTransform = `translate(${CONSTANTS.EVENT.ICON_OFFSET_X}, ${CONSTANTS.EVENT.ICON_OFFSET_Y}) scale(1)`;
                 }
 
                 // Wrapper group for positioning (to avoid conflict with CSS hover transforms on path)
@@ -92,8 +163,8 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                     .attr("class", "event-triangle") // Reuse class for hover effects
                     .attr("d", pathD)
                     .attr("fill", getEventColor(d.type, renderer.typeColors))
-                    .attr("stroke", "#fff")
-                    .attr("stroke-width", 1.5)
+                    .attr("stroke", CONSTANTS.EVENT.ICON_STROKE)
+                    .attr("stroke-width", CONSTANTS.EVENT.ICON_STROKE_WIDTH)
                     .attr("data-id", d.id)
                     .style("cursor", "pointer")
                     .on("mouseenter", (e) => renderer.handleEventHover(e, d))
@@ -117,18 +188,18 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                 g.append("text")
                     .attr("class", "event-label") // Use event-label to match point events
                     .attr("x", 0)
-                    .attr("y", -triangleSize - 8 - 10) // added -4 for icons i/o triangle 
+                    .attr("y", -triangleSize - CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP - CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA)
                     .attr("text-anchor", "middle")
-                    .attr("font-size", "9px")
-                    .attr("fill", "var(--text-muted)")
-                    .text(d.title.length > 15 ? d.title.substring(0, 12) + '...' : d.title);
+                    .attr("font-size", CONSTANTS.EVENT.LABEL_FONT_SIZE)
+                    .attr("fill", CONSTANTS.EVENT.LABEL_COLOR)
+                    .text(d.title.length > CONSTANTS.EVENT.LABEL_TRUNCATE_LIMIT ? d.title.substring(0, CONSTANTS.EVENT.LABEL_TRUNCATE_LENGTH) + '...' : d.title);
 
 
             } else {
                 // Render as Bar
                 g.append("rect").attr("class", "event-bar")
                     .attr("height", CONFIG.BAR_HEIGHT).attr("fill", d => getEventColor(d.type, renderer.typeColors))
-                    .attr("width", Math.max(8, w))
+                    .attr("width", Math.max(CONSTANTS.EVENT.BAR_MIN_WIDTH, w))
                     .attr("data-id", d.id)
                     .on("mouseenter", (e) => {
                         if (renderer.tooltip.isLocked && renderer.tooltip.isLocked()) return;
@@ -155,16 +226,16 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                     g.append("path")
                         .attr("class", "event-icon")
                         .attr("d", CONFIG.ICONS[iconName])
-                        .attr("fill", "white")
-                        .attr("fill-opacity", 0.9)
-                        .attr("transform", "translate(6, 4) scale(0.7)") // Scale 24px to ~16.8px, fit in 24px bar
+                        .attr("fill", CONSTANTS.EVENT.BAR_ICON_FILL)
+                        .attr("fill-opacity", CONSTANTS.EVENT.BAR_ICON_OPACITY)
+                        .attr("transform", CONSTANTS.EVENT.BAR_ICON_TRANSFORM)
                         .style("pointer-events", "none");
                 }
 
                 // Label Below (Standard Bar Label)
                 g.append("text").attr("class", "bar-label")
-                    .attr("x", 4)
-                    .attr("y", CONFIG.BAR_HEIGHT + 16)
+                    .attr("x", CONSTANTS.EVENT.BAR_LABEL_X_OFFSET)
+                    .attr("y", CONFIG.BAR_HEIGHT + CONSTANTS.EVENT.BAR_LABEL_Y_PAD)
                     .text(d.title);
             }
         });
@@ -179,7 +250,7 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
         return; // No point events in this level
     }
 
-    const triangleSize = 10; // Size of the triangle
+    const triangleSize = CONSTANTS.EVENT.TRIANGLE_SIZE;
 
     level.pointEvents.forEach(event => {
         const x = xScale(event.startDate);
@@ -205,7 +276,7 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
             // The line is at y=0.
             // So translate x by -12 to center.
             // Translate y by -24 to sit on top.
-            iconGroupTransform = "translate(-12, -26) scale(1)";
+            iconGroupTransform = `translate(${CONSTANTS.EVENT.ICON_OFFSET_X}, ${CONSTANTS.EVENT.ICON_OFFSET_Y}) scale(1)`;
         }
 
         // Create a wrapper group specifically for the icon/triangle path
@@ -217,8 +288,8 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
             .attr("class", "event-triangle")
             .attr("d", pathD)
             .attr("fill", getEventColor(event.type, renderer.typeColors))
-            .attr("stroke", "#fff")
-            .attr("stroke-width", 1.5)
+            .attr("stroke", CONSTANTS.EVENT.ICON_STROKE)
+            .attr("stroke-width", CONSTANTS.EVENT.ICON_STROKE_WIDTH)
             // transform attribute handled by wrapper
             .attr("data-id", event.id)
             .style("cursor", "pointer")
@@ -242,10 +313,10 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
         triangleG.append("text")
             .attr("class", "event-label")
             .attr("x", 0) // Centered horizontally
-            .attr("y", -triangleSize - 8 - 10) // Above the triangle
+            .attr("y", -triangleSize - CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP - CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA) // Above the triangle
             .attr("text-anchor", "middle")
-            .attr("font-size", "9px")
-            .attr("fill", "var(--text-muted)")
-            .text(event.title.length > 15 ? event.title.substring(0, 12) + '...' : event.title);
+            .attr("font-size", CONSTANTS.EVENT.LABEL_FONT_SIZE)
+            .attr("fill", CONSTANTS.EVENT.LABEL_COLOR)
+            .text(event.title.length > CONSTANTS.EVENT.LABEL_TRUNCATE_LIMIT ? event.title.substring(0, CONSTANTS.EVENT.LABEL_TRUNCATE_LENGTH) + '...' : event.title);
     });
 }

@@ -1,13 +1,18 @@
 export const CONFIG = {
+    // Padding around the main SVG visualization
     PADDING: {
-        TOP: 80,
-        RIGHT: 40,
-        BOTTOM: 40,
-        LEFT: 120
+        TOP: 80,    // Space at the top for time axis and headers
+        RIGHT: 40,  // Space on the right side
+        BOTTOM: 40, // Space at the bottom
+        LEFT: 120   // Space on the left for Level 0 category labels
     },
-    BAR_HEIGHT: 24,
-    BAR_SPACING: 30,
-    LEVEL_SPACING: 60,
+
+    // Dimensions for event bars
+    BAR_HEIGHT: 24,   // Height of each event bar in pixels
+    BAR_SPACING: 45, // Vertical distance between two parallel level1 bars in the same level0 group
+    LEVEL_SPACING: 60,// Vertical gap between major Level 0 categories
+
+    // Default color palette for events
     COLORS: {
         training: '#10B981',   // Emerald
         release: '#F59E0B',    // Amber
@@ -15,12 +20,15 @@ export const CONFIG = {
         sprint: '#EC4899',     // Pink
         default: '#94A3B8'     // Slate
     },
+
+    // Specific color mapping by event type
     TYPE_COLORS: {
         training: '#10B981',
         release: '#F59E0B',
         project: '#6366F1',
         sprint: '#EC4899'
     },
+    // SVG path data for various icons used in point events or bar overlays
     ICONS: {
         star: "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z",
         circle: "M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2z",
@@ -53,10 +61,11 @@ export const CONFIG = {
     // 1.5-3x: Quarters
     // 3-8x: Months
     // 8x+: Weeks
+    // Configuration for Semantic Zoom (switching granularity based on zoom level)
     ZOOM_GRANULARITY: {
-        WEEKLY_THRESHOLD: 12,
-        MONTHLY_THRESHOLD: 6,
-        QUARTERLY_THRESHOLD: 3
+        WEEKLY_THRESHOLD: 12, // Zoom factor threshold to switch to Weekly view
+        MONTHLY_THRESHOLD: 6, // Zoom factor threshold to switch to Monthly view
+        QUARTERLY_THRESHOLD: 3 // Zoom factor threshold to switch to Quarterly view
     }
 };
 
