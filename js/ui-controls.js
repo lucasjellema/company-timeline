@@ -1,4 +1,4 @@
-export function initSplitter(splitterId, sidePanelId, mapManager) {
+export function initSplitter(splitterId, sidePanelId, mapManager, onResize) {
     const splitter = document.getElementById(splitterId);
     const sidePanel = document.getElementById(sidePanelId);
 
@@ -14,6 +14,9 @@ export function initSplitter(splitterId, sidePanelId, mapManager) {
         startWidth = sidePanel.getBoundingClientRect().width;
         document.body.style.cursor = 'col-resize';
         e.preventDefault();
+
+        // Add class to body to prevent text selection during drag
+        document.body.classList.add('resizing');
     });
 
     document.addEventListener('mousemove', (e) => {
@@ -33,6 +36,7 @@ export function initSplitter(splitterId, sidePanelId, mapManager) {
             }
 
             if (mapManager) mapManager.invalidateSize();
+            if (onResize) onResize();
         }
     });
 
@@ -40,6 +44,7 @@ export function initSplitter(splitterId, sidePanelId, mapManager) {
         if (isResizing) {
             isResizing = false;
             document.body.style.cursor = 'default';
+            document.body.classList.remove('resizing');
         }
     });
 }

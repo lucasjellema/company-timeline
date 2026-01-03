@@ -1,0 +1,6 @@
+/* Utility class for resizing */
+body.resizing {
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: col-resize !important;
+}

@@ -171,7 +171,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Init Modules ---
 
     // UI Controls
-    initSplitter('timeline-splitter', 'side-panel', mapManager);
+    let resizeRaf = null;
+    initSplitter('timeline-splitter', 'side-panel', mapManager, () => {
+        if (resizeRaf) return;
+        resizeRaf = requestAnimationFrame(() => {
+            if (renderer.layoutData) renderTimeline({ preserveSlider: true });
+            resizeRaf = null;
+        });
+    });
     initZoomControls(renderer);
     const getActiveTab = initTabs('.nav-tab', '.tab-content', (target) => {
         renderer.isMapPanelOpen = (target === 'map');
