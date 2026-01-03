@@ -145,10 +145,19 @@ function initImportExportUI(storage, refreshCallback) {
             reader.onload = (event) => {
                 try {
                     const data = d3.csvParse(event.target.result);
-                    if (confirm("Importing CSV. Create a new Story from this?")) {
-                        const name = `Imported Story ${new Date().toLocaleTimeString()}`;
-                        storage.createStory(name, data);
-                        window.timelineData = data;
+                    const activeStory = storage.getActiveStory();
+
+                    if (confirm(`Importing CSV. Merge ${data.length} events into the current story "${activeStory ? activeStory.name : 'New Story'}"?`)) {
+                        let mergedData = data;
+                        if (activeStory && Array.isArray(activeStory.data)) {
+                            mergedData = [...activeStory.data, ...data];
+                            storage.saveActiveStory(mergedData);
+                        } else {
+                            const name = `Imported Story ${new Date().toLocaleTimeString()}`;
+                            storage.createStory(name, data);
+                        }
+
+                        window.timelineData = mergedData;
                         refreshCallback({ resetView: true });
                     }
                 } catch (error) {
