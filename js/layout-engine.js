@@ -100,8 +100,19 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
             const groupBars = groupItems.filter(item => !item.isEvent);
             const groupPoints = groupItems.filter(item => item.isEvent);
 
-            // Sort bars by start date
-            groupBars.sort((a, b) => a.startDate - b.startDate || (b.endDate - b.startDate) - (a.endDate - a.startDate));
+            // Sort bars:
+            // 1. "Parent" items (Level 2 is empty) come FIRST.
+            // 2. Then by start date.
+            groupBars.sort((a, b) => {
+                const aIsParent = !a.level2 || a.level2.trim() === '';
+                const bIsParent = !b.level2 || b.level2.trim() === '';
+
+                if (aIsParent && !bIsParent) return -1; // A comes first
+                if (!aIsParent && bIsParent) return 1;  // B comes first
+
+                // Secondary sort: Start Date
+                return a.startDate - b.startDate || (b.endDate - b.startDate) - (a.endDate - a.startDate);
+            });
 
             // Pack bars into rows specific to this Level 1 block
             const blockRows = [];
