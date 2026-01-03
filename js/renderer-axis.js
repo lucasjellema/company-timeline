@@ -1,54 +1,69 @@
 import { CONFIG } from './config.js';
 
 export function drawAxis(svg, xScale, width, totalHeight, zoomFactor) {
-    const monthsDiff = d3.timeMonth.count(xScale.domain()[0], xScale.domain()[1]);
-
-    // Determine granularity based on zoom factor
+    const start = xScale.domain()[0];
+    const end = xScale.domain()[1];
+    // We want ~10 labels per "screen width" (base width).
+    // The total width is roughly baseWidth * zoomFactor.
+    // So total labels on the entire axis should be ~10 * zoomFactor.
+    const maxLabels = Math.ceil(10 * zoomFactor);
+    const minLabels = Math.ceil(5 * zoomFactor);
     let interval, formatType;
 
-    if (zoomFactor >= CONFIG.ZOOM_GRANULARITY.WEEKLY_THRESHOLD) {
-        // Weekly granularity at high zoom
-        interval = d3.timeWeek.every(1);
-        formatType = 'week';
-    } else if (zoomFactor >= CONFIG.ZOOM_GRANULARITY.MONTHLY_THRESHOLD) {
-        // Monthly granularity at medium zoom
-        interval = d3.timeMonth.every(1);
-        formatType = 'month';
-    } else if (zoomFactor >= CONFIG.ZOOM_GRANULARITY.QUARTERLY_THRESHOLD) {
-        // Quarterly granularity at low-medium zoom
-        interval = d3.timeMonth.every(3);
-        formatType = 'quarter';
-    } else {
-        // Yearly granularity at minimum zoom
-        // Adapt based on available width per tick to avoid overlap
-        const start = xScale.domain()[0];
-        const end = xScale.domain()[1];
-        const yearCount = d3.timeYear.count(start, end);
-        const widthPerYear = yearCount > 0 ? width / yearCount : width;
+    // Helper: Round up to nearest nice number [1, 2, 5, 10, 20, 50, 100, etc]
+    const getNiceStep = (rawStep) => {
+        const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));
+        const normalized = rawStep / magnitude;
+        let niceNorm;
+        if (normalized <= 1) niceNorm = 1;
+        else if (normalized <= 2) niceNorm = 2;
+        else if (normalized <= 5) niceNorm = 5;
+        else niceNorm = 10;
+        return niceNorm * magnitude;
+    };
 
-        if (widthPerYear < 0.05) { // < 0.05px per year -> every 1000 years
-            interval = d3.timeYear.every(1000);
-        } else if (widthPerYear < 0.1) { // < 0.1px per year -> every 500 years
-            interval = d3.timeYear.every(500);
-        } else if (widthPerYear < 0.25) { // < 0.25px per year -> every 200 years
-            interval = d3.timeYear.every(200);
-        } else if (widthPerYear < 0.5) { // < 0.5px per year -> every 100 years
-            interval = d3.timeYear.every(100);
-        } else if (widthPerYear < 1) { // < 1px per year -> every 50 years
-            interval = d3.timeYear.every(50);
-        } else if (widthPerYear < 2.5) { // < 2.5px per year -> every 20 years
-            interval = d3.timeYear.every(20);
-        } else if (widthPerYear < 5) { // < 5px per year -> every 10 years
-            interval = d3.timeYear.every(10);
-        } else if (widthPerYear < 12) {
-            interval = d3.timeYear.every(5);
-        } else if (widthPerYear < 25) {
-            interval = d3.timeYear.every(2);
-        } else {
-            interval = d3.timeYear.every(1);
-        }
+    const yearCount = d3.timeYear.count(start, end);
+
+    if (yearCount >= minLabels) {
+        // CASE: Years
+        // We want at most maxLabels.
+        // rawStep = yearCount / maxLabels.
+        // Example: 100 years / 10 = 10.
+        // Example: 6 years / 10 = 0.6 -> step 1.
+        let rawStep = Math.max(1, yearCount / maxLabels);
+        let step = getNiceStep(rawStep);
+        interval = d3.timeYear.every(step);
         formatType = 'year';
+    } else {
+        // Less than 5 years. Try Quarters.
+        const monthCount = d3.timeMonth.count(start, end);
+        const quarterCount = monthCount / 3;
+
+        if (quarterCount >= minLabels) {
+            // CASE: Quarters
+            let rawStep = Math.max(1, Math.ceil(quarterCount / maxLabels));
+            // rawStep is in "units of 3 months".
+            // e.g. rawStep 2 => every 2 quarters => every 6 months.
+            interval = d3.timeMonth.every(rawStep * 3);
+            formatType = 'quarter';
+        } else {
+            // Less than 5 quarters. Try Months.
+            if (monthCount >= minLabels) {
+                // CASE: Months
+                let step = Math.max(1, Math.ceil(monthCount / maxLabels));
+                interval = d3.timeMonth.every(step);
+                formatType = 'month';
+            } else {
+                // CASE: Weeks (Default fallback)
+                const weekCount = d3.timeWeek.count(start, end);
+                let step = Math.max(1, Math.ceil(weekCount / maxLabels));
+                interval = d3.timeWeek.every(step);
+                formatType = 'week';
+            }
+        }
     }
+
+    // We use .ticks() with our calculated interval
 
     const xAxis = d3.axisTop(xScale)
         .ticks(interval)
