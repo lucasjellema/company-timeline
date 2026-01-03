@@ -18,13 +18,20 @@ A premium, interactive company timeline visualization tool powered by **D3.js**.
   - **Slider Sync**: The map automatically updates in real-time to show pins for all events (including milestones) active at the slider's current time.
   - **Hover Sync**: Hovering over map pins highlights the corresponding timeline events for easy identification.
 - **Hierarchical Layout**: Automatically groups events by organizational levels (Level 0, Level 1, Level 2).
-- **Vertical Time Slider**: A draggable time focus that highlights active events at any specific point in time.
+- **Vertical Time Slider**: A draggable time focus that highlights active events at any specific point in time. Includes multiple drag handles (top, bottom, and periodically along the line) for easy interaction on tall timelines.
 - **Real-time Side Panel**: Instantly see all "Simultaneous Events" occurring at the selected slider date.
 - **Dynamic Styling**: Color-coded event types (Projects, Releases, Sprints, Training) for quick visual scanning.
-- **CSV Integration**: Upload your own data or download a sample template to get started instantly.
+- **CSV Integration**: Upload your own data to merge into current stories, or download sample templates.
 - **Responsive Design**: Adapts to various screen sizes with automatic re-rendering.
 - **Strategic Drill Down**: Double-click any top-level category (Level 0) to instantly filter the timeline and focus on that specific department or stream. A context-aware "Back" button allows for easy navigation back to the overview.
 - **Resizable Interface**: Interactive splitter allows users to seamlessly resize the side panel. The timeline visualization automatically adjusts its scale and layout to fill the remaining space in real-time.
+- **Story Management**: Create new stories from scratch, switch between multiple saved stories, or load pre-packaged "Shipped Stories" (e.g., WWII, Tech History).
+- **Rich Event Editor**: Comprehensive modal for adding events with support for:
+  - Custom Event Types (with specific colors/icons)
+  - Date Ranges (with quick "Copy Start to End" utility)
+  - Interactive Mini-map for location picking
+- **Advanced Search & Filtering**: Filter events by keyword, type, or duration. The timeline semantic zoom automatically adjusts to show the context of search results.
+- **Context Menus**: Right-click on events to Edit, Delete, or Move them. Right-click on the Story list to Clone or Delete stories.
 
 
 ## 🚀 Getting Started

@@ -31,7 +31,15 @@ The timeline visualization now supports **events** - point-in-time occurrences t
 - Hover effects: triangles scale and glow
 - Smooth transitions for interactive feedback
 
-### 5. Sample Data
+### 5. Multi-Handle Time Slider (`js/renderer-interaction.js`)
+- The time slider line now features multiple drag handles to facilitate interaction on tall timelines
+- Handles are automatically generated:
+    - At the very top (start)
+    - At the very bottom (end, if height permits)
+    - At regular 500px intervals along the line
+- Dragging any handle updates the entire slider and synchronizes all active events
+
+### 6. Sample Data
 - Updated `sample.csv` with three example events:
   - Product Launch (2023-09-15)
   - New Year Kickoff (2024-01-01)
@@ -44,6 +52,7 @@ The timeline visualization now supports **events** - point-in-time occurrences t
 3. **Hover over triangles**: Tooltips should appear showing event details
 4. **Check different groups**: The "company" group should show the event triangles
 5. **Test zoom**: Zoom in/out to verify triangles scale properly with the timeline
+6. **Test Slider**: Drag the vertical line using any of the handles positioned along its length
 
 ## CSV Format for Events
 
@@ -71,3 +80,14 @@ If you don't see triangles:
 - **Colors**: Match event type colors (project=indigo, release=amber, etc.)
 - **Interactive**: Scale to 110% on hover with glow effect
 - **Labels**: Truncated to 12 characters if longer than 15
+
+### 7. Visual Customization & Icons
+
+- **Icon Support**: The visualization now supports a wide array of semantic icons (e.g., 'birth', 'death', 'battle', 'treaty') for better visual distinction of event types.
+- **Icon Picker**: A custom UI component in the Story Settings allows users to associate specific icons with event types.
+- **Theming**: Event types can be assigned custom colors which propagate to timeline bars, event triangles, and map markers.
+
+### 8. Enhanced Tooltips
+
+- **Rich Formatting**: Tooltips now intelligently format dates (e.g., "15th May 2023") and handle ranges concisely ("May - June 2023" if years match).
+- **Interactive Mode**: Tooltips can contain interactive elements (like mini-maps) and remain open when hovered, allowing users to select or copy content inside them.

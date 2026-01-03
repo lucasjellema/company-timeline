@@ -21,7 +21,8 @@ The Company Timeline Visualization is a client-side, single-page application (SP
 ├── index.html           # Application Entry Point
 ├── css/
 │   ├── style.css        # Global styles and visualization theme
-│   └── resizing.css     # Utility styles for split-view resizing state
+│   ├── resizing.css     # Utility styles for split-view resizing state
+│   └── search.css       # Styles for search and filter elements
 ├── js/
 │   ├── main.js          # Application Orchestrator
 │   ├── layout-engine.js # Data Processing & Layout Logic
@@ -30,7 +31,14 @@ The Company Timeline Visualization is a client-side, single-page application (SP
 │   ├── renderer-events.js # Event & Timeline Item Rendering
 │   ├── renderer-interaction.js # Zoom, Pan, & Interaction Logic
 │   ├── config.js        # Configuration Constants
-│   └── utils.js         # Shared Utilities
+│   ├── utils.js         # Shared Utilities
+│   ├── storage.js       # Local Storage Management
+│   ├── story-ui.js      # Story Management UI Logic (Load/Save/Switch)
+│   ├── story-settings.js # Story Metadata & Settings
+│   ├── event-editor.js  # Add/Edit Event Logic
+│   ├── map-manager.js   # Leaflet Map Controller
+│   ├── search-controller.js # Search & Filter Logic
+│   └── ui-controls.js   # General UI Event Handlers
 └── sample.csv           # Default dataset
 ```
 
@@ -66,12 +74,19 @@ The Company Timeline Visualization is a client-side, single-page application (SP
 - **Key Features**:
   - **Drawing**: Renders Axes (Year/Quarter/Month/Week), Group Backgrounds, Timeline Bars, and Event Triangles via sub-modules.
   - **Zooming**: Implements a semantic zoom that changes axis granularity based on the zoom factor.
-  - **Interactive Slider**: Manages the draggable vertical line. Calculates which events (duration bars and point milestones) are "active" at the slider's position.
+  - **Interactive Slider**: Manages the draggable vertical line with multiple interaction handles (top, bottom, and distributed). Calculates which events (duration bars and point milestones) are "active" at the slider's position.
   - **Tooltips**: Handles mouseover events to show detailed metadata. Includes logic to "lock" interactive tooltips to allow traversing bars.
   - **Highlighting**: Exposes API to highlight events based on external triggers (e.g., map hover).
   - **Drill Down Interaction**: Detects double-clicks on category headers to trigger filtering. Renders visual controls (Back button) when in a filtered state.
 
-### 4. Utilities & Config (`utils.js`, `config.js`)
+### 4. Application Logic Modules
+- **`storage.js`**: Abstraction layer for `localStorage`. Handles saving, loading, listing, and deleting stories. Includes logic to merge new events into existing stories.
+- **`story-ui.js`**: Manages the "Load Story" and "Create Story" modals. Handles the "Shipped Stories" feature (loading pre-packaged JSONs).
+- **`event-editor.js`**: Controls the "Add Event" modal form. Handles input validation, date range copying, and location selection via mini-map.
+- **`search-controller.js`**: Manages the Search tab in the side panel. Implements filtering by keyword, event type, and duration. Updates the renderer to highlight matching events.
+- **`map-manager.js`**: Dedicated controller for the Leaflet map instance, handling marker creation, synchronization with the time slider, and popup management.
+
+### 5. Utilities & Config (`utils.js`, `config.js`)
 - **Utils**: Contains robust Date parsing logic (ISO 8601, European formats) and tooltip management.
 - **Config**: Centralized source of truth for visual constants (Colors, Padding, Bar Heights) and Zoom behavior thresholds.
 
