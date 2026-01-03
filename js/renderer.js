@@ -12,7 +12,6 @@ export class TimelineRenderer {
         this.xScale = null;
         this.width = 0;
         this.totalHeight = 0;
-        this.totalHeight = 0;
         this.activeMapEventId = null;
         this.isMapPanelOpen = false;
     }
@@ -327,58 +326,110 @@ export class TimelineRenderer {
                 .data(level.events).enter().append("g").attr("class", "event-g")
                 .attr("transform", d => `translate(${xScale(d.startDate)}, ${45 + d.rowIndex * (CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING)})`);
 
-            eventGroups.append("rect").attr("class", "event-bar")
-                .attr("height", CONFIG.BAR_HEIGHT).attr("fill", d => getEventColor(d.type, this.typeColors))
-                .attr("width", d => Math.max(8, xScale(d.endDate) - xScale(d.startDate)))
-                .attr("data-id", d => d.id)
-                .on("mouseenter", (e, d) => {
-                    // Check if we are currently holding an interactive tooltip open (e.g. map)
-                    // and if so, don't switch unless we truly left the previous context?
-                    // But mouseleave already fired.
-                    // The issue is traversing the space between bar 1 and tooltip 1 often crosses bar 2.
-                    // We need a small delay before showing NEW tooltip?
-                    // OR check if tooltip is currently hovered?
-                    // Simple fix: Check if tooltip is currently in "interactive mode" and visible.
-                    if (this.tooltip.isLocked && this.tooltip.isLocked()) return;
+            const viewportWidth = this.container.node().clientWidth;
+            const threshold = viewportWidth * 0.03;
+            const triangleSize = 10;
 
-                    this.handleEventHover(e, d);
-                })
-                .on("mousemove", (e) => {
-                    if (this.activeMapEventId || (this.tooltip.isLocked && this.tooltip.isLocked())) return;
-                    this.tooltip.move(e);
-                })
-                .on("mouseleave", () => {
-                    // Start hide process
-                    this.tooltip.hide();
-
-                    // Allow renderer to clear its state after the grace period?
-                    // actually activeMapEventId is mostly used to stop moving.
-                    // If we clear it here, mousemove starts working again?
-                    // We should probably rely on tooltip state mainly.
-                    this.activeMapEventId = null;
-                })
-                .on("contextmenu", (e, d) => {
-                    e.preventDefault();
-                    if (this.onEventContextMenu) {
-                        this.onEventContextMenu(e, d);
-                    }
-                });
-
-            // Draw Icon inside the bar
             eventGroups.each((d, i, nodes) => {
-                const iconName = this.typeIcons[d.type ? d.type.toLowerCase() : ''];
-                if (iconName && CONFIG.ICONS[iconName]) {
-                    d3.select(nodes[i]).append("path")
-                        .attr("class", "event-icon")
-                        .attr("d", CONFIG.ICONS[iconName])
-                        .attr("fill", "white")
-                        .attr("fill-opacity", 0.9)
-                        .attr("transform", "translate(6, 4) scale(0.7)") // Scale 24px to ~16.8px, fit in 24px bar
-                        .style("pointer-events", "none");
+                const g = d3.select(nodes[i]);
+                const w = Math.max(0, xScale(d.endDate) - xScale(d.startDate));
+                const isSmall = w < threshold;
+
+                if (isSmall) {
+                    // Render as instant event (Icon only)
+                    const iconName = this.typeIcons[d.type ? d.type.toLowerCase() : ''];
+                    let pathD = `M ${-triangleSize / 2},${-triangleSize} L ${triangleSize / 2},${-triangleSize} L 0,0 Z`;
+                    let iconGroupTransform = "";
+
+                    if (iconName && CONFIG.ICONS[iconName]) {
+                        pathD = CONFIG.ICONS[iconName];
+                        iconGroupTransform = "translate(-12, -26) scale(1)";
+                    }
+
+                    // Wrapper group for positioning (to avoid conflict with CSS hover transforms on path)
+                    const iconWrapper = g.append("g")
+                        .attr("transform", iconGroupTransform);
+
+                    iconWrapper.append("path")
+                        .attr("class", "event-triangle") // Reuse class for hover effects
+                        .attr("d", pathD)
+                        .attr("fill", getEventColor(d.type, this.typeColors))
+                        .attr("stroke", "#fff")
+                        .attr("stroke-width", 1.5)
+                        .attr("data-id", d.id)
+                        .style("cursor", "pointer")
+                        .on("mouseenter", (e) => this.handleEventHover(e, d))
+                        .on("mousemove", (e) => {
+                            if (this.activeMapEventId || (this.tooltip.isLocked && this.tooltip.isLocked())) return;
+                            this.tooltip.move(e);
+                        })
+                        .on("mouseleave", () => {
+                            this.activeMapEventId = null;
+                            this.tooltip.hide();
+                        })
+                        .on("contextmenu", (e) => {
+                            e.preventDefault();
+                            if (this.onEventContextMenu) {
+                                this.onEventContextMenu(e, d);
+                            }
+                        });
+
+
+                    // Label Above
+                    g.append("text")
+                        .attr("class", "event-label") // Use event-label to match point events
+                        .attr("x", 0)
+                        .attr("y", -triangleSize - 8)
+                        .attr("text-anchor", "middle")
+                        .attr("font-size", "9px")
+                        .attr("fill", "var(--text-muted)")
+                        .text(d.title.length > 15 ? d.title.substring(0, 12) + '...' : d.title);
+
+
+                } else {
+                    // Render as Bar
+                    g.append("rect").attr("class", "event-bar")
+                        .attr("height", CONFIG.BAR_HEIGHT).attr("fill", d => getEventColor(d.type, this.typeColors))
+                        .attr("width", Math.max(8, w))
+                        .attr("data-id", d.id)
+                        .on("mouseenter", (e) => {
+                            if (this.tooltip.isLocked && this.tooltip.isLocked()) return;
+                            this.handleEventHover(e, d);
+                        })
+                        .on("mousemove", (e) => {
+                            if (this.activeMapEventId || (this.tooltip.isLocked && this.tooltip.isLocked())) return;
+                            this.tooltip.move(e);
+                        })
+                        .on("mouseleave", () => {
+                            this.tooltip.hide();
+                            this.activeMapEventId = null;
+                        })
+                        .on("contextmenu", (e) => {
+                            e.preventDefault();
+                            if (this.onEventContextMenu) {
+                                this.onEventContextMenu(e, d);
+                            }
+                        });
+
+                    // Draw Icon inside the bar
+                    const iconName = this.typeIcons[d.type ? d.type.toLowerCase() : ''];
+                    if (iconName && CONFIG.ICONS[iconName]) {
+                        g.append("path")
+                            .attr("class", "event-icon")
+                            .attr("d", CONFIG.ICONS[iconName])
+                            .attr("fill", "white")
+                            .attr("fill-opacity", 0.9)
+                            .attr("transform", "translate(6, 4) scale(0.7)") // Scale 24px to ~16.8px, fit in 24px bar
+                            .style("pointer-events", "none");
+                    }
+
+                    // Label Below (Standard Bar Label)
+                    g.append("text").attr("class", "bar-label")
+                        .attr("x", 4)
+                        .attr("y", CONFIG.BAR_HEIGHT + 16)
+                        .text(d.title);
                 }
             });
-
-            eventGroups.append("text").attr("class", "bar-label").attr("x", 4).attr("y", CONFIG.BAR_HEIGHT + 16).text(d => d.title);
 
             // Draw event triangles (for point events without end dates)
             this.drawEventTriangles(levelG, level, xScale);
