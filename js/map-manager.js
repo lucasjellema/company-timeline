@@ -64,11 +64,29 @@ export class MapManager {
             `<svg viewBox="0 0 24 24" width="16" height="16" style="vertical-align: sub; margin-right: 6px; fill: currentColor;"><path d="${iconPath}"></path></svg>` :
             '';
 
+        const imageIconHtml = d.imageUrl ? `
+            <div class="map-popup-footer">
+                <div class="map-popup-image-wrapper">
+                     <div class="map-popup-image-preview">
+                        <img src="${d.imageUrl}" style="width: 100%; display: block; border-radius: 2px;">
+                     </div>
+                     <div class="map-popup-icon" title="View Image">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                          <circle cx="8.5" cy="8.5" r="1.5"/>
+                          <polyline points="21 15 16 10 5 21"/>
+                        </svg>
+                     </div>
+                </div>
+            </div>
+        ` : '';
+
         marker.bindPopup(`
             <strong>${iconHtml}${d.title}</strong><br>
             Type: ${d.type}<br>
             ${formatTooltipDate(d.start, d.end)}<br>
             <div style="font-size:0.9em; margin-top:4px">${d.description || ''}</div>
+            ${imageIconHtml}
          `);
 
         marker.on('mouseover', function (e) {
