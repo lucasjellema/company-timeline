@@ -23,5 +23,5 @@
 * [ ] paste Google Maps location on map
 * [X] search from date to date
 * [X] zoom after search - to only show L0 items and L1 with a found event, only show time section for the found events
-* [ ] show icons on map (in color)
+* [ ] show icons on map (in color) instead of default markers
 * [X] allow color and icon for event (in edit event)

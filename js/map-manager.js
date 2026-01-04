@@ -5,16 +5,27 @@ export class MapManager {
     constructor(mapContainerId) {
         this.mapContainerId = mapContainerId;
         this.map = null;
-        this.markers = [];
+        this.markers = []; // Array of { marker, data, typeIcons }
+        this.useEventIcons = false;
         this.initResetButton();
+        this.initToggle();
     }
 
     initResetButton() {
-        // Handler for reset, assuming button exists
         const btn = document.getElementById('reset-map-btn');
         if (btn) {
             btn.addEventListener('click', () => {
                 this.clearMarkers();
+            });
+        }
+    }
+
+    initToggle() {
+        const toggle = document.getElementById('map-marker-toggle');
+        if (toggle) {
+            toggle.addEventListener('change', (e) => {
+                this.useEventIcons = e.target.checked;
+                this.refreshMarkers();
             });
         }
     }
@@ -28,7 +39,6 @@ export class MapManager {
         const mapContainer = document.getElementById(this.mapContainerId);
         if (!mapContainer) return;
 
-        // Set initial height based on current width if not set
         if (!mapContainer.style.height) {
             const width = mapContainer.clientWidth || 300;
             mapContainer.style.height = `${width * 0.75}px`;
@@ -40,27 +50,61 @@ export class MapManager {
         }
 
         this.map = L.map(this.mapContainerId).setView([20, 0], 2);
-        // Use Light tiles for better visibility
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
         }).addTo(this.map);
     }
 
-    addEventPin(d, shouldPan = false, callbacks = {}, typeIcons = {}) {
-        if (!this.map) this.initIfNeeded();
-
+    createMarker(d, typeIcons, typeColors) {
         const lat = parseFloat(d.lattitude || d.latitude);
         const lng = parseFloat(d.longitude || d.longtitude);
 
-        if (isNaN(lat) || isNaN(lng)) return;
+        if (isNaN(lat) || isNaN(lng)) return null;
 
-        const marker = L.marker([lat, lng]).addTo(this.map);
-
-        const iconName = typeIcons && typeIcons[d.type ? d.type.toLowerCase() : ''];
+        let marker;
+        const iconName = d.icon || (typeIcons && typeIcons[d.type ? d.type.toLowerCase() : '']);
+        // Fix: Ensure we check CONFIG.ICONS properly if we had access to it, 
+        // but here we rely on what was passed or access global CONFIG if imported.
+        // The original code accessed CONFIG.ICONS.
         const iconPath = (iconName && CONFIG.ICONS[iconName]) ? CONFIG.ICONS[iconName] : null;
 
-        const iconHtml = iconPath ?
+        if (this.useEventIcons && iconPath) {
+            const typeKey = d.type ? d.type.toLowerCase() : '';
+            const color = d.color || (typeColors && typeColors[typeKey]) || (CONFIG.TYPE_COLORS && CONFIG.TYPE_COLORS[typeKey]) || '#6366f1';
+
+            const iconHtml = `
+                <div style="
+                    background-color: ${color};
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+                    border: 2px solid white;
+                ">
+                    <svg viewBox="0 0 24 24" width="18" height="18" style="fill: white;">
+                        <path d="${iconPath}"></path>
+                    </svg>
+                </div>
+            `;
+
+            const customIcon = L.divIcon({
+                className: 'custom-event-marker',
+                html: iconHtml,
+                iconSize: [30, 30],
+                iconAnchor: [15, 15],
+                popupAnchor: [0, -15]
+            });
+
+            marker = L.marker([lat, lng], { icon: customIcon });
+        } else {
+            marker = L.marker([lat, lng]);
+        }
+
+        const iconHtmlForPopup = iconPath ?
             `<svg viewBox="0 0 24 24" width="16" height="16" style="vertical-align: sub; margin-right: 6px; fill: currentColor;"><path d="${iconPath}"></path></svg>` :
             '';
 
@@ -82,12 +126,55 @@ export class MapManager {
         ` : '';
 
         marker.bindPopup(`
-            <strong>${iconHtml}${d.title}</strong><br>
+            <strong>${iconHtmlForPopup}${d.title}</strong><br>
             Type: ${d.type}<br>
             ${formatTooltipDate(d.start, d.end)}<br>
             <div style="font-size:0.9em; margin-top:4px">${d.description || ''}</div>
             ${imageIconHtml}
          `);
+
+        return marker;
+    }
+
+    refreshMarkers() {
+        if (!this.map) return;
+
+        // Remove current markers from map but keep data
+        this.markers.forEach(item => {
+            if (item.marker) this.map.removeLayer(item.marker);
+        });
+
+        // Recreate markers
+        this.markers.forEach(item => {
+            const newMarker = this.createMarker(item.data, item.typeIcons, item.typeColors);
+            if (newMarker) {
+                // Restore event listeners
+                newMarker.on('mouseover', () => {
+                    newMarker.openPopup();
+                    if (item.callbacks && item.callbacks.onHover) item.callbacks.onHover(item.data.id);
+                });
+                newMarker.on('mouseout', () => {
+                    if (item.callbacks && item.callbacks.onBlur) item.callbacks.onBlur(item.data.id);
+                });
+
+                newMarker.addTo(this.map);
+                item.marker = newMarker;
+            }
+        });
+    }
+
+    addEventPin(d, shouldPan = false, callbacks = {}, typeIcons = {}, typeColors = {}) {
+        if (!this.map) this.initIfNeeded();
+
+        const lat = parseFloat(d.lattitude || d.latitude);
+        const lng = parseFloat(d.longitude || d.longtitude);
+
+        if (isNaN(lat) || isNaN(lng)) return;
+
+        const marker = this.createMarker(d, typeIcons, typeColors);
+        if (!marker) return;
+
+        marker.addTo(this.map);
 
         marker.on('mouseover', function (e) {
             this.openPopup();
@@ -102,13 +189,15 @@ export class MapManager {
             this.map.flyTo([lat, lng], Math.max(this.map.getZoom(), 6), { duration: 1 });
         }
 
-        this.markers.push(marker);
+        this.markers.push({ marker, data: d, typeIcons, typeColors, callbacks });
         return [lat, lng];
     }
 
     clearMarkers() {
         if (!this.map) return;
-        this.markers.forEach(m => this.map.removeLayer(m));
+        this.markers.forEach(item => {
+            if (item.marker) this.map.removeLayer(item.marker);
+        });
         this.markers = [];
     }
 

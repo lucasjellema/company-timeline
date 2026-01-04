@@ -461,11 +461,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isMapOpen) {
                 const activeStory = storage.getActiveStory();
                 const typeIcons = (activeStory && activeStory.settings && activeStory.settings.icons) ? activeStory.settings.icons : {};
+                const typeColors = (activeStory && activeStory.settings && activeStory.settings.colors) ? activeStory.settings.colors : {};
 
                 const pt = mapManager.addEventPin(d, false, {
                     onHover: (id) => renderer.highlightEvent(id),
                     onBlur: (id) => renderer.unhighlightEvent(id)
-                }, typeIcons);
+                }, typeIcons, typeColors);
                 if (pt) boundsPoints.push(pt);
             }
         });
@@ -480,8 +481,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (getActiveTab() === 'map') {
             const activeStory = storage.getActiveStory();
             const typeIcons = (activeStory && activeStory.settings && activeStory.settings.icons) ? activeStory.settings.icons : {};
+            const typeColors = (activeStory && activeStory.settings && activeStory.settings.colors) ? activeStory.settings.colors : {};
 
-            mapManager.addEventPin(d, true, {}, typeIcons); // Pan to it
+            mapManager.addEventPin(d, true, {}, typeIcons, typeColors); // Pan to it
             // return false; // To show tooltip? code said return false handles it.
         }
         return false;
