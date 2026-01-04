@@ -29,6 +29,7 @@ A premium, interactive company timeline visualization tool powered by **D3.js**.
 - **Rich Event Editor**: Comprehensive modal for adding events with support for:
   - Custom Event Types (with specific colors/icons)
   - Date Ranges (with quick "Copy Start to End" utility)
+  - **Image Support**: Add image URLs to events for rich previews in tooltips and map popups.
   - Interactive Mini-map for location picking
 - **Advanced Search & Filtering**: Filter events by keyword, type, or duration. The timeline semantic zoom automatically adjusts to show the context of search results.
 - **Context Menus**: Right-click on events to Edit, Delete, or Move them. Right-click on the Story list to Clone or Delete stories.
@@ -74,6 +75,7 @@ The visualization consumes CSV data with the following structure:
 | `level2` | Third-level grouping (e.g., Project category or Module) |
 | `lattitude` | (Optional) Latitude for map visualization |
 | `longitude` | (Optional) Longitude for map visualization |
+| `imageUrl` | (Optional) URL to an image representing the event |
 
 ### Date Formats
 

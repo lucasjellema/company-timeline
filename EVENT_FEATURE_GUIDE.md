@@ -91,3 +91,10 @@ If you don't see triangles:
 
 - **Rich Formatting**: Tooltips now intelligently format dates (e.g., "15th May 2023") and handle ranges concisely ("May - June 2023" if years match).
 - **Interactive Mode**: Tooltips can contain interactive elements (like mini-maps) and remain open when hovered, allowing users to select or copy content inside them.
+
+### 9. Event Images (New)
+
+- **Input Support**: Adding an image URL (e.g., to a company logo or event photo) in the event editor allows for richer visual context.
+- **Tooltip Integration**: The image is automatically displayed at the top of the event tooltip on the timeline.
+- **Map Integration**: On the geographic map, events with images display a small image icon in their popup. Hovering over this icon reveals a floating preview of the image.
+- **Preview**: The event editor provides a live preview of the image URL to ensure validity before saving.
