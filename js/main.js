@@ -31,20 +31,95 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Calculate Collapsed/Hidden Groups based on Matches
+        const collapsedGroups = new Set();
+        const hiddenLevel1s = new Set();
+
+        if (criteria) { // Only if there IS a search criteria
+            // Find ALL L0s and L1s in original data (to know what exists)
+            // (Actually we can just check matches vs implicit knowledge, 
+            // but to collapse NON-matching, we assume anything NOT in matches is collapsed/hidden)
+
+            // 1. Identify "Matched" L0s and L1s
+            const matchedL0s = new Set();
+            const matchedL1s = new Set();
+
+            matches.forEach(m => {
+                if (m.level0) matchedL0s.add(m.level0);
+                if (m.level0 && m.level1) matchedL1s.add(`${m.level0}|${m.level1}`);
+            });
+
+            // 2. Identify "All" L0s and L1s to find difference
+            // We use window.timelineData (which is "dataToProcess" usually)
+            const allData = window.timelineData || [];
+            allData.forEach(d => {
+                const l0 = d.level0;
+                const l1 = d.level1;
+
+                // Collapse L0 if not matched
+                if (l0 && !matchedL0s.has(l0)) {
+                    collapsedGroups.add(l0);
+                }
+
+                // Hide L1 if not matched (and L0 is NOT collapsed? Actually L0 collapsed implies L1 hidden visually, 
+                // but if L0 IS matched, we might still want to hide unrelated L1s inside it)
+                if (l0 && l1) {
+                    const key = `${l0}|${l1}`;
+                    if (!matchedL1s.has(key)) {
+                        hiddenLevel1s.add(key);
+                    }
+                }
+            });
+        }
+
         // Calculate zoom range from matches
         let zoomRange = null;
         if (matches.length > 0) {
-            const start = d3.min(matches, d => d.startDate);
-            const end = d3.max(matches, d => d.endDate || d.startDate); // Handle point events
+            // Using parseDate for safety
+            const start = d3.min(matches, d => parseDate(d.start));
+            const end = d3.max(matches, d => d.end ? parseDate(d.end) : (d.start ? parseDate(d.start) : null));
+
             if (start && end) {
-                // Add some buffer (10%)
-                const span = end - start;
-                // If span is 0 (single point), add 1 month buffer
-                if (span === 0) {
-                    zoomRange = [d3.timeMonth.offset(start, -1), d3.timeMonth.offset(start, 1)];
-                } else {
-                    zoomRange = [new Date(start.getTime() - span * 0.1), new Date(end.getTime() + span * 0.1)];
+                // "Maximally (and only) show period" 
+                // We clamp to the Search Criteria if it exists, to strictly avoid showing years outside criteria.
+
+                let zoomStart = start;
+                let zoomEnd = end;
+
+                if (criteria.minDate && criteria.minDate > start) {
+                    zoomStart = criteria.minDate;
                 }
+                // For Max (Until), criteria.maxDate is "Until". Matches Start < Until. 
+                // But matches End can be anything.
+                // However, "timeline should not show period [outside selection]".
+                // If I search "Until 2025", and event goes to 2026. 
+                // It is debatable if I should cut it. But consistent with "From" logic, let's respect the criteria as a view bound?
+                // Actually usually "Until" doesn't imply "Cut view at".
+                // But "From 2020... matching... not show year before".
+                // I'll stick to: Zoom to Matches, BUT clamp Start if Criteria.minDate > MatchStart.
+                // I won't clamp End unless explicitly requested, as seeing the future of an event is usually desired. 
+                // Wait, if I clamp start, I cut the event.
+                // The user explicitly asked for "not show any year before then".
+
+                // Add minimal padding (e.g. 1%) only if we are NOT clamping?
+                // If we clamp, we should probably stick to the clamp line.
+                // If we don't clamp, we add padding.
+
+                const span = zoomEnd - zoomStart;
+                const pad = span * 0.02; // 2% padding
+
+                // Apply padding
+                let finalStart = new Date(zoomStart.getTime() - pad);
+                let finalEnd = new Date(zoomEnd.getTime() + pad);
+
+                // Re-Apply Clamp if it violates criteria
+                if (criteria.minDate && finalStart < criteria.minDate) {
+                    finalStart = criteria.minDate;
+                }
+                // If we want to strictly respect Until? "Until date" logic was "Start < Until".
+                // It doesn't restrict End. So we don't clamp End.
+
+                zoomRange = [finalStart, finalEnd];
             }
         }
 
@@ -52,15 +127,13 @@ document.addEventListener('DOMContentLoaded', () => {
             active: true,
             criteria,
             matches,
-            zoomRange
+            zoomRange,
+            searchCollapsedGroups: Array.from(collapsedGroups),
+            searchHiddenLevel1s: Array.from(hiddenLevel1s)
         };
 
         renderTimeline({ preserveSlider: true, domain: zoomRange });
-        // Force update map with search results immediately (passing false to not rely on active tab check inside yet, or we assume render handled it?)
-        // Actually, updateMapPins checks getActiveTab. If Search tab is open, we might want to update Map if user switches to Map tab.
-        // But if user is on Search tab, Map is hidden.
-        // If user switches to Map tab later, it should show search results.
-        // The best way is to have updateMapPins use searchState if active.
+        // Force update map with search results
         updateMapPins(searchState.matches);
     });
 
@@ -104,6 +177,30 @@ document.addEventListener('DOMContentLoaded', () => {
         let collapsedGroups = [];
         let groupOrder = [];
         let collapsedLevel1s = [];
+        let hiddenLevel1s = [];
+
+        // Apply Search State Collapses/Hides if active
+        if (searchState.active && searchState.searchCollapsedGroups) {
+            // WE OVERRIDE/MERGE the settings? 
+            // "Collapse any... that does not..." implies we should enforce it.
+            // Let's use the search set as the base, maybe merge with existing if valid?
+            // Actually, search specific view is transient. Let's prioritize search results.
+            collapsedGroups = [...searchState.searchCollapsedGroups];
+            // Also we might want to preserve user's collapsed groups if they ARE matched? 
+            // No, user said "collapse... that does not contain". It doesn't say "Expand that DOES contain".
+            // But usually search implies "Show me the result". If I search "Red", and "Red" is in "Group A" but "Group A" is collapsed, I expect it to expand.
+            // Implicit requirement: Expand matched groups.
+            // My logic above: I only added NON-matched to collapsedGroups.
+            // Effectively, matched groups are NOT added, so they are expanded (default).
+            // BUT if the user had ALREADY collapsed "Group A" (which contains match), does it expand?
+            // "collapsedGroups" list in logic is "List of groups to collapse".
+            // If I set `collapsedGroups = searchState.searchCollapsedGroups`, I am effectively ignoring storage settings for this render.
+            // This is correct for search context: "Show matches".
+        }
+
+        if (searchState.active && searchState.searchHiddenLevel1s) {
+            hiddenLevel1s = [...searchState.searchHiddenLevel1s];
+        }
 
         if (activeStory) {
             updateHeader(activeStory);
@@ -117,14 +214,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (activeStory.settings) {
                 if (activeStory.settings.colors) mergedColors = { ...CONFIG.TYPE_COLORS, ...activeStory.settings.colors };
                 if (activeStory.settings.icons) mergedIcons = { ...activeStory.settings.icons };
-                if (activeStory.settings.collapsedGroups) collapsedGroups = activeStory.settings.collapsedGroups;
+                if (activeStory.settings.collapsedGroups && !searchState.active) {
+                    // Only use storage settings if search is NOT overriding them
+                    collapsedGroups = activeStory.settings.collapsedGroups;
+                }
                 if (activeStory.settings.groupOrder) groupOrder = activeStory.settings.groupOrder;
                 if (activeStory.settings.collapsedLevel1s) collapsedLevel1s = activeStory.settings.collapsedLevel1s;
             }
         }
 
         // 2. Process Layout
-        const layout = processTimelineData(dataToProcess, collapsedGroups, groupOrder, collapsedLevel1s);
+        const layout = processTimelineData(dataToProcess, collapsedGroups, groupOrder, collapsedLevel1s, hiddenLevel1s);
 
         // Calculate highlighted IDs for rendering
         let highlightedEventIds = null;

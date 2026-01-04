@@ -1,6 +1,6 @@
 import { parseDate } from './utils.js';
 
-export function processTimelineData(data, collapsedGroups = [], groupOrder = [], collapsedLevel1s = []) {
+export function processTimelineData(data, collapsedGroups = [], groupOrder = [], collapsedLevel1s = [], hiddenLevel1s = []) {
     const events = data.map((d, i) => {
         const startDate = parseDate(d.start);
         const endDate = parseDate(d.end);
@@ -49,11 +49,11 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
     sortedLevel0.forEach(level0 => {
         let allLevelItems = groups.get(level0);
 
-        // Filter if collapsed (Level 0): Keep only items WITHOUT level1 (top-level items)
+        // Filter if collapsed (Level 0): FULLY COLLAPSE (Show no items)
         if (collapsedGroups.includes(level0)) {
-            allLevelItems = allLevelItems.filter(item => !item.level1);
+            allLevelItems = [];
         } else {
-            // Filter if Level 1 is collapsed
+            // Filter if Level 1 is collapsed or hidden
             allLevelItems = allLevelItems.filter(item => {
                 if (!item.level1) return true;
 
@@ -62,6 +62,12 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
                 const l1 = (item.level1 || "").trim();
                 const key = `${l0}|${l1}`;
 
+                // Check Hidden (Strict remove)
+                if (hiddenLevel1s.includes(key)) {
+                    return false;
+                }
+
+                // Check Collapsed (Hide children/L2)
                 if (collapsedLevel1s.includes(key)) {
                     // If L1 is collapsed, hide items that have Level 2 (children of L1)
                     // Treat whitespace-only level2 as "no level 2"
