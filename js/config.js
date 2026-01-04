@@ -103,7 +103,7 @@ export const CONFIG = {
         },
         {
             name: "Two decades (and a bit) of Football",
-            file: "two_decades__and_a_bit__of_football_.jsonspace_travel.json",
+            file: "two_decades__and_a_bit__of_football.json",
             description: "Major events in international football (soccer) from 2000 to 2026, including World Cups, European Championships, and notable player milestones."
         }
     ]
