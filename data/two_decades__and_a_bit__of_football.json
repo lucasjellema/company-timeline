@@ -1,5 +1,5 @@
 {
-  "id": "story_mjyl4b50wn6aq",
+  "id": "story_mjzz7rqm660x6",
   "name": "Two decades (and a bit) of Football ",
   "data": [
     {
@@ -403,7 +403,11 @@
       "level2": "",
       "lattitude": "",
       "longitude": "",
-      "id": "evt-1767461824023-30"
+      "id": "evt-1767461824023-30",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/en/thumb/d/df/Bundesliga_logo_%282017%29.svg/1200px-Bundesliga_logo_%282017%29.svg.png",
+      "imageLocalId": null,
+      "icon": null,
+      "color": null
     },
     {
       "start": "2005",
@@ -416,7 +420,11 @@
       "level2": "",
       "lattitude": "",
       "longitude": "",
-      "id": "evt-1767461824023-31"
+      "id": "evt-1767461824023-31",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/FC_Bayern_M%C3%BCnchen_logo_%282024%29.svg/1200px-FC_Bayern_M%C3%BCnchen_logo_%282024%29.svg.png",
+      "imageLocalId": null,
+      "icon": null,
+      "color": null
     },
     {
       "start": "2005-05-31",
@@ -426,10 +434,13 @@
       "type": "stadium",
       "level0": "Bundesliga",
       "level1": "Bayern Munich",
-      "level2": "Stadium",
+      "level2": "",
       "lattitude": "48.2188",
       "longitude": "11.6247",
-      "id": "evt-1767461824023-32"
+      "id": "evt-1767461824023-32",
+      "imageUrl": null,
+      "icon": null,
+      "color": null
     },
     {
       "start": "2013-05-25",
@@ -858,7 +869,11 @@
       "level2": "",
       "lattitude": "",
       "longitude": "",
-      "id": "evt-1767461824023-65"
+      "id": "evt-1767461824023-65",
+      "imageUrl": "https://sportsandgames.co.tt/wp-content/uploads/2022/05/blog_football.jpg",
+      "imageLocalId": null,
+      "icon": null,
+      "color": null
     },
     {
       "start": "2006-06-09",
@@ -893,11 +908,14 @@
       "description": "Hosted by Austria and Switzerland, won by a dominant Spanish side.",
       "type": "tournament",
       "level0": "International Football",
-      "level1": "UEFA Euro",
-      "level2": "Euro 2008",
+      "level1": "",
+      "level2": "",
       "lattitude": "48.2082",
       "longitude": "16.3738",
-      "id": "evt-1767461824023-68"
+      "id": "evt-1767461824023-68",
+      "imageUrl": null,
+      "icon": null,
+      "color": null
     },
     {
       "start": "2010-06-11",
@@ -907,10 +925,14 @@
       "type": "tournament",
       "level0": "International Football",
       "level1": "World Cup",
-      "level2": "WC 2010",
+      "level2": "",
       "lattitude": "-26.2348",
       "longitude": "27.9824",
-      "id": "evt-1767461824023-69"
+      "id": "evt-1767461824023-69",
+      "imageUrl": "https://www.nintendo.com/eu/media/images/10_share_images/games_15/wii_24/SI_Wii_FIFA2010WorldCupSouthAfrica_image1600w.jpg",
+      "icon": null,
+      "color": null,
+      "imageLocalId": null
     },
     {
       "start": "2012-06-08",
@@ -920,10 +942,14 @@
       "type": "tournament",
       "level0": "International Football",
       "level1": "UEFA Euro",
-      "level2": "Euro 2012",
+      "level2": "",
       "lattitude": "50.4501",
       "longitude": "30.5234",
-      "id": "evt-1767461824023-70"
+      "id": "evt-1767461824023-70",
+      "imageUrl": null,
+      "icon": null,
+      "color": null,
+      "imageLocalId": "loc_1767559823161_407rukplw"
     },
     {
       "start": "2014-06-12",
@@ -959,10 +985,13 @@
       "type": "tournament",
       "level0": "International Football",
       "level1": "UEFA Euro",
-      "level2": "Euro 2016",
+      "level2": "",
       "lattitude": "48.9244",
       "longitude": "2.3601",
-      "id": "evt-1767461824023-73"
+      "id": "evt-1767461824023-73",
+      "imageUrl": null,
+      "icon": null,
+      "color": null
     },
     {
       "start": "2018-06-14",
@@ -971,11 +1000,15 @@
       "description": "Hosted by Russia; France wins their second star with a 4-2 win in the final.",
       "type": "tournament",
       "level0": "International Football",
-      "level1": "World Cup",
-      "level2": "WC 2018",
+      "level1": "",
+      "level2": "",
       "lattitude": "55.7158",
       "longitude": "37.5536",
-      "id": "evt-1767461824023-74"
+      "id": "evt-1767461824023-74",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/en/6/67/2018_FIFA_World_Cup.svg",
+      "icon": null,
+      "color": null,
+      "imageLocalId": null
     },
     {
       "start": "2021-06-11",
@@ -985,10 +1018,13 @@
       "type": "tournament",
       "level0": "International Football",
       "level1": "UEFA Euro",
-      "level2": "Euro 2020",
-      "lattitude": "51.5560",
+      "level2": "",
+      "lattitude": "51.556",
       "longitude": "-0.2795",
-      "id": "evt-1767461824023-75"
+      "id": "evt-1767461824023-75",
+      "imageUrl": null,
+      "icon": null,
+      "color": null
     },
     {
       "start": "2022-11-20",
@@ -1193,10 +1229,13 @@
       "type": "national championship",
       "level0": "Eredivisie",
       "level1": "Ajax",
-      "level2": "Titles",
+      "level2": "",
       "lattitude": "52.3142",
       "longitude": "4.9427",
-      "id": "evt-1767473223623-12"
+      "id": "evt-1767473223623-12",
+      "imageUrl": null,
+      "icon": null,
+      "color": null
     },
     {
       "start": "2017-05",
@@ -1313,7 +1352,11 @@
       "level2": "Coaching",
       "lattitude": "48.2188",
       "longitude": "11.6247",
-      "id": "evt-1767473223623-21"
+      "id": "evt-1767473223623-21",
+      "imageUrl": "https://i.guim.co.uk/img/static/sys-images/Sport/Pix/columnists/2011/3/7/1299515403863/Louis-van-Gaal-Bayern-Mun-007.jpg?width=465&dpr=1&s=none&crop=none",
+      "imageLocalId": null,
+      "icon": null,
+      "color": null
     },
     {
       "start": "2011-07",
@@ -1621,11 +1664,15 @@
       "description": "Spain becomes the first team to win three major international trophies in a row.",
       "type": "reign",
       "level0": "International Football",
-      "level1": "Global Dominance",
+      "level1": "",
       "level2": "",
       "lattitude": "",
       "longitude": "",
-      "id": "evt-1767473223623-45"
+      "id": "evt-1767473223623-45",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/en/3/39/Spain_national_football_team_crest.svg",
+      "icon": null,
+      "color": null,
+      "imageLocalId": null
     },
     {
       "start": "2014-07-08",
@@ -1678,12 +1725,80 @@
       "lattitude": "19.3029",
       "longitude": "-99.1505",
       "id": "evt-1767473223623-49"
+    },
+    {
+      "start": "2021-05-28",
+      "end": "2024-05-17",
+      "title": "Allegri Second Stint",
+      "description": "Massimiliano Allegri returns to Juventus to stabilize the club during financial and board transitions.",
+      "type": "reign",
+      "level0": "Serie A",
+      "level1": "Juventus",
+      "level2": "Coaching",
+      "lattitude": "45.1095",
+      "longitude": "7.6413",
+      "id": "evt-1767545958649-0"
+    },
+    {
+      "start": "2024-06-12",
+      "end": "2026",
+      "title": "Thiago Motta Era",
+      "description": "Motta takes over Juventus after a stellar Bologna season, aiming for a modern tactical revolution.",
+      "type": "reign",
+      "level0": "Serie A",
+      "level1": "Juventus",
+      "level2": "Coaching",
+      "lattitude": "45.1095",
+      "longitude": "7.6413",
+      "id": "evt-1767545958649-1"
+    },
+    {
+      "start": "2021-05-04",
+      "end": "2024-01-16",
+      "title": "Jose Mourinho Roma Era",
+      "description": "Mourinho leads Roma to the inaugural Europa Conference League title and a Europa League final.",
+      "type": "reign",
+      "level0": "Serie A",
+      "level1": "",
+      "level2": "",
+      "lattitude": "41.9341",
+      "longitude": "12.4547",
+      "id": "evt-1767545958649-2",
+      "imageUrl": null,
+      "icon": null,
+      "color": null
+    },
+    {
+      "start": "2024-06-05",
+      "end": "2026",
+      "title": "Antonio Conte Napoli Era",
+      "description": "Conte returns to Serie A to lead Napoli's rebuild following their difficult title defense season.",
+      "type": "reign",
+      "level0": "Serie A",
+      "level1": "Napoli",
+      "level2": "Coaching",
+      "lattitude": "40.8279",
+      "longitude": "14.1931",
+      "id": "evt-1767545958649-3"
+    },
+    {
+      "start": "2016-05",
+      "end": "2016-05",
+      "title": "Higuain's Record Season",
+      "description": "Gonzalo Higuain scores 36 goals for Napoli, breaking the long-standing single-season Serie A record.",
+      "type": "incident",
+      "level0": "Serie A",
+      "level1": "Napoli",
+      "level2": "Incident",
+      "lattitude": "40.8279",
+      "longitude": "14.1931",
+      "id": "evt-1767545958649-4"
     }
   ],
   "description": "Major events in five European Football leagues, their Top-3 clubs and some international tournaments",
   "startDate": "2005",
   "endDate": "2027",
-  "lastModified": 1767473223626,
+  "lastModified": 1767561312755,
   "settings": {
     "collapsedLevel1s": [
       "Bundesliga|Dortmund",
@@ -1717,6 +1832,11 @@
       "International Football",
       "Bundesliga",
       "Eredivisie",
+      "Premier League",
+      "Primera Division",
+      "Serie A"
+    ],
+    "collapsedGroups": [
       "Premier League",
       "Primera Division",
       "Serie A"
