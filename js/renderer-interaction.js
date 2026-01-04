@@ -109,9 +109,12 @@ export function handleEventHover(renderer, e, d) { // Renamed slightly to accept
     const lng = parseFloat(d.longitude || d.longtitude);
     const hasMap = !isNaN(lat) && !isNaN(lng);
 
+    const imageHtml = d.imageUrl ? `<div style="margin-bottom: 8px;"><img src="${d.imageUrl}" style="max-width: 100%; max-height: 200px; border-radius: 4px; display: block;"></div>` : '';
+
     let content = `
             <span class="tooltip-title">${d.title}</span>
             <div style="margin-bottom:8px; font-size: 0.9em"><strong>Type:</strong> ${d.type} &middot; <strong>Period:</strong> ${formatTooltipDate(d.start, d.end)}</div>
+            ${imageHtml}
             <div style="margin-bottom:10px">${d.description}</div>`
 
     // Conditional logic: Show map in tooltip ONLY if panel is closed

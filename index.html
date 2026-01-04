@@ -387,6 +387,15 @@
 
 
                     <div class="form-group">
+                        <label for="event-image">Image URL (Optional)</label>
+                        <input type="url" id="event-image" placeholder="https://example.com/image.jpg">
+                        <div id="event-image-preview-container" class="hidden" style="margin-top: 0.5rem;">
+                            <img id="event-image-preview" src="" alt="Preview"
+                                style="max-height: 200px; max-width: 100%; border-radius: 4px; border: 1px solid var(--border); display: block;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label>Location (Click map to set)</label>
                         <div id="modal-map" class="modal-map-container"></div>
                         <input type="hidden" id="event-lat">

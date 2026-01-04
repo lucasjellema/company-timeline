@@ -178,6 +178,18 @@ export function initEventEditor(renderer, refreshCallback, storage) {
             document.getElementById('event-end').value = data.end || '';
             document.getElementById('event-desc').value = data.description || '';
 
+            // Image
+            document.getElementById('event-image').value = data.imageUrl || '';
+            const previewContainer = document.getElementById('event-image-preview-container');
+            const previewImg = document.getElementById('event-image-preview');
+            if (data.imageUrl) {
+                previewImg.src = data.imageUrl;
+                previewContainer.classList.remove('hidden');
+            } else {
+                previewContainer.classList.add('hidden');
+                previewImg.src = '';
+            }
+
             // Icon & Color
             const iconVal = data.icon || '';
             document.getElementById('event-icon').value = iconVal;
@@ -215,6 +227,13 @@ export function initEventEditor(renderer, refreshCallback, storage) {
         } else {
             // Add mode: default clear is handled by reset, but ensure map is clear
             clearMapSelection();
+
+            // Clear Image
+            document.getElementById('event-image').value = '';
+            const previewContainer = document.getElementById('event-image-preview-container');
+            const previewImg = document.getElementById('event-image-preview');
+            if (previewContainer) previewContainer.classList.add('hidden');
+            if (previewImg) previewImg.src = '';
 
             // Explicitly reset icon/color
             document.getElementById('event-icon').value = '';
@@ -276,6 +295,38 @@ export function initEventEditor(renderer, refreshCallback, storage) {
         colorInput.addEventListener('input', () => {
             colorInput.dataset.isEmpty = "false";
             colorInput.style.opacity = "1";
+        });
+    }
+
+    // Image Preview Logic
+    const imageInput = document.getElementById('event-image');
+    const imagePreviewContainer = document.getElementById('event-image-preview-container');
+    const imagePreview = document.getElementById('event-image-preview');
+
+    if (imageInput && imagePreview) {
+        imageInput.addEventListener('input', () => {
+            const url = imageInput.value.trim();
+            if (url) {
+                imagePreview.src = url;
+                // Container visibility relies on load success or just input?
+                // Let's show it, and if it errors it might hide depending on preference.
+                // Standard: Show container if url exists.
+                imagePreviewContainer.classList.remove('hidden');
+            } else {
+                imagePreviewContainer.classList.add('hidden');
+                imagePreview.src = ''; // Clear image
+            }
+        });
+
+        // Optional: Hide on error?
+        imagePreview.addEventListener('error', () => {
+            // If the URL is bad, maybe we hide the container so we don't show a broken icon border?
+            // But user might want to know it failed.
+            // Let's hide to be clean.
+            imagePreviewContainer.classList.add('hidden');
+        });
+        imagePreview.addEventListener('load', () => {
+            imagePreviewContainer.classList.remove('hidden');
         });
     }
 
@@ -448,6 +499,7 @@ export function initEventEditor(renderer, refreshCallback, storage) {
             start: document.getElementById('event-start').value,
             end: document.getElementById('event-end').value,
             description: document.getElementById('event-desc').value,
+            imageUrl: document.getElementById('event-image').value || null,
             lattitude: document.getElementById('event-lat').value,
             longitude: document.getElementById('event-lng').value,
             icon: document.getElementById('event-icon').value || null,
