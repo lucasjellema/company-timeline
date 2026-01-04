@@ -453,6 +453,11 @@
                         <label for="story-desc">Description</label>
                         <textarea id="story-desc" rows="3" placeholder="Brief description of this story..."></textarea>
                     </div>
+                    <div class="form-group">
+                        <label for="story-csv-paste">Initial Data (CSV Paste)</label>
+                        <textarea id="story-csv-paste" rows="3"
+                            placeholder="Paste CSV content here to pre-populate the story..."></textarea>
+                    </div>
                     <div class="form-actions">
                         <button type="button" id="cancel-story-btn" class="btn btn-secondary">Cancel</button>
                         <button type="submit" class="btn btn-primary">Create Story</button>
@@ -494,6 +499,12 @@
                         <div id="color-settings-container" class="color-grid">
                             <!-- Dynamic color pickers will go here -->
                         </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settings-csv-paste">Import Data (CSV Paste)</label>
+                        <textarea id="settings-csv-paste" rows="3"
+                            placeholder="Paste CSV content here to append events to this story..."></textarea>
                     </div>
 
                     <div class="form-actions">

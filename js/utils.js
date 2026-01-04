@@ -208,3 +208,14 @@ export const ensureDataIds = (data) => {
     });
     return modified;
 };
+
+export const parseAndPrepareCSV = (csvContent) => {
+    try {
+        const data = d3.csvParse(csvContent);
+        ensureDataIds(data);
+        return data;
+    } catch (error) {
+        console.error("Error parsing CSV:", error);
+        throw new Error("Failed to parse CSV content. Please ensure it is valid CSV format.");
+    }
+};

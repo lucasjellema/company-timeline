@@ -1,7 +1,7 @@
 import { TimelineStorage } from './storage.js';
 import { initSettingsUI } from './story-settings.js';
 import { CONFIG } from './config.js';
-import { ensureDataIds } from './utils.js';
+import { ensureDataIds, parseAndPrepareCSV } from './utils.js';
 
 export function initStoryUI(storage, refreshCallback) {
     initCreateStoryUI(storage, refreshCallback);
@@ -156,8 +156,21 @@ function initCreateStoryUI(storage, refreshCallback) {
         const end = document.getElementById('story-end').value;
         const desc = document.getElementById('story-desc').value;
 
-        storage.createStory(title, [], { description: desc, start, end });
-        window.timelineData = [];
+        const csvPaste = document.getElementById('story-csv-paste').value;
+        let initialData = [];
+
+        if (csvPaste && csvPaste.trim()) {
+            try {
+                initialData = parseAndPrepareCSV(csvPaste);
+                console.log(`Parsed ${initialData.length} events from pasted CSV`);
+            } catch (err) {
+                alert(err.message);
+                return; // Stop creation if CSV is invalid
+            }
+        }
+
+        storage.createStory(title, initialData, { description: desc, start, end });
+        window.timelineData = initialData;
 
         refreshCallback({ resetView: true });
         closeModal();

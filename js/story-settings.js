@@ -1,4 +1,5 @@
 import { CONFIG } from './config.js';
+import { parseAndPrepareCSV } from './utils.js';
 
 export function initSettingsUI(storage, refreshCallback) {
     const modal = document.getElementById('story-settings-modal');
@@ -17,6 +18,7 @@ export function initSettingsUI(storage, refreshCallback) {
         modal.classList.remove('hidden');
         document.getElementById('settings-title').value = activeStory.name || '';
         document.getElementById('settings-desc').value = activeStory.description || '';
+        document.getElementById('settings-csv-paste').value = ''; // Reset paste field
         renderSettings(activeStory);
     };
 
@@ -173,6 +175,24 @@ export function initSettingsUI(storage, refreshCallback) {
             { name: newName, description: newDesc },
             { colors: newColors, icons: newIcons }
         );
+
+        // Handle CSV Import
+        const csvPaste = document.getElementById('settings-csv-paste').value;
+        if (csvPaste && csvPaste.trim()) {
+            try {
+                const newEvents = parseAndPrepareCSV(csvPaste);
+                if (newEvents.length > 0) {
+                    const currentData = activeStory.data || [];
+                    const mergedData = [...currentData, ...newEvents];
+                    storage.saveActiveStory(mergedData);
+                    window.timelineData = mergedData; // Update global state
+                    alert(`Imported ${newEvents.length} events.`);
+                }
+            } catch (err) {
+                alert(err.message);
+                return; // Don't close modal if error? or maybe just warn
+            }
+        }
 
         closeModal();
         refreshCallback({ preserveSlider: true });
