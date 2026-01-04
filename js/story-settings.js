@@ -50,6 +50,8 @@ export function initSettingsUI(storage, refreshCallback) {
                 return path ? `<svg class="select-icon-svg" viewBox="0 0 24 24"><path d="${path}"></path></svg>` : '';
             };
 
+            const iconKeys = Object.keys(CONFIG.ICONS).sort();
+
             wrapper.innerHTML = `
                 <span class="color-label">${type}</span>
                 <div class="custom-select" id="custom-select-${type}">
@@ -57,9 +59,12 @@ export function initSettingsUI(storage, refreshCallback) {
                             ${savedIcon ? getIconSvg(savedIcon) : ''} <span>${savedIcon || 'No Icon'}</span>
                     </div>
                     <div class="select-items select-hide">
-                            <div data-value="">No Icon</div>
-                            ${Object.keys(CONFIG.ICONS).map(k => `
-                                <div data-value="${k}">
+                            <div class="icon-search-box" style="position: sticky; top: 0; background-color: var(--bg-card); z-index: 10; cursor: default; padding: 6px 8px;">
+                                <input type="text" placeholder="Search icons..." style="width: 100%; padding: 4px; box-sizing: border-box; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text-main); border-radius: 4px; font-size: 0.8rem;">
+                            </div>
+                            <div class="select-option" data-value="">No Icon</div>
+                            ${iconKeys.map(k => `
+                                <div class="select-option" data-value="${k}">
                                     ${getIconSvg(k)} <span>${k}</span>
                                 </div>
                             `).join('')}
@@ -84,15 +89,37 @@ export function initSettingsUI(storage, refreshCallback) {
             const selectedDiv = customSelect.querySelector('.select-selected');
             const itemsDiv = customSelect.querySelector('.select-items');
             const hiddenInput = wrapper.querySelector('.icon-input-hidden');
+            const searchBox = itemsDiv.querySelector('.icon-search-box');
+            const searchInput = searchBox.querySelector('input');
 
             selectedDiv.addEventListener('click', (e) => {
                 e.stopPropagation();
                 closeAllSelect(selectedDiv);
                 itemsDiv.classList.toggle('select-hide');
                 selectedDiv.classList.toggle('select-arrow-active');
+                // Focus search when opening
+                if (!itemsDiv.classList.contains('select-hide')) {
+                    setTimeout(() => searchInput.focus(), 100);
+                }
             });
 
-            itemsDiv.querySelectorAll('.select-items > div').forEach(option => {
+            // Prevent closing when clicking search box
+            searchBox.addEventListener('click', (e) => e.stopPropagation());
+
+            // Filter functionality
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                itemsDiv.querySelectorAll('.select-option').forEach(option => {
+                    const text = option.textContent.toLowerCase().trim();
+                    if (text.includes(term)) {
+                        option.style.display = ""; // Reset to CSS default (flex)
+                    } else {
+                        option.style.display = "none";
+                    }
+                });
+            });
+
+            itemsDiv.querySelectorAll('.select-option').forEach(option => {
                 option.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const val = option.getAttribute('data-value');
