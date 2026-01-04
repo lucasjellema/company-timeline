@@ -38,6 +38,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
 │   ├── event-editor.js  # Add/Edit Event Logic
 │   ├── map-manager.js   # Leaflet Map Controller
 │   ├── search-controller.js # Search & Filter Logic
+│   ├── gallery-manager.js # Side Panel Event Gallery Logic
 │   └── ui-controls.js   # General UI Event Handlers
 └── sample.csv           # Default dataset
 ```
@@ -53,7 +54,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
   - Updates the Side Panel based on the renderer's slider state.
   - **Map Controller**: Manages the Leaflet instance and synchronizes markers with the slider's active events.
   - **Splitter Controller**: Manages the resizable split-view layout. Uses a throttled `requestAnimationFrame` loop to notify the `TimelineRenderer` of size changes, ensuring smooth 60fps responsive scaling.
-  - **Tab Switching**: Toggles between "Events" list and "Map" view.
+  - **Tab Switching**: Toggles between "Events", "Map", and "Gallery" views.
   - **Drill Down State**: Manages the `activeL0Category` state. Filters the raw dataset dynamically before passing it to the Layout Engine when a category is selected.
   - **Extreme Focus State**: Handles event double-clicks to enter a focused mode. Calculates the precise zoom domain for the event and collapses all unrelated Level 0 and Level 1 groups to minimize visual noise.
 
@@ -87,6 +88,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
 - **`event-editor.js`**: Controls the "Add Event" modal form. Handles input validation, date range copying, and location selection via mini-map.
 - **`search-controller.js`**: Manages the Search tab in the side panel. Implements filtering by keyword, event type, and duration. Updates the renderer to highlight matching events.
 - **`map-manager.js`**: Dedicated controller for the Leaflet map instance, handling marker creation, synchronization with the time slider, and popup management (including **hover-to-view image previews** in popups).
+- **`gallery-manager.js`**: Manages the "Gallery" tab in the side panel. Filters events that have associated images and renders them in a responsive grid. synchronized with the time slider or active search results.
 
 ### 5. Utilities & Config (`utils.js`, `config.js`)
 - **Utils**: Contains robust Date parsing logic (ISO 8601, European formats) and tooltip management.
@@ -94,7 +96,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
 
 ## Data Flow
 
-1. **Input**: User uploads a CSV file or loads the sample.
+1. **Input**: User uploads a CSV file, pastes CSV text, or loads the sample.
 2. **Parsing**: `d3.csvParse` converts the text into an array of objects.
 3. **Processing**: `layout-engine.js` processes the array:
     - Dates are parsed (`YYYY-MM`, `YYYY-MM-DD`, etc).

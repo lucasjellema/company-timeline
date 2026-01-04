@@ -22,7 +22,8 @@ A premium, interactive company timeline visualization tool powered by **D3.js**.
 - **Vertical Time Slider**: A draggable time focus that highlights active events at any specific point in time. Includes multiple drag handles (top, bottom, and periodically along the line) for easy interaction on tall timelines.
 - **Real-time Side Panel**: Instantly see all "Simultaneous Events" occurring at the selected slider date.
 - **Dynamic Styling**: Color-coded event types (Projects, Releases, Sprints, Training) for quick visual scanning.
-- **CSV Integration**: Upload your own data to merge into current stories, or download sample templates.
+- **CSV Integration**: Upload CSV files or **paste CSV text directly** to create new stories or append to existing ones.
+- **Event Gallery**: A dedicated side panel tab that creates a visual grid of event images. Automatically filters to show images for active events (under the slider) or search results.
 - **Responsive Design**: Adapts to various screen sizes with automatic re-rendering.
 - **Strategic Drill Down**: 
   - **Category Focus**: Double-click any top-level category (Level 0) header to filter the timeline to that specific department.
@@ -119,6 +120,7 @@ start,end,title,description,type,level0,level1,level2
   - `renderer-axis.js` - Timeline axis rendering.
   - `renderer-events.js` - Event bars and point drawing logic.
   - `renderer-interaction.js` - User interaction handling (zoom, click, hover).
+  - `gallery-manager.js` - Logic for the side panel image gallery.
   - `layout-engine.js` - Data processing and hierarchical layout calculations.
   - `config.js` - Centralized configuration and constants.
   - `utils.js` - Helper functions.

@@ -4,6 +4,7 @@ import { processTimelineData } from './layout-engine.js';
 import { TimelineRenderer } from './renderer.js';
 import { TimelineStorage } from './storage.js';
 import { MapManager } from './map-manager.js';
+import { GalleryManager } from './gallery-manager.js';
 import { initSplitter, initTabs, initZoomControls } from './ui-controls.js';
 import { initEventEditor } from './event-editor.js';
 import { initStoryUI } from './story-ui.js';
@@ -14,6 +15,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const storage = new TimelineStorage();
     renderer.storage = storage; // Attach storage for image retrieval during rendering
     const mapManager = new MapManager('side-panel-map');
+    const galleryManager = new GalleryManager('tab-gallery', storage, {
+        onHover: (d, e) => {
+            renderer.highlightEvent(d.id);
+            renderer.handleEventHover(e, d);
+        },
+        onBlur: (id) => {
+            renderer.unhighlightEvent(id);
+            renderer.tooltip.hide();
+        }
+    });
 
     // State
     // window.timelineData is used globally by other modules (a legacy pattern we kept for refactor ease)
@@ -29,6 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!criteria) {
             searchState = { active: false, criteria: null, matches: [], zoomRange: null };
             renderTimeline({ preserveSlider: true }); // Reset view
+            // Clear map/gallery on reset? Usually happens via slider update in renderTimeline if it moves, 
+            // but if slider doesn't move, we should clear explicit search results.
+            // Actually, renderTimeline sets data, which might not move slider.
+            // But if we clear search, we go back to slider-based view.
             return;
         }
 
@@ -134,11 +149,13 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         renderTimeline({ preserveSlider: true, domain: zoomRange });
-        // Force update map with search results
+        // Force update map/gallery with search results
         updateMapPins(searchState.matches);
+        galleryManager.update(searchState.matches);
     });
 
     searchController.init();
+
 
     // --- Core Render Logic ---
     function renderTimeline(options = {}) {
@@ -517,11 +534,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateEventsList(activeEvents, eventsList);
 
-        // If search is active, Map should show ALL search matches, not just active/slider ones.
+        // If search is active, Map/Gallery should show ALL search matches, not just active/slider ones.
         if (searchState.active && searchState.matches.length > 0) {
             // Do not update map pins based on slider
         } else {
             updateMapPins(activeEvents);
+            galleryManager.update(activeEvents);
         }
     };
 
@@ -608,6 +626,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 // renderer.getActiveEvents() ? We can't easily access that from here without triggering.
                 // Let's rely on slider interaction OR force a render?
             }
+        }
+        if (target === 'gallery') {
+            galleryManager.render();
         }
     });
 

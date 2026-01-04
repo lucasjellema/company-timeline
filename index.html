@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="css/resizing.css">
     <link rel="stylesheet" href="css/search.css">
     <link rel="stylesheet" href="css/map-popup.css">
+    <link rel="stylesheet" href="css/gallery.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -126,6 +127,7 @@
                     <button class="nav-tab active" data-tab="events">Events</button>
                     <button class="nav-tab" data-tab="search">Search</button>
                     <button class="nav-tab" data-tab="map">Map</button>
+                    <button class="nav-tab" data-tab="gallery">Gallery</button>
                 </div>
 
                 <div id="tab-events" class="tab-content active">
@@ -152,6 +154,15 @@
                         </label>
                         <span class="toggle-label">Icons</span>
                     </div>
+                </div>
+                <div id="tab-gallery" class="tab-content">
+                    <div class="panel-header">
+                        <h3>Event Gallery</h3>
+                    </div>
+                    <div id="gallery-grid" class="gallery-grid">
+                        <!-- Populated dynamically -->
+                    </div>
+                    <div id="gallery-empty-state" class="empty-state hidden">No images found for current view.</div>
                 </div>
                 <div id="tab-search" class="tab-content">
                     <div class="panel-header">

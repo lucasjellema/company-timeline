@@ -81,10 +81,12 @@ export class TimelineRenderer {
 
         this.totalHeight = CONFIG.PADDING.TOP;
         layoutData.forEach(level => {
-            level.yStart = this.totalHeight;
+            level.yStart = this.totalHeight; // level0 group starts vertically where previous groups have ended
             level.collapsed = this.collapsedGroups.has(level.level0);
 
             // Standard height based on rows (now potentially 0 or low if filtered)
+                // TODO standardHeight will be too much for rows without icons or without bars
+                // in order to calculate height we need to know how many rows have icons vs not
             let standardHeight = level.rowCount * (CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING) + CONFIG.LEVEL_SPACING;
 
             // If empty AND collapsed, enforce minimum height
@@ -96,6 +98,11 @@ export class TimelineRenderer {
                 // we might want a minimum or just standard.
                 // If rowCount is 0, height is just LEVEL_SPACING (60).
                 // We want at least enough to see the title.
+
+                if (level.rowCount === 0) {
+                    standardHeight = CONFIG.LEVEL_COLLAPSED_HEIGHT;
+                }
+                // TODO in most cases, level.height will be too large
                 level.height = Math.max(standardHeight, CONFIG.LEVEL_COLLAPSED_HEIGHT);
             }
             this.totalHeight += level.height;

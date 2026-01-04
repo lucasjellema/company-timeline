@@ -107,3 +107,18 @@ If you don't see triangles:
 - **Interaction**: Double-clicking any **event bar** on the timeline triggers "Extreme Focus".
 - **Zoom**: The timeline view helps users isolate the specific event by automatically zooming the date range to the event's exact start and end dates.
 - **Noise Reduction**: All other Level 0 categories are automatically collapsed. Furthermore, within the event's own Level 0 category, all *other* Level 1 subgroups are collapsed, leaving only the relevant context visible.
+
+### 12. Event Gallery
+- **Visual Browsing**: A new "Gallery" tab in the side panel provides a media-centric view of the timeline.
+- **Dynamic Filtering**: The gallery automatically updates to show images for:
+    - **Active Events**: Events currently intersecting with the time slider.
+    - **Search Results**: If a search is active, the gallery shows images for all matching events.
+- **Interactivity**: Hovering over an image card in the gallery highlights the corresponding event on the timeline and displays its tooltip, allowing for quick visual correlation.
+- **Card Layout**: Cards display the event icon, title, date range, and a thumbnail of the event image.
+
+### 13. CSV Data Paste
+- **Direct Input**: Users can now paste raw CSV text directly into the application instead of creating and uploading a file.
+- **Integration Points**:
+    - **New Story**: In the "Create New Story" modal, a text area allows pasting CSV data to seed the story.
+    - **Append Data**: In the "Story Settings" modal, users can paste CSV data to *append* new events to the currently active story.
+- **Validation**: The pasted content is parsed and validated (checking for required columns) before being integrated.
