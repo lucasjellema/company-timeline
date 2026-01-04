@@ -303,6 +303,96 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTimeline({ preserveSlider: true });
     };
 
+    // Extreme Focus on Event Double Click
+    let lastFocusedEventId = null;
+    renderer.onEventDblClick = (e, d) => {
+        console.log("Extreme focus on event:", d.title);
+        const activeStory = storage.getActiveStory();
+        if (!activeStory) return;
+
+        // 1. Calculate Zoom Domain
+        // Use the event's start and end date. 
+        // Note: Layout engine ensures endDate exists (defaults to +1 day for points)
+        let start = d.startDate;
+        let end = d.endDate;
+
+        // Check if this is the second consecutive double-click on the same event
+        const isConsecutive = (lastFocusedEventId === d.id);
+        lastFocusedEventId = d.id;
+
+        if (isConsecutive) {
+            console.log("Triggering Stage 2: Collapse Groups");
+            // 2. Collapse Logic
+            const allData = window.timelineData || [];
+
+            // A. Collapse all OTHER Level 0 groups
+            const allL0s = new Set(allData.map(item => item.level0).filter(Boolean));
+            const collapsedGroups = [];
+            allL0s.forEach(l0 => {
+                if (l0 !== d.level0) {
+                    collapsedGroups.push(l0);
+                }
+            });
+
+            // B. Collapse all OTHER Level 1 groups within the SAME Level 0
+            const currentL1s = new Set(
+                allData
+                    .filter(item => item.level0 === d.level0 && item.level1)
+                    .map(item => item.level1)
+            );
+
+            // Retrieve existing L1 collapse settings to preserve state of other groups (optional but good practice)
+            let existingCollapsedL1s = (activeStory.settings && activeStory.settings.collapsedLevel1s) ? activeStory.settings.collapsedLevel1s : [];
+
+            // Remove any existing entries for THIS Level 0 (reset state for this group)
+            const prefix = `${d.level0}|`;
+            let newCollapsedL1s = existingCollapsedL1s.filter(key => !key.startsWith(prefix));
+
+            // Add all L1s in this L0 that describe groups OTHER than the event's own L1
+            currentL1s.forEach(l1 => {
+                // If the event has no L1, then ALL L1s are "others".
+                // If the event has an L1, then only different L1s are "others".
+                if (!d.level1 || l1 !== d.level1) {
+                    newCollapsedL1s.push(`${d.level0}|${l1}`);
+                }
+            });
+
+            // 3. Update Storage
+            storage.updateStorySettings(activeStory.id, {}, {
+                collapsedGroups: collapsedGroups,
+                collapsedLevel1s: newCollapsedL1s
+            });
+        } else {
+            console.log("Triggering Stage 1: Zoom Only");
+        }
+
+        // 4. Render
+        // 4. Render
+        renderTimeline({
+            domain: [start, end],
+            preserveSlider: true
+        });
+
+        // 5. Scroll to Event (Only on Stage 2 / Collapse)
+        if (isConsecutive) {
+            // Wait for slight D3 render delay if needed, or DOM update
+            setTimeout(() => {
+                const selector = `[data-id="${d.id}"]`;
+                // Look for bar or triangle
+                // Note: The element might be .event-bar or .event-triangle (inside a group)
+                // d3 selection by attribute
+                const el = document.querySelector(`.event-bar${selector}`) || document.querySelector(`.event-triangle${selector}`);
+
+                if (el) {
+                    console.log("Scrolling to focus event:", d.title);
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    console.warn("Could not find event element to scroll to:", d.id);
+                }
+            }, 100); // 100ms delay to ensure layout is stable
+        }
+    };
+
     // Collapse/Expand/Move Context Menu
     const ctxMenu = document.getElementById('context-menu');
     let ctxMenuContext = null; // Store context (category, etc)

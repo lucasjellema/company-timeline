@@ -211,6 +211,12 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                         if (renderer.onEventContextMenu) {
                             renderer.onEventContextMenu(e, d);
                         }
+                    })
+                    .on("dblclick", (e) => {
+                        e.stopPropagation();
+                        if (renderer.onEventDblClick) {
+                            renderer.onEventDblClick(e, d);
+                        }
                     });
 
 
@@ -247,6 +253,12 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                         e.preventDefault();
                         if (renderer.onEventContextMenu) {
                             renderer.onEventContextMenu(e, d);
+                        }
+                    })
+                    .on("dblclick", (e) => {
+                        e.stopPropagation();
+                        if (renderer.onEventDblClick) {
+                            renderer.onEventDblClick(e, d);
                         }
                     });
 
@@ -349,6 +361,12 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
                 e.preventDefault();
                 if (renderer.onEventContextMenu) {
                     renderer.onEventContextMenu(e, event);
+                }
+            })
+            .on("dblclick", (e) => {
+                e.stopPropagation();
+                if (renderer.onEventDblClick) {
+                    renderer.onEventDblClick(e, event);
                 }
             });
 
