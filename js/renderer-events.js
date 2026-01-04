@@ -151,6 +151,7 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
         });
 
         // Draw regular timeline bars
+        // TODO not every group has both bars and icons; therefore the translation will often be too large
         const eventGroups = levelG.selectAll(".event-g")
             .data(eventsToDraw).enter().append("g").attr("class", "event-g")
             .attr("transform", d => `translate(${xScale(d.startDate)}, ${CONSTANTS.EVENT.START_Y_OFFSET + d.rowIndex * (CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING)})`);
@@ -186,8 +187,61 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                 }
 
                 // Wrapper group for positioning (to avoid conflict with CSS hover transforms on path)
+                // Check for overlapping "parent" bars to lift this icon
+                let liftY = 0;
+                // Only lift if we are seemingly on a lower row (higher index) than 0
+                if (d.rowIndex > 0) {
+                    const overlappingBar = eventsToDraw.find(b => {
+                        if (b.id === d.id) return false;
+                        if (b.rowIndex >= d.rowIndex) return false; // Must be "above"
+
+                        // Check if b is NOT small (is a bar)
+                        const wB = Math.max(0, xScale(b.endDate) - xScale(b.startDate));
+                        if (wB < threshold) return false;
+
+                        // Check Same Level 1
+                        if ((b.level1 || "") !== (d.level1 || "")) return false;
+
+                        // Check overlap
+                        return d.startDate < b.endDate && d.endDate > b.startDate;
+                    });
+
+                    if (overlappingBar) {
+                        liftY = (d.rowIndex - overlappingBar.rowIndex) * (CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING);
+                    }
+                }
+
                 const iconWrapper = g.append("g")
-                    .attr("transform", iconGroupTransform);
+                    .attr("transform", iconGroupTransform); // Initial transform
+
+                // If we need to lift, modify the transform. 
+                // We parse the existing translate or just build a new string.
+                // iconGroupTransform is "translate(x, y) scale(1)"
+                if (liftY > 0) {
+                    // Re-calculate transform with lift
+                    let baseX = CONSTANTS.EVENT.ICON_OFFSET_X;
+                    let baseY = CONSTANTS.EVENT.ICON_OFFSET_Y;
+                    if (!iconName) {
+                        // Default triangle doesn't use the simple transform string variable in the same way?
+                        // Wait, logic above: 
+                        // if (iconName) { iconGroupTransform = ... }
+                        // else { iconGroupTransform = "" }
+                        // If empty, it's (0,0).
+                        baseX = 0;
+                        baseY = 0;
+                    }
+
+                    // Careful: ICON_OFFSET_X/Y are applied if iconName exists. 
+                    // If not (triangle), transform is "".
+                    // If we lift a default triangle, we just translate(0, -liftY).
+
+                    if (iconName && CONFIG.ICONS[iconName]) {
+                        iconWrapper.attr("transform", `translate(${CONSTANTS.EVENT.ICON_OFFSET_X}, ${CONSTANTS.EVENT.ICON_OFFSET_Y - liftY}) scale(1)`);
+                    } else {
+                        // Default triangle
+                        iconWrapper.attr("transform", `translate(0, ${-liftY})`);
+                    }
+                }
 
                 iconWrapper.append("path")
                     .attr("class", "event-triangle") // Reuse class for hover effects
@@ -224,7 +278,7 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                 g.append("text")
                     .attr("class", "event-label") // Use event-label to match point events
                     .attr("x", 0)
-                    .attr("y", -triangleSize - CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP - CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA)
+                    .attr("y", -triangleSize - CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP - CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA - liftY) // Lift label too!
                     .attr("text-anchor", "middle")
                     .attr("font-size", CONSTANTS.EVENT.LABEL_FONT_SIZE)
                     .attr("fill", CONSTANTS.EVENT.LABEL_COLOR)
