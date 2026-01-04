@@ -178,6 +178,22 @@ export function initEventEditor(renderer, refreshCallback, storage) {
             document.getElementById('event-end').value = data.end || '';
             document.getElementById('event-desc').value = data.description || '';
 
+            // Icon & Color
+            const iconVal = data.icon || '';
+            document.getElementById('event-icon').value = iconVal;
+            if (window.updateIconSelection) window.updateIconSelection(iconVal);
+
+            const colorInput = document.getElementById('event-color');
+            if (data.color) {
+                colorInput.value = data.color;
+                colorInput.dataset.isEmpty = "false";
+                colorInput.style.opacity = "1";
+            } else {
+                colorInput.value = "#000000";
+                colorInput.dataset.isEmpty = "true";
+                colorInput.style.opacity = "0.5";
+            }
+
             const lat = parseFloat(data.lattitude || data.latitude);
             const lng = parseFloat(data.longitude || data.longtitude);
 
@@ -199,6 +215,17 @@ export function initEventEditor(renderer, refreshCallback, storage) {
         } else {
             // Add mode: default clear is handled by reset, but ensure map is clear
             clearMapSelection();
+
+            // Explicitly reset icon/color
+            document.getElementById('event-icon').value = '';
+            if (window.updateIconSelection) window.updateIconSelection('');
+
+            const colorInput = document.getElementById('event-color');
+            if (colorInput) {
+                colorInput.value = "#000000";
+                colorInput.dataset.isEmpty = "true";
+                colorInput.style.opacity = "0.5";
+            }
         }
     }
 
@@ -229,18 +256,30 @@ export function initEventEditor(renderer, refreshCallback, storage) {
     closeBtn.addEventListener('click', closeModal);
     cancelBtn.addEventListener('click', closeModal);
 
-    // Copy Date Button Logic
-    const copyDateBtn = document.getElementById('copy-date-btn');
-    if (copyDateBtn) {
-        copyDateBtn.addEventListener('click', () => {
-            const startVal = document.getElementById('event-start').value;
-            if (startVal) {
-                document.getElementById('event-end').value = startVal;
-            }
+    // Clear Color Logic
+    const colorInput = document.getElementById('event-color');
+    const clearColorBtn = document.getElementById('clear-color-btn');
+    if (clearColorBtn && colorInput) {
+        clearColorBtn.addEventListener('click', () => {
+            colorInput.value = '#000000'; // Default input value, but we treat it as empty logic
+            // We use a dataset attribute or just a transparent visual cue? 
+            // Input type color always has a value. We probably need a way to say "no valid color".
+            // We'll treat the hex value in the hidden model. But for the UI, let's just reset to default black 
+            // and maybe we need a separate way to track "null".
+            // Actually, let's use a specific "empty" state if possible. 
+            // Browsers don't support empty color input well. 
+            // Let's set a data-empty attribute.
+            colorInput.dataset.isEmpty = "true";
+            colorInput.value = "#000000"; // visual reset
+            colorInput.style.opacity = "0.5";
+        });
+        colorInput.addEventListener('input', () => {
+            colorInput.dataset.isEmpty = "false";
+            colorInput.style.opacity = "1";
         });
     }
 
-    // Populate Datalists
+    // Populate Datalists & Icons
     function populateDropdowns() {
         if (!window.timelineData) return;
 
@@ -261,6 +300,113 @@ export function initEventEditor(renderer, refreshCallback, storage) {
         fillList('l1-options', l1);
         fillList('l2-options', l2);
         fillList('type-options', allTypes);
+
+        // Populate Icon Select
+        initIconSelect();
+    }
+
+    function initIconSelect() {
+        const wrapper = document.getElementById('event-icon-wrapper');
+        if (!wrapper) return;
+
+        const selectedDiv = wrapper.querySelector('.select-selected');
+        const itemsDiv = wrapper.querySelector('.select-items');
+        const hiddenInput = document.getElementById('event-icon');
+
+        // Clear existing items (except first maybe?)
+        itemsDiv.innerHTML = `
+             <div class="icon-search-box" style="position: sticky; top: 0; background-color: var(--bg-card); z-index: 10; cursor: default; padding: 6px 8px;">
+                <input type="text" placeholder="Search icons..." style="width: 100%; padding: 4px; box-sizing: border-box; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text-main); border-radius: 4px; font-size: 0.8rem;">
+            </div>
+            <div class="select-option" data-value="">No Icon</div>
+        `;
+
+        const getIconSvg = (name) => {
+            const path = CONFIG.ICONS[name];
+            return path ? `<svg class="select-icon-svg" viewBox="0 0 24 24"><path d="${path}"></path></svg>` : '';
+        };
+
+        const iconKeys = Object.keys(CONFIG.ICONS).sort();
+        iconKeys.forEach(k => {
+            const div = document.createElement('div');
+            div.className = 'select-option';
+            div.dataset.value = k;
+            div.innerHTML = `${getIconSvg(k)} <span>${k}</span>`;
+            div.addEventListener('click', (e) => {
+                e.stopPropagation();
+                updateIconSelection(k);
+                itemsDiv.classList.add('select-hide');
+                selectedDiv.classList.remove('select-arrow-active');
+            });
+            itemsDiv.appendChild(div);
+        });
+
+        // Search logic
+        const searchInput = itemsDiv.querySelector('input');
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            itemsDiv.querySelectorAll('.select-option').forEach(option => {
+                const text = option.textContent.toLowerCase().trim();
+                if (text.includes(term)) {
+                    option.style.display = "";
+                } else {
+                    option.style.display = "none";
+                }
+            });
+        });
+        itemsDiv.querySelector('.icon-search-box').addEventListener('click', e => e.stopPropagation());
+
+        // Toggle
+        // Remove old listeners to avoid dupes if called multiple times? 
+        // Better to use a flag or clone.
+        const newSelected = selectedDiv.cloneNode(true);
+        selectedDiv.parentNode.replaceChild(newSelected, selectedDiv);
+
+        newSelected.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeAllSelect(newSelected); // Ensure others close
+            itemsDiv.classList.toggle('select-hide');
+            newSelected.classList.toggle('select-arrow-active');
+            if (!itemsDiv.classList.contains('select-hide')) {
+                setTimeout(() => searchInput.focus(), 100);
+            }
+        });
+
+        // Bind global close
+        document.addEventListener('click', closeAllSelect);
+
+        // Helper to update visual
+        window.updateIconSelection = (val) => {
+            hiddenInput.value = val || "";
+            const svg = val ? getIconSvg(val) : "";
+            newSelected.innerHTML = `${svg} <span>${val || 'No Icon'}</span>`;
+        };
+
+        // Initial "No Icon" click
+        itemsDiv.querySelector('.select-option[data-value=""]').addEventListener('click', (e) => {
+            e.stopPropagation();
+            updateIconSelection("");
+            itemsDiv.classList.add('select-hide');
+            newSelected.classList.remove('select-arrow-active');
+        });
+    }
+
+    function closeAllSelect(elm) {
+        const items = document.getElementsByClassName("select-items");
+        const selected = document.getElementsByClassName("select-selected");
+        // Only close if not clicking on the element itself?
+        // Logic copied from story-settings can be reused or simplified
+        // Here we just close the specific one if we want, but global close is standard.
+        // We need to be careful not to break story-settings one if they coexist?
+        // Modals are overlay, so usually fine.
+        for (let i = 0; i < selected.length; i++) {
+            if (elm !== selected[i]) selected[i].classList.remove("select-arrow-active");
+        }
+        for (let i = 0; i < items.length; i++) {
+            if (!elm || !elm.parentNode.parentNode.contains(items[i])) {
+                items[i].classList.add("select-hide");
+            }
+        }
     }
 
     function initModalMap() {
@@ -290,6 +436,9 @@ export function initEventEditor(renderer, refreshCallback, storage) {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
+        const colorIn = document.getElementById('event-color');
+        const colorVal = (colorIn.dataset.isEmpty === "true") ? null : colorIn.value;
+
         const formData = {
             title: document.getElementById('event-title').value,
             type: document.getElementById('event-type').value,
@@ -300,13 +449,25 @@ export function initEventEditor(renderer, refreshCallback, storage) {
             end: document.getElementById('event-end').value,
             description: document.getElementById('event-desc').value,
             lattitude: document.getElementById('event-lat').value,
-            longitude: document.getElementById('event-lng').value
+            longitude: document.getElementById('event-lng').value,
+            icon: document.getElementById('event-icon').value || null,
+            color: colorVal
         };
+
+        // Remove null/empty keys if robust? 
+        // Actually rendering logic checks d.icon || fallback. So null is fine.
 
         if (window.timelineData) {
             if (isEditing && editingIndex > -1) {
-                window.timelineData[editingIndex] = { ...window.timelineData[editingIndex], ...formData };
+                // Preserve ID if editing
+                const id = window.timelineData[editingIndex].id;
+                window.timelineData[editingIndex] = { ...window.timelineData[editingIndex], ...formData, id };
             } else {
+                // New ID will be handled by ensureDataIds usually, but let's trust storage on save or add max ID?
+                // For now, simple push. IDs might be missing until reload?
+                // Ensure ID
+                const maxId = window.timelineData.reduce((max, d) => Math.max(max, d.id || 0), 0);
+                formData.id = maxId + 1;
                 window.timelineData.push(formData);
             }
             refreshCallback(); // Triggers render and save

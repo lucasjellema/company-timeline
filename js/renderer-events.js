@@ -176,7 +176,7 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
 
             if (isSmall) {
                 // Render as instant event (Icon only)
-                const iconName = renderer.typeIcons[d.type ? d.type.toLowerCase() : ''];
+                const iconName = d.icon || renderer.typeIcons[d.type ? d.type.toLowerCase() : ''];
                 let pathD = `M ${-triangleSize / 2},${-triangleSize} L ${triangleSize / 2},${-triangleSize} L 0,0 Z`;
                 let iconGroupTransform = "";
 
@@ -192,7 +192,7 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                 iconWrapper.append("path")
                     .attr("class", "event-triangle") // Reuse class for hover effects
                     .attr("d", pathD)
-                    .attr("fill", getEventColor(d.type, renderer.typeColors))
+                    .attr("fill", d.color || getEventColor(d.type, renderer.typeColors))
                     .attr("stroke", CONSTANTS.EVENT.ICON_STROKE)
                     .attr("stroke-width", CONSTANTS.EVENT.ICON_STROKE_WIDTH)
                     .attr("data-id", d.id)
@@ -228,7 +228,7 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
             } else {
                 // Render as Bar
                 g.append("rect").attr("class", "event-bar")
-                    .attr("height", CONFIG.BAR_HEIGHT).attr("fill", d => getEventColor(d.type, renderer.typeColors))
+                    .attr("height", CONFIG.BAR_HEIGHT).attr("fill", d => d.color || getEventColor(d.type, renderer.typeColors))
                     .attr("width", Math.max(CONSTANTS.EVENT.BAR_MIN_WIDTH, w))
                     .attr("data-id", d.id)
                     .on("mouseenter", (e) => {
@@ -251,7 +251,7 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                     });
 
                 // Draw Icon inside the bar
-                const iconName = renderer.typeIcons[d.type ? d.type.toLowerCase() : ''];
+                const iconName = d.icon || renderer.typeIcons[d.type ? d.type.toLowerCase() : ''];
                 if (iconName && CONFIG.ICONS[iconName]) {
                     g.append("path")
                         .attr("class", "event-icon")
@@ -312,7 +312,7 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
         let pathD = `M ${-triangleSize / 2},${-triangleSize} L ${triangleSize / 2},${-triangleSize} L 0,0 Z`;
         let iconGroupTransform = "";
 
-        const iconName = renderer.typeIcons[event.type ? event.type.toLowerCase() : ''];
+        const iconName = event.icon || renderer.typeIcons[event.type ? event.type.toLowerCase() : ''];
         if (iconName && CONFIG.ICONS[iconName]) {
             pathD = CONFIG.ICONS[iconName];
             // Icon is 24x24. We want to center it horizontally on (0,0) and have it sit on top of the line.
@@ -330,7 +330,7 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
         iconWrapper.append("path")
             .attr("class", "event-triangle")
             .attr("d", pathD)
-            .attr("fill", getEventColor(event.type, renderer.typeColors))
+            .attr("fill", event.color || getEventColor(event.type, renderer.typeColors))
             .attr("stroke", CONSTANTS.EVENT.ICON_STROKE)
             .attr("stroke-width", CONSTANTS.EVENT.ICON_STROKE_WIDTH)
             // transform attribute handled by wrapper
