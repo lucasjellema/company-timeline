@@ -55,6 +55,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
   - **Splitter Controller**: Manages the resizable split-view layout. Uses a throttled `requestAnimationFrame` loop to notify the `TimelineRenderer` of size changes, ensuring smooth 60fps responsive scaling.
   - **Tab Switching**: Toggles between "Events" list and "Map" view.
   - **Drill Down State**: Manages the `activeL0Category` state. Filters the raw dataset dynamically before passing it to the Layout Engine when a category is selected.
+  - **Extreme Focus State**: Handles event double-clicks to enter a focused mode. Calculates the precise zoom domain for the event and collapses all unrelated Level 0 and Level 1 groups to minimize visual noise.
 
 ### 2. Layout Engine (`layout-engine.js`)
 - **Responsibility**: transform raw CSV data into a structured, visualizable layout.
@@ -78,6 +79,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
   - **Tooltips**: Handles mouseover events to show detailed metadata and **embedded images** if available. Includes logic to "lock" interactive tooltips to allow traversing bars.
   - **Highlighting**: Exposes API to highlight events based on external triggers (e.g., map hover).
   - **Drill Down Interaction**: Detects double-clicks on category headers to trigger filtering. Renders visual controls (Back button) when in a filtered state.
+  - **Extreme Focus Interaction**: Detects double-clicks on individual events (bars or icons) to trigger the focus mode in the main orchestrator.
 
 ### 4. Application Logic Modules
 - **`storage.js`**: Abstraction layer for `localStorage`. Handles saving, loading, listing, and deleting stories. Includes logic to merge new events into existing stories.

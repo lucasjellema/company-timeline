@@ -98,3 +98,12 @@ If you don't see triangles:
 - **Tooltip Integration**: The image is automatically displayed at the top of the event tooltip on the timeline.
 - **Map Integration**: On the geographic map, events with images display a small image icon in their popup. Hovering over this icon reveals a floating preview of the image.
 - **Preview**: The event editor provides a live preview of the image URL to ensure validity before saving.
+### 10. Map Enhancements
+- **Icon Toggle**: New switch in the map panel allows users to toggle between standard map pins and illustrative **event icons**.
+- **Color Coding**: When in "Icons" mode, markers use the event's specific color (or its type's color minus specific override) as the background for the circular icon, improving visual correlation between the map and timeline.
+- **Dynamic Refresh**: Toggling the switch instantly updates all markers without needing to reload the data.
+
+### 11. Extreme Focus Mode
+- **Interaction**: Double-clicking any **event bar** on the timeline triggers "Extreme Focus".
+- **Zoom**: The timeline view helps users isolate the specific event by automatically zooming the date range to the event's exact start and end dates.
+- **Noise Reduction**: All other Level 0 categories are automatically collapsed. Furthermore, within the event's own Level 0 category, all *other* Level 1 subgroups are collapsed, leaving only the relevant context visible.

@@ -15,6 +15,7 @@ A premium, interactive company timeline visualization tool powered by **D3.js**.
 - **Geographic Map Integration**:
   - **Dual Mode**: View event details in a dedicated side panel tab or via rich tooltips.
   - **Interactive Map**: Built with **Leaflet.js**, displaying events with geolocation data (`lattitude`, `longitude`).
+  - **Pins vs Icons**: Toggle between standard map pins and **custom event icons**. Icons are color-coded based on the event's type or specific color override.
   - **Slider Sync**: The map automatically updates in real-time to show pins for all events (including milestones) active at the slider's current time.
   - **Hover Sync**: Hovering over map pins highlights the corresponding timeline events for easy identification.
 - **Hierarchical Layout**: Automatically groups events by organizational levels (Level 0, Level 1, Level 2).
@@ -23,7 +24,9 @@ A premium, interactive company timeline visualization tool powered by **D3.js**.
 - **Dynamic Styling**: Color-coded event types (Projects, Releases, Sprints, Training) for quick visual scanning.
 - **CSV Integration**: Upload your own data to merge into current stories, or download sample templates.
 - **Responsive Design**: Adapts to various screen sizes with automatic re-rendering.
-- **Strategic Drill Down**: Double-click any top-level category (Level 0) to instantly filter the timeline and focus on that specific department or stream. A context-aware "Back" button allows for easy navigation back to the overview.
+- **Strategic Drill Down**: 
+  - **Category Focus**: Double-click any top-level category (Level 0) header to filter the timeline to that specific department.
+  - **Event Focus**: Double-click any **event** to enter "Extreme Focus" mode. This zooms the timeline to the event's duration and collapses all other groups to minimize noise.
 - **Resizable Interface**: Interactive splitter allows users to seamlessly resize the side panel. The timeline visualization automatically adjusts its scale and layout to fill the remaining space in real-time.
 - **Story Management**: Create new stories from scratch, switch between multiple saved stories, or load pre-packaged "Shipped Stories" (e.g., WWII, Tech History).
 - **Rich Event Editor**: Comprehensive modal for adding events with support for:
