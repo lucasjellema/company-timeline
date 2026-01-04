@@ -179,11 +179,33 @@ export function initEventEditor(renderer, refreshCallback, storage) {
             document.getElementById('event-desc').value = data.description || '';
 
             // Image
-            document.getElementById('event-image').value = data.imageUrl || '';
+            const imgLocalId = data.imageLocalId;
+            const imgUrl = data.imageUrl || '';
+            document.getElementById('event-image').value = imgUrl;
+            document.getElementById('event-image-local-id').value = imgLocalId || '';
+            document.getElementById('file-name-display').textContent = '';
+
             const previewContainer = document.getElementById('event-image-preview-container');
             const previewImg = document.getElementById('event-image-preview');
-            if (data.imageUrl) {
-                previewImg.src = data.imageUrl;
+
+            if (imgLocalId) {
+                // Try from local storage
+                const localData = storage.getImage(imgLocalId);
+                if (localData) {
+                    previewImg.src = localData;
+                    previewContainer.classList.remove('hidden');
+                } else {
+                    // Fallback check if URL is present
+                    if (imgUrl) {
+                        previewImg.src = imgUrl;
+                        previewContainer.classList.remove('hidden');
+                    } else {
+                        previewContainer.classList.add('hidden');
+                        previewImg.src = '';
+                    }
+                }
+            } else if (imgUrl) {
+                previewImg.src = imgUrl;
                 previewContainer.classList.remove('hidden');
             } else {
                 previewContainer.classList.add('hidden');
@@ -230,6 +252,10 @@ export function initEventEditor(renderer, refreshCallback, storage) {
 
             // Clear Image
             document.getElementById('event-image').value = '';
+            document.getElementById('event-image-local-id').value = '';
+            document.getElementById('event-image-file').value = '';
+            document.getElementById('file-name-display').textContent = '';
+
             const previewContainer = document.getElementById('event-image-preview-container');
             const previewImg = document.getElementById('event-image-preview');
             if (previewContainer) previewContainer.classList.add('hidden');
@@ -298,32 +324,118 @@ export function initEventEditor(renderer, refreshCallback, storage) {
         });
     }
 
-    // Image Preview Logic
+    // Image Logic (URL, File, Paste)
     const imageInput = document.getElementById('event-image');
+    const imageFileInput = document.getElementById('event-image-file');
+    const imageLocalIdInput = document.getElementById('event-image-local-id');
+    const pasteArea = document.getElementById('paste-image-area');
+    const fileNameDisplay = document.getElementById('file-name-display');
     const imagePreviewContainer = document.getElementById('event-image-preview-container');
     const imagePreview = document.getElementById('event-image-preview');
+    const clearImageBtn = document.getElementById('clear-image-btn');
 
-    if (imageInput && imagePreview) {
+    function updateImagePreview(src, localId = null) {
+        if (src) {
+            imagePreview.src = src;
+            imagePreviewContainer.classList.remove('hidden');
+            if (localId) {
+                imageLocalIdInput.value = localId;
+                imageInput.value = ''; // prioritize local
+            } else {
+                imageLocalIdInput.value = '';
+            }
+        } else {
+            imagePreviewContainer.classList.add('hidden');
+            imagePreview.src = '';
+            imageLocalIdInput.value = '';
+            imageFileInput.value = '';
+            fileNameDisplay.textContent = '';
+        }
+    }
+
+    if (imageInput) {
         imageInput.addEventListener('input', () => {
             const url = imageInput.value.trim();
             if (url) {
-                imagePreview.src = url;
-                // Container visibility relies on load success or just input?
-                // Let's show it, and if it errors it might hide depending on preference.
-                // Standard: Show container if url exists.
-                imagePreviewContainer.classList.remove('hidden');
+                updateImagePreview(url);
             } else {
-                imagePreviewContainer.classList.add('hidden');
-                imagePreview.src = ''; // Clear image
+                // Only clear if no local image is set? 
+                // If user clears URL but had local image, do we keep local?
+                // Current logic: URL input overrides local if typed? 
+                // Let's say if URL has content, we show it. 
+                if (!imageLocalIdInput.value) {
+                    updateImagePreview(null);
+                }
+            }
+        });
+    }
+
+    if (imageFileInput) {
+        imageFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                fileNameDisplay.textContent = file.name;
+                const reader = new FileReader();
+                reader.onload = function (evt) {
+                    const dataUrl = evt.target.result;
+                    try {
+                        const id = storage.saveImage(dataUrl);
+                        updateImagePreview(dataUrl, id);
+                    } catch (err) {
+                        alert('Error saving image locally (Storage might be full)');
+                        console.error(err);
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    if (pasteArea) {
+        pasteArea.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+            let blob = null;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') === 0) {
+                    blob = items[i].getAsFile();
+                    break;
+                }
+            }
+
+            if (blob) {
+                fileNameDisplay.textContent = "Pasted Image";
+                const reader = new FileReader();
+                reader.onload = function (evt) {
+                    const dataUrl = evt.target.result;
+                    try {
+                        const id = storage.saveImage(dataUrl);
+                        updateImagePreview(dataUrl, id);
+                    } catch (err) {
+                        alert('Error saving image locally (Storage might be full)');
+                        console.error(err);
+                    }
+                };
+                reader.readAsDataURL(blob);
             }
         });
 
-        // Optional: Hide on error?
+        // Let user click to focus
+        pasteArea.addEventListener('click', () => pasteArea.focus());
+    }
+
+    if (clearImageBtn) {
+        clearImageBtn.addEventListener('click', () => {
+            updateImagePreview(null);
+            imageInput.value = '';
+        });
+    }
+
+    if (imagePreview) {
         imagePreview.addEventListener('error', () => {
-            // If the URL is bad, maybe we hide the container so we don't show a broken icon border?
-            // But user might want to know it failed.
-            // Let's hide to be clean.
-            imagePreviewContainer.classList.add('hidden');
+            // Only hide if we don't have a valid source? 
+            // If local image fails to load?
+            // imagePreviewContainer.classList.add('hidden');
         });
         imagePreview.addEventListener('load', () => {
             imagePreviewContainer.classList.remove('hidden');
@@ -500,6 +612,7 @@ export function initEventEditor(renderer, refreshCallback, storage) {
             end: document.getElementById('event-end').value,
             description: document.getElementById('event-desc').value,
             imageUrl: document.getElementById('event-image').value || null,
+            imageLocalId: document.getElementById('event-image-local-id').value || null,
             lattitude: document.getElementById('event-lat').value,
             longitude: document.getElementById('event-lng').value,
             icon: document.getElementById('event-icon').value || null,

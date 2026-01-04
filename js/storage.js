@@ -1,10 +1,48 @@
 export class TimelineStorage {
     constructor() {
         this.STORAGE_KEY = 'timeline_app_data';
+        this.IMAGE_REPO_KEY = 'timeline-image-repository';
         this.cache = this._loadFromStorage() || {
             activeStoryId: null,
             stories: {}
         };
+        this.imageRepoCache = null; // Lazy loaded array of {id, data}
+    }
+
+    _loadImageRepo() {
+        if (this.imageRepoCache) return;
+        try {
+            const raw = localStorage.getItem(this.IMAGE_REPO_KEY);
+            if (raw) {
+                this.imageRepoCache = JSON.parse(raw);
+            } else {
+                this.imageRepoCache = [];
+            }
+        } catch (e) {
+            console.error("[Storage] Failed to load image repo:", e);
+            this.imageRepoCache = [];
+        }
+    }
+
+    saveImage(dataUrl) {
+        this._loadImageRepo();
+        const id = 'loc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        this.imageRepoCache.push({ id, data: dataUrl });
+        try {
+            localStorage.setItem(this.IMAGE_REPO_KEY, JSON.stringify(this.imageRepoCache));
+            return id;
+        } catch (e) {
+            console.error("[Storage] Failed to save image to repo:", e);
+            // If quota exceeded, we might want to pop the value back off
+            this.imageRepoCache.pop();
+            throw e;
+        }
+    }
+
+    getImage(id) {
+        this._loadImageRepo();
+        const item = this.imageRepoCache.find(i => i.id === id);
+        return item ? item.data : null;
     }
 
     _loadFromStorage() {

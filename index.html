@@ -137,7 +137,22 @@
                         <div class="empty-state">Drag the slider to see events active at a point in time.</div>
                     </div>
                 </div>
-
+                <div id="tab-map" class="tab-content">
+                    <div class="panel-header">
+                        <h3>Geographic View</h3>
+                        <button id="reset-map-btn" class="btn-xs btn-secondary">Reset Pins</button>
+                    </div>
+                    <div id="side-panel-map" class="side-map-container"></div>
+                    <div class="map-instructions">Hover over timeline events to add them to the map.</div>
+                    <div class="toggle-switch-container">
+                        <span class="toggle-label">Pins</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="map-marker-toggle">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-label">Icons</span>
+                    </div>
+                </div>
                 <div id="tab-search" class="tab-content">
                     <div class="panel-header">
                         <h3>Search & Filter</h3>
@@ -189,22 +204,7 @@
                     </div>
                 </div>
 
-                <div id="tab-map" class="tab-content">
-                    <div class="panel-header">
-                        <h3>Geographic View</h3>
-                        <button id="reset-map-btn" class="btn-xs btn-secondary">Reset Pins</button>
-                    </div>
-                    <div id="side-panel-map" class="side-map-container"></div>
-                    <div class="map-instructions">Hover over timeline events to add them to the map.</div>
-                    <div class="toggle-switch-container">
-                        <span class="toggle-label">Pins</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="map-marker-toggle">
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <span class="toggle-label">Icons</span>
-                    </div>
-                </div>
+
             </aside>
         </div>
     </main>
@@ -396,11 +396,49 @@
 
 
                     <div class="form-group">
-                        <label for="event-image">Image URL (Optional)</label>
-                        <input type="url" id="event-image" placeholder="https://example.com/image.jpg">
-                        <div id="event-image-preview-container" class="hidden" style="margin-top: 0.5rem;">
-                            <img id="event-image-preview" src="" alt="Preview"
-                                style="max-height: 200px; max-width: 100%; border-radius: 4px; border: 1px solid var(--border); display: block;">
+                        <label>Image</label>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <input type="url" id="event-image" placeholder="Image URL (https://...)"
+                                style="margin-bottom: 4px;">
+
+                            <div class="flex-row" style="gap: 0.5rem; align-items: center;">
+                                <label for="event-image-file" class="btn btn-secondary btn-sm"
+                                    style="cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                        <polyline points="17 8 12 3 7 8" />
+                                        <line x1="12" y1="3" x2="12" y2="15" />
+                                    </svg>
+                                    Upload File
+                                </label>
+                                <input type="file" id="event-image-file" accept="image/*" hidden>
+                                <span id="file-name-display"
+                                    style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;"></span>
+                            </div>
+
+                            <div id="paste-image-area" tabindex="0"
+                                style="border: 2px dashed var(--border); padding: 1rem; text-align: center; border-radius: 4px; color: var(--text-muted); cursor: pointer; outline: none; transition: all 0.2s;"
+                                onfocus="this.style.borderColor = 'var(--primary)'; this.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';"
+                                onblur="this.style.borderColor = 'var(--border)'; this.style.backgroundColor = 'transparent';">
+                                <span style="pointer-events: none;">Click here and Press Ctrl+V to paste image</span>
+                            </div>
+
+                            <input type="hidden" id="event-image-local-id">
+
+                            <div id="event-image-preview-container" class="hidden"
+                                style="margin-top: 0.5rem; position: relative; width: fit-content;">
+                                <img id="event-image-preview" src="" alt="Preview"
+                                    style="max-height: 200px; max-width: 100%; border-radius: 4px; border: 1px solid var(--border); display: block;">
+                                <button type="button" id="clear-image-btn" class="btn-icon" title="Remove Image"
+                                    style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: white; border-radius: 50%; width: 24px; height: 24px; padding: 4px;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
 

@@ -109,7 +109,19 @@ export function handleEventHover(renderer, e, d) { // Renamed slightly to accept
     const lng = parseFloat(d.longitude || d.longtitude);
     const hasMap = !isNaN(lat) && !isNaN(lng);
 
-    const imageHtml = d.imageUrl ? `<div style="margin-bottom: 8px;"><img src="${d.imageUrl}" style="max-width: 100%; max-height: 200px; border-radius: 4px; display: block;"></div>` : '';
+    let imageHtml = '';
+    if (d.imageLocalId) {
+        // Retrieve local image
+        const localSrc = renderer.storage && renderer.storage.getImage(d.imageLocalId);
+        if (localSrc) {
+            imageHtml = `<div style="margin-bottom: 8px;"><img src="${localSrc}" style="max-width: 100%; max-height: 200px; border-radius: 4px; display: block;"></div>`;
+        } else if (d.imageUrl) {
+            // Fallback
+            imageHtml = `<div style="margin-bottom: 8px;"><img src="${d.imageUrl}" style="max-width: 100%; max-height: 200px; border-radius: 4px; display: block;"></div>`;
+        }
+    } else if (d.imageUrl) {
+        imageHtml = `<div style="margin-bottom: 8px;"><img src="${d.imageUrl}" style="max-width: 100%; max-height: 200px; border-radius: 4px; display: block;"></div>`;
+    }
 
     let content = `
             <span class="tooltip-title">${d.title}</span>
