@@ -8,7 +8,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
 
 - **Core**: HTML5, CSS3, JavaScript (ES6+).
 - **Visualization Engine**: [D3.js v7](https://d3js.org/) (Data-Driven Documents).
-- **Styling**: Vanilla CSS using CSS Custom Properties (Variables) for theming.
+- **Styling**: Vanilla CSS using CSS Custom Properties (Variables) for theming. Implements a robust Dark/Light mode system with automatic persistence.
 - **Fonts**: Google Fonts ("Outfit").
 - **External Dependencies**: 
   - D3.js (Visualization)
@@ -39,6 +39,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
 │   ├── map-manager.js   # Leaflet Map Controller
 │   ├── search-controller.js # Search & Filter Logic
 │   ├── gallery-manager.js # Side Panel Event Gallery Logic
+│   ├── theme-manager.js # Light/Dark Theme Controller & Persistence
 │   └── ui-controls.js   # General UI Event Handlers
 └── sample.csv           # Default dataset
 ```
@@ -89,6 +90,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
 - **`search-controller.js`**: Manages the Search tab in the side panel. Implements filtering by keyword, event type, and duration. Updates the renderer to highlight matching events.
 - **`map-manager.js`**: Dedicated controller for the Leaflet map instance, handling marker creation, synchronization with the time slider, and popup management (including **hover-to-view image previews** in popups).
 - **`gallery-manager.js`**: Manages the "Gallery" tab in the side panel. Filters events that have associated images and renders them in a responsive grid. synchronized with the time slider or active search results.
+- **`theme-manager.js`**: Handles the logic for toggling between light and dark themes. Manages the `[data-theme]` attribute on the root element and persists user preference via specific `localStorage` keys.
 
 ### 5. Utilities & Config (`utils.js`, `config.js`)
 - **Utils**: Contains robust Date parsing logic (ISO 8601, European formats) and tooltip management.

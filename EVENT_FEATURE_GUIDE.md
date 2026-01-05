@@ -122,3 +122,10 @@ If you don't see triangles:
     - **New Story**: In the "Create New Story" modal, a text area allows pasting CSV data to seed the story.
     - **Append Data**: In the "Story Settings" modal, users can paste CSV data to *append* new events to the currently active story.
 - **Validation**: The pasted content is parsed and validated (checking for required columns) before being integrated.
+
+### 14. Light/Dark Theme Support
+- **Dual Visual Modes**: Introduced a high-contrast Light Mode alongside the default Dark Mode.
+- **Theme Manager**: A centralized system (`theme-manager.js`) handles theme state and persistence in `localStorage`.
+- **CSS Variables**: Refactored the entire codebase to use CSS Custom Properties (e.g., `--bg-card`, `--text-main`) instead of hardcoded hex values, allowing for real-time theme switching without page reloads.
+- **Global Toggle**: A prominent toggle button in the header allows instantaneous switching between themes.
+
