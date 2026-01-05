@@ -87,7 +87,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
 - **`storage.js`**: Abstraction layer for `localStorage`. Handles saving, loading, listing, and deleting stories. Includes logic to merge new events into existing stories.
 - **`story-ui.js`**: Manages the "Load Story" and "Create Story" modals. Handles the "Shipped Stories" feature (loading pre-packaged JSONs).
 - **`event-editor.js`**: Controls the "Add Event" modal form. Handles input validation, date range copying, and location selection via mini-map.
-- **`search-controller.js`**: Manages the Search tab in the side panel. Implements filtering by keyword, event type, and duration. Updates the renderer to highlight matching events.
+- **`search-controller.js`**: Manages the Search tab in the side panel. Implements filtering by keyword, event type, date range, and duration. Updates the renderer to invoke visual highlighting (border/stroke + opacity dimming) on matching events. Features collapsible UI sections for better space management.
 - **`map-manager.js`**: Dedicated controller for the Leaflet map instance, handling marker creation, synchronization with the time slider, and popup management (including **hover-to-view image previews** in popups).
 - **`gallery-manager.js`**: Manages the "Gallery" tab in the side panel. Filters events that have associated images and renders them in a responsive grid. synchronized with the time slider or active search results.
 - **`theme-manager.js`**: Handles the logic for toggling between light and dark themes. Manages the `[data-theme]` attribute on the root element and persists user preference via specific `localStorage` keys.

@@ -98,3 +98,12 @@
 .search-stats.hidden {
     display: none;
 }
+
+/* Collapsible Section Styles */
+.collapsible-section.collapsed .collapsible-content {
+    display: none;
+}
+
+.collapsible-section.collapsed .chevron-icon {
+    transform: rotate(-90deg);
+}

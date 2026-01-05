@@ -121,6 +121,8 @@ export async function loadStoryFromURL(url, storage, completionCallback, meta = 
             if (!storyObj.name) storyObj.name = meta.name || "Imported Story";
             if (!storyObj.description) storyObj.description = meta.description || "";
 
+            if (storyObj.data) ensureDataIds(storyObj.data);
+
             storage.importStory(storyObj);
         }
 

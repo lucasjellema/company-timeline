@@ -166,9 +166,12 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
 
             // Highlight Logic
             let opacity = 1;
+            let isHighlighted = false;
             if (renderer.highlightedEventIds && renderer.highlightedEventIds.size > 0) {
                 if (!renderer.highlightedEventIds.has(d.id)) {
                     opacity = 0.1; // Dim non-matching
+                } else {
+                    isHighlighted = true;
                 }
             }
             g.style("opacity", opacity);
@@ -223,18 +226,9 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                     let baseX = CONSTANTS.EVENT.ICON_OFFSET_X;
                     let baseY = CONSTANTS.EVENT.ICON_OFFSET_Y;
                     if (!iconName) {
-                        // Default triangle doesn't use the simple transform string variable in the same way?
-                        // Wait, logic above: 
-                        // if (iconName) { iconGroupTransform = ... }
-                        // else { iconGroupTransform = "" }
-                        // If empty, it's (0,0).
                         baseX = 0;
                         baseY = 0;
                     }
-
-                    // Careful: ICON_OFFSET_X/Y are applied if iconName exists. 
-                    // If not (triangle), transform is "".
-                    // If we lift a default triangle, we just translate(0, -liftY).
 
                     if (iconName && CONFIG.ICONS[iconName]) {
                         iconWrapper.attr("transform", `translate(${CONSTANTS.EVENT.ICON_OFFSET_X}, ${CONSTANTS.EVENT.ICON_OFFSET_Y - liftY}) scale(1)`);
@@ -248,8 +242,8 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                     .attr("class", "event-triangle") // Reuse class for hover effects
                     .attr("d", pathD)
                     .attr("fill", d.color || getEventColor(d.type, renderer.typeColors))
-                    .attr("stroke", CONSTANTS.EVENT.ICON_STROKE)
-                    .attr("stroke-width", CONSTANTS.EVENT.ICON_STROKE_WIDTH)
+                    .attr("stroke", isHighlighted ? "var(--text-main)" : CONSTANTS.EVENT.ICON_STROKE) // Highlight stroke
+                    .attr("stroke-width", isHighlighted ? 2.5 : CONSTANTS.EVENT.ICON_STROKE_WIDTH)
                     .attr("data-id", d.id)
                     .style("cursor", "pointer")
                     .on("mouseenter", (e) => renderer.handleEventHover(e, d))
@@ -282,7 +276,8 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                     .attr("y", -triangleSize - CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP - CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA - liftY) // Lift label too!
                     .attr("text-anchor", "middle")
                     .attr("font-size", CONSTANTS.EVENT.LABEL_FONT_SIZE)
-                    .attr("fill", CONSTANTS.EVENT.LABEL_COLOR)
+                    .attr("fill", isHighlighted ? "var(--text-main)" : CONSTANTS.EVENT.LABEL_COLOR) // Highlight text
+                    .attr("font-weight", isHighlighted ? "bold" : "normal")
                     .text(d.title.length > CONSTANTS.EVENT.LABEL_TRUNCATE_LIMIT ? d.title.substring(0, CONSTANTS.EVENT.LABEL_TRUNCATE_LENGTH) + '...' : d.title);
 
 
@@ -291,6 +286,8 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                 g.append("rect").attr("class", "event-bar")
                     .attr("height", CONFIG.BAR_HEIGHT).attr("fill", d => d.color || getEventColor(d.type, renderer.typeColors))
                     .attr("width", Math.max(CONSTANTS.EVENT.BAR_MIN_WIDTH, w))
+                    .attr("stroke", isHighlighted ? "var(--text-main)" : "none") // Highlight stroke
+                    .attr("stroke-width", isHighlighted ? 2 : 0)
                     .attr("data-id", d.id)
                     .on("mouseenter", (e) => {
                         if (renderer.tooltip.isLocked && renderer.tooltip.isLocked()) return;
@@ -333,6 +330,8 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                 g.append("text").attr("class", "bar-label")
                     .attr("x", CONSTANTS.EVENT.BAR_LABEL_X_OFFSET)
                     .attr("y", CONFIG.BAR_HEIGHT + CONSTANTS.EVENT.BAR_LABEL_Y_PAD)
+                    .attr("fill", isHighlighted ? "var(--text-main)" : undefined) // Highlight text (default color handled by CSS usually, but explicit override helps)
+                    .attr("font-weight", isHighlighted ? "bold" : "normal")
                     .text(d.title);
             }
         });
@@ -367,9 +366,12 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
 
         // Highlight Logic
         let opacity = 1;
+        let isHighlighted = false;
         if (renderer.highlightedEventIds && renderer.highlightedEventIds.size > 0) {
             if (!renderer.highlightedEventIds.has(event.id)) {
                 opacity = 0.1; // Dim non-matching
+            } else {
+                isHighlighted = true;
             }
         }
         triangleG.style("opacity", opacity);
@@ -398,8 +400,8 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
             .attr("class", "event-triangle")
             .attr("d", pathD)
             .attr("fill", event.color || getEventColor(event.type, renderer.typeColors))
-            .attr("stroke", CONSTANTS.EVENT.ICON_STROKE)
-            .attr("stroke-width", CONSTANTS.EVENT.ICON_STROKE_WIDTH)
+            .attr("stroke", isHighlighted ? "var(--text-main)" : CONSTANTS.EVENT.ICON_STROKE) // Highlight stroke
+            .attr("stroke-width", isHighlighted ? 2.5 : CONSTANTS.EVENT.ICON_STROKE_WIDTH)
             // transform attribute handled by wrapper
             .attr("data-id", event.id)
             .style("cursor", "pointer")
@@ -432,7 +434,8 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
             .attr("y", -triangleSize - CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP - CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA) // Above the triangle
             .attr("text-anchor", "middle")
             .attr("font-size", CONSTANTS.EVENT.LABEL_FONT_SIZE)
-            .attr("fill", CONSTANTS.EVENT.LABEL_COLOR)
+            .attr("fill", isHighlighted ? "var(--text-main)" : CONSTANTS.EVENT.LABEL_COLOR) // Highlight text
+            .attr("font-weight", isHighlighted ? "bold" : "normal")
             .text(event.title.length > CONSTANTS.EVENT.LABEL_TRUNCATE_LIMIT ? event.title.substring(0, CONSTANTS.EVENT.LABEL_TRUNCATE_LENGTH) + '...' : event.title);
     });
 }

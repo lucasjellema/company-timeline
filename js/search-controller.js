@@ -47,6 +47,16 @@ export class SearchController {
         if (clearBtn) {
             clearBtn.addEventListener('click', () => this.clearSearch());
         }
+
+        const typeCollapsible = document.getElementById('event-types-collapsible');
+        if (typeCollapsible) {
+            const header = typeCollapsible.querySelector('.collapsible-header');
+            if (header) {
+                header.addEventListener('click', () => {
+                    typeCollapsible.classList.toggle('collapsed');
+                });
+            }
+        }
     }
 
     handleSearch() {

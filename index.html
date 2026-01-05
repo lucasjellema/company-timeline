@@ -182,10 +182,19 @@
                                 class="form-control">
                         </div>
 
-                        <div class="form-group small-gap">
-                            <label>Event Types</label>
-                            <div id="search-types-container" class="checkbox-grid">
-                                <!-- Populated dynamically -->
+                        <div class="form-group small-gap collapsible-section collapsed" id="event-types-collapsible">
+                            <div class="collapsible-header"
+                                style="display: flex; justify-content: flex-start; gap: 0.5rem; align-items: center; cursor: pointer; margin-bottom: 0.5rem;">
+                                <label style="cursor: pointer; margin-bottom: 0;">Event Types</label>
+                                <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" style="transition: transform 0.2s;">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="collapsible-content">
+                                <div id="search-types-container" class="checkbox-grid">
+                                    <!-- Populated dynamically -->
+                                </div>
                             </div>
                         </div>
 
@@ -211,11 +220,13 @@
                             <input type="checkbox" id="search-hide-non-matching">
                             <label for="search-hide-non-matching">Hide non-matching events</label>
                         </div>
-
-                        <div class="form-actions-panel">
-                            <button id="apply-search-btn" class="btn btn-primary btn-block">Search & Zoom</button>
-                        </div>
                     </div>
+
+                    <div class="form-actions-panel"
+                        style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border);">
+                        <button id="apply-search-btn" class="btn btn-primary btn-block">Search & Zoom</button>
+                    </div>
+
                     <div id="search-results-stats" class="search-stats hidden">
                         Found <span id="search-match-count">0</span> events.
                     </div>

@@ -36,7 +36,11 @@ A premium, interactive company timeline visualization tool powered by **D3.js**.
   - Date Ranges (with quick "Copy Start to End" utility)
   - **Image Support**: Add image URLs to events for rich previews in tooltips and map popups.
   - Interactive Mini-map for location picking
-- **Advanced Search & Filtering**: Filter events by keyword, type, or duration. The timeline semantic zoom automatically adjusts to show the context of search results.
+- **Advanced Search & Filtering**:
+  - Filter events by keyword, type, duration, or **Date Range (From/Until)**.
+  - **Visual Highlighting**: Matching events are boldly highlighted with a distinct border, while non-matching events are dimmed for focus.
+  - **Collapsible UI**: The "Event Types" filter is collapsible to save space, keeping the "Search" action button visible at the bottom.
+  - The timeline semantic zoom automatically adjusts to show the context of search results.
 - **Context Menus**: Right-click on events to Edit, Delete, or Move them. Right-click on the Story list to Clone or Delete stories.
 
 
@@ -63,6 +67,19 @@ You will need a local web server to run the application because it uses ES6 modu
    ```
 
 4. Open your browser and navigate to `http://localhost:8080` (or the port provided by your server).
+
+### Startup Parameters
+
+The application supports loading stories directly via URL query parameters:
+
+- **Load a Shipped Story**: Use `shipped_story` with a partial name match.
+  - Example: `?shipped_story=space` (Loads "Space Travel")
+  - Example: `?shipped_story=tech` (Loads "History of Tech Companies")
+
+- **Load from External URL**: Use `story_file_url` with a link to a JSON story file.
+  - Example: `?story_file_url=https://mysite.com/my-roadmap.json`
+  - **GitHub Support**: If you provide a GitHub file viewer URL (e.g., `github.com/.../blob/...`), the app will automatically convert it to a raw content URL to avoid CORS errors.
+
 
 ## 📅 Data Format
 
