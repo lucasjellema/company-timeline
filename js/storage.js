@@ -217,4 +217,62 @@ export class TimelineStorage {
         console.log(`[Storage] Cloned story: ${sourceStory.name} -> ${newStory.name}`);
         return newStory;
     }
+
+    cleanupOrphanedFiles() {
+        const LAST_CLEANUP_KEY = 'timeline_last_cleanup';
+        const now = Date.now();
+        const lastCleanup = parseInt(localStorage.getItem(LAST_CLEANUP_KEY) || '0', 10);
+        const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+
+        if (now - lastCleanup < ONE_DAY_MS) {
+            console.log("[Storage] Cleanup skipped (run recently)");
+            return;
+        }
+
+        console.log("[Storage] Starting cleanup of orphaned files...");
+        this._loadImageRepo();
+
+        // 1. Collect all used IDs
+        const usedIds = new Set();
+        Object.values(this.cache.stories).forEach(story => {
+            // Check story metadata if applicable
+            if (story.coverImage && story.coverImage.startsWith && story.coverImage.startsWith('loc_')) {
+                usedIds.add(story.coverImage);
+            }
+
+            // Check events
+            if (Array.isArray(story.data)) {
+                story.data.forEach(event => {
+                    if (event.imageLocalId) {
+                        usedIds.add(event.imageLocalId);
+                    }
+                    // Check generic image URL if it happens to use our scheme
+                    if (event.imageUrl && event.imageUrl.startsWith && event.imageUrl.startsWith('loc_')) {
+                        usedIds.add(event.imageUrl);
+                    }
+                });
+            }
+        });
+
+        // 2. Identify orphans
+        const initialCount = this.imageRepoCache.length;
+        // Filter: Keep only images that are in use
+        this.imageRepoCache = this.imageRepoCache.filter(img => usedIds.has(img.id));
+        const finalCount = this.imageRepoCache.length;
+        const removedCount = initialCount - finalCount;
+
+        // 3. Save if changes
+        if (removedCount > 0) {
+            try {
+                localStorage.setItem(this.IMAGE_REPO_KEY, JSON.stringify(this.imageRepoCache));
+                console.log(`[Storage] Cleaned up ${removedCount} orphaned files.`);
+            } catch (e) {
+                console.error("[Storage] Failed to save image repo after cleanup:", e);
+            }
+        } else {
+            console.log("[Storage] No orphaned files found.");
+        }
+
+        localStorage.setItem(LAST_CLEANUP_KEY, now.toString());
+    }
 }

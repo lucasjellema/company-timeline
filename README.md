@@ -42,6 +42,7 @@ A premium, interactive company timeline visualization tool powered by **D3.js**.
   - **Collapsible UI**: The "Event Types" filter is collapsible to save space, keeping the "Search" action button visible at the bottom.
   - The timeline semantic zoom automatically adjusts to show the context of search results.
 - **Context Menus**: Right-click on events to Edit, Delete, or Move them. Right-click on the Story list to Clone or Delete stories.
+- **Smart Storage Maintenance**: Automatically cleans up orphaned image files from local storage to prevent data bloat, running a background check once daily.
 
 
 ## 🚀 Getting Started

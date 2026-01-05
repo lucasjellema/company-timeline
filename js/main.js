@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderer = new TimelineRenderer('#timeline-viz');
     const storage = new TimelineStorage();
+    // Run maintenance
+    setTimeout(() => storage.cleanupOrphanedFiles(), 2000); // Delay slightly to avoid blocking init
     renderer.storage = storage; // Attach storage for image retrieval during rendering
     const mapManager = new MapManager('side-panel-map', storage);
     const galleryManager = new GalleryManager('tab-gallery', storage, {

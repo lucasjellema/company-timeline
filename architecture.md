@@ -84,7 +84,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
   - **Extreme Focus Interaction**: Detects double-clicks on individual events (bars or icons) to trigger the focus mode in the main orchestrator.
 
 ### 4. Application Logic Modules
-- **`storage.js`**: Abstraction layer for `localStorage`. Handles saving, loading, listing, and deleting stories. Includes logic to merge new events into existing stories.
+- **`storage.js`**: Abstraction layer for `localStorage`. Handles saving, loading, listing, and deleting stories. Includes logic to merge new events into existing stories. Implements an automatic **garbage collection** system (`cleanupOrphanedFiles`) that identifies and removes unused local file artifacts (images) once per day to optimize storage usage.
 - **`story-ui.js`**: Manages the "Load Story" and "Create Story" modals. Handles the "Shipped Stories" feature (loading pre-packaged JSONs).
 - **`event-editor.js`**: Controls the "Add Event" modal form. Handles input validation, date range copying, and location selection via mini-map.
 - **`search-controller.js`**: Manages the Search tab in the side panel. Implements filtering by keyword, event type, date range, and duration. Updates the renderer to invoke visual highlighting (border/stroke + opacity dimming) on matching events. Features collapsible UI sections for better space management.

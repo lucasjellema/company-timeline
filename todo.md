@@ -27,7 +27,7 @@
 * [X] allow color and icon for event (in edit event)
 * [ ] remove file when file reference is updated or event is removed (from local storage)
 * [ ] remove files when story is removed
-* [ ] check for dangling files: no event references the file; then remove the file
+* [X] check for dangling files: no event references the file; then remove the file
 * [X] show image in map tooltip for local file
 * [X] process url param at startup to load shipped story
 * [X] process url param at startup to retrieve a timeline story file from a URL 
