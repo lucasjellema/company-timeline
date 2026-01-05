@@ -9,8 +9,16 @@ import { initSplitter, initTabs, initZoomControls } from './ui-controls.js';
 import { initEventEditor } from './event-editor.js';
 import { initStoryUI, loadShippedStory } from './story-ui.js';
 import { SearchController } from './search-controller.js';
+import { ThemeManager } from './theme-manager.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Theme Init
+    const themeManager = new ThemeManager();
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => themeManager.toggle());
+    }
+
     const renderer = new TimelineRenderer('#timeline-viz');
     const storage = new TimelineStorage();
     renderer.storage = storage; // Attach storage for image retrieval during rendering

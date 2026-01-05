@@ -10,6 +10,43 @@
     --border: #334155;
     --glass: rgba(30, 41, 59, 0.7);
     --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+    /* New Semantic Variables for Theming */
+    --bg-input: rgba(15, 23, 42, 0.5);
+    --bg-hover: rgba(255, 255, 255, 0.05);
+    --bg-active: rgba(255, 255, 255, 0.1);
+    --bg-level: rgba(255, 255, 255, 0.02);
+    --bg-event-item: rgba(255, 255, 255, 0.03);
+    --bg-map-container: #1a1a1a;
+    --bg-context-menu: var(--bg-card);
+}
+
+[data-theme="light"] {
+    --primary: #4f46e5;
+    /* Indigo 600 */
+    --primary-light: #6366f1;
+    /* Indigo 500 */
+    --secondary: #9333ea;
+    /* Purple 600 */
+    --bg-dark: #f1f5f9;
+    /* Slate 100 */
+    --bg-card: #ffffff;
+    --text-main: #0f172a;
+    /* Slate 900 */
+    --text-muted: #64748b;
+    /* Slate 500 */
+    --border: #cbd5e1;
+    /* Slate 300 */
+    --glass: rgba(255, 255, 255, 0.7);
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+    --bg-input: #ffffff;
+    --bg-hover: rgba(0, 0, 0, 0.05);
+    --bg-active: rgba(0, 0, 0, 0.1);
+    --bg-level: rgba(0, 0, 0, 0.03);
+    --bg-event-item: rgba(0, 0, 0, 0.03);
+    --bg-map-container: #e2e8f0;
+    --bg-context-menu: #ffffff;
 }
 
 * {
@@ -182,7 +219,7 @@ main {
     border-bottom: 1px solid var(--border);
     margin: -1.5rem -1.5rem 1rem -1.5rem;
     padding: 0 1rem;
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--bg-active);
 }
 
 .nav-tab {
@@ -220,7 +257,7 @@ main {
     flex-grow: 1;
     width: 100%;
     min-height: 300px;
-    background: #1a1a1a;
+    background: var(--bg-map-container);
     border-radius: 0.5rem;
     margin-bottom: 0.5rem;
 }
@@ -269,13 +306,13 @@ main {
 .event-item {
     padding: 0.75rem;
     border-radius: 0.5rem;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--bg-event-item);
     border-left: 4px solid var(--primary);
     transition: background 0.2s;
 }
 
 .event-item:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-hover);
 }
 
 .event-item-title {
@@ -425,7 +462,7 @@ main {
 }
 
 .level-bg {
-    fill: rgba(255, 255, 255, 0.02);
+    fill: var(--bg-level);
 }
 
 /* Event Triangle Styles */
@@ -532,7 +569,7 @@ main {
 .form-group textarea {
     width: 100%;
     padding: 0.75rem;
-    background: rgba(15, 23, 42, 0.5);
+    background: var(--bg-input);
     border: 1px solid var(--border);
     border-radius: 0.5rem;
     color: var(--text-main);
@@ -552,7 +589,7 @@ main {
 .modal-map-container {
     height: 250px;
     width: 100%;
-    background: #1a1a1a;
+    background: var(--bg-map-container);
     border-radius: 0.5rem;
     border: 1px solid var(--border);
     margin-bottom: 0.5rem;
@@ -583,7 +620,7 @@ main {
 /* Context Menu */
 .context-menu {
     position: absolute;
-    background: var(--bg-card);
+    background: var(--bg-context-menu);
     border: 1px solid var(--border);
     border-radius: 0.5rem;
     padding: 0.5rem 0;
@@ -608,7 +645,7 @@ main {
 }
 
 .context-menu-item:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-hover);
 }
 
 .context-menu-item.delete {
@@ -643,7 +680,7 @@ main {
 }
 
 .story-item:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-hover);
 }
 
 .story-item.active-story-item {
@@ -692,7 +729,7 @@ main {
     gap: 0.75rem;
     padding: 0.5rem 0.75rem;
     /* Reduced padding */
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--bg-event-item);
     border: 1px solid var(--border);
     border-radius: 0.375rem;
     transition: background 0.2s;
@@ -701,7 +738,7 @@ main {
 }
 
 .color-item:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-hover);
 }
 
 .color-label {
@@ -735,7 +772,7 @@ main {
 
 .color-edit-icon:hover {
     color: var(--text-main);
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-active);
 }
 
 /* Hidden color input but accessible via label/icon click */
@@ -758,7 +795,7 @@ main {
 }
 
 .select-selected {
-    background-color: rgba(15, 23, 42, 0.5);
+    background-color: var(--bg-input);
     border: 1px solid var(--border);
     border-radius: 4px;
     color: var(--text-main);

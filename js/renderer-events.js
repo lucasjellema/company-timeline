@@ -16,12 +16,12 @@ const CONSTANTS = {
         RADIUS: 10,               // Radius of the back button circle
         CX: 10,                   // Center X of the back button circle
         CY: 5,                    // Center Y of the back button circle
-        FILL_DEFAULT: "rgba(255,255,255,0.1)", // Default background color
-        FILL_HOVER: "rgba(255,255,255,0.3)",   // Background color on hover
-        STROKE: "#666",           // Stroke color for the button circle
+        FILL_DEFAULT: "var(--bg-active)", // Default background color
+        FILL_HOVER: "var(--primary-light)",   // Background color on hover
+        STROKE: "var(--text-muted)",           // Stroke color for the button circle
         STROKE_WIDTH: 1,          // Stroke width for the button circle
         ICON_PATH: "M 12 5 L 8 9 L 12 13",     // SVG path data for the left arrow icon
-        ICON_STROKE: "#fff",      // Color of the arrow icon
+        ICON_STROKE: "var(--text-main)",      // Color of the arrow icon
         ICON_FILL: "none",        // Fill of the arrow icon (none since it's a line)
         ICON_TRANSLATE: "translate(0, -4)"     // Adjustment to center the arrow within the circle
     },
@@ -36,7 +36,7 @@ const CONSTANTS = {
         TRIANGLE_SIZE: 10,        // Size of the triangle shape for point events
         ICON_OFFSET_X: -12,       // Horizontal offset to center a 24px icon
         ICON_OFFSET_Y: -19,       // Vertical offset to make the icon sit on top of the timeline row
-        ICON_STROKE: "#fff",      // Stroke color for event icons/shapes
+        ICON_STROKE: "var(--text-main)",      // Stroke color for event icons/shapes
         ICON_STROKE_WIDTH: 1.5,   // Stroke width for event icons/shapes
         LABEL_Y_OFFSET_GAP: 8,    // Gap between the icon and the text label
         LABEL_Y_OFFSET_EXTRA: 2, // Additional offset for label positioning
@@ -47,7 +47,8 @@ const CONSTANTS = {
         BAR_MIN_WIDTH: 8,         // Minimum width in pixels for an event bar
         BAR_ICON_OPACITY: 0.9,    // Opacity of the icon inside an event bar
         BAR_ICON_TRANSFORM: "translate(6, 4) scale(0.7)", // Positioning and scaling for icon inside bar
-        BAR_ICON_FILL: "white",   // Color of the icon inside the bar
+        BAR_ICON_FILL: "white",   // Color of the icon inside the bar (Keep white for contrast on colored bars)
+
         BAR_LABEL_X_OFFSET: 4,    // Horizontal padding for the label inside the bar
         BAR_LABEL_Y_PAD: 10       // Vertical padding for the label relative to bar height
     }
