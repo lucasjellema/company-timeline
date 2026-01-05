@@ -119,6 +119,64 @@ export const formatDate = (date) => {
     return `${date.getFullYear()}-${date.getMonth() + 1}`;
 };
 
+const NICE_COLORS = [
+    "#3B82F6", // Blue
+    "#10B981", // Emerald
+    "#8B5CF6", // Violet
+    "#F59E0B", // Amber
+    "#EF4444", // Red
+    "#6366F1", // Indigo
+    "#EC4899", // Pink (existing default)
+    "#14B8A6", // Teal
+    "#F97316", // Orange
+    "#84CC16", // Lime
+    "#06B6D4", // Cyan
+    "#D946EF"  // Fuchsia
+];
+
+const AUTO_ICONS = ["circle", "star", "square", "triangle", "diamond", "hexagon"];
+
+export const generateTypeMappings = (data, existingColors = {}, existingIcons = {}) => {
+    const newColors = { ...existingColors };
+    const newIcons = { ...existingIcons };
+    const types = new Set();
+
+    // 1. Find all unique types
+    data.forEach(d => {
+        if (d.type) types.add(d.type.toLowerCase());
+    });
+
+    let colorIdx = 0;
+    let iconIdx = 0;
+
+    // Helper to get hash code for consistent assignment
+    const getHashCode = (s) => {
+        let h = 0;
+        for (let i = 0; i < s.length; i++)
+            h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+        return h;
+    }
+
+    types.forEach(type => {
+        // Assign Color if missing
+        if (!newColors[type]) {
+            // Deterministic assignment based on type name string
+            const hash = Math.abs(getHashCode(type));
+            // Use hash to pick a color, but also ensure we don't just pick 'pink' if it's already used?
+            // Simple mapping is fine.
+            newColors[type] = NICE_COLORS[hash % NICE_COLORS.length];
+        }
+
+        // Assign Icon if missing
+        if (!newIcons[type]) {
+            const hash = Math.abs(getHashCode(type));
+            newIcons[type] = AUTO_ICONS[hash % AUTO_ICONS.length];
+        }
+    });
+
+    return { colors: newColors, icons: newIcons };
+};
+
 export const getEventColor = (type, colors) => {
     return colors[type.toLowerCase()] || colors.default;
 };

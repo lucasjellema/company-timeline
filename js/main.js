@@ -1,5 +1,5 @@
 import { CONFIG, SAMPLE_CSV } from './config.js';
-import { parseDate, ensureDataIds } from './utils.js';
+import { parseDate, ensureDataIds, generateTypeMappings } from './utils.js';
 import { processTimelineData } from './layout-engine.js';
 import { TimelineRenderer } from './renderer.js';
 import { TimelineStorage } from './storage.js';
@@ -688,7 +688,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             const data = d3.csvParse(SAMPLE_CSV);
             ensureDataIds(data);
-            storage.createStory("Sample Project Story", data);
+            const mappings = generateTypeMappings(data, CONFIG.TYPE_COLORS, {});
+            storage.createStory("Sample Project Story", data, {
+                settings: { colors: mappings.colors, icons: mappings.icons }
+            });
             window.timelineData = data;
             searchController.loadEventTypes();
             renderTimeline();

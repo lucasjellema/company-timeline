@@ -86,6 +86,7 @@ export class TimelineStorage {
             description: metadata.description || "",
             startDate: metadata.start || null,
             endDate: metadata.end || null,
+            settings: metadata.settings || {},
             lastModified: Date.now()
         };
         this.cache.stories[id] = story;

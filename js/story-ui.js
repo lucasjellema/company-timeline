@@ -1,7 +1,7 @@
 import { TimelineStorage } from './storage.js';
 import { initSettingsUI } from './story-settings.js';
 import { CONFIG } from './config.js';
-import { ensureDataIds, parseAndPrepareCSV } from './utils.js';
+import { ensureDataIds, parseAndPrepareCSV, generateTypeMappings } from './utils.js';
 
 export function initStoryUI(storage, refreshCallback) {
     initCreateStoryUI(storage, refreshCallback);
@@ -91,6 +91,30 @@ export async function loadStoryFromURL(url, storage, completionCallback, meta = 
             fetchUrl = url.replace('github.com', 'raw.githubusercontent.com')
                 .replace('/blob/', '/');
             console.log(`Converted GitHub URL to Raw: ${fetchUrl}`);
+        }
+
+        // OneDrive Workaround
+        // Convert Share URL to Graph API endpoint to get direct download URL
+        if (url.includes('onedrive.live.com') || url.includes('1drv.ms') || url.includes('sharepoint.com')) {
+            try {
+                const encodedUrl = btoa(url).replace(/\//g, '_').replace(/\+/g, '-').replace(/=+$/, '');
+                const graphApiUrl = `https://graph.microsoft.com/v1.0/shares/u!${encodedUrl}/driveItem`;
+
+                console.log(`Fetching OneDrive metadata from: ${graphApiUrl}`);
+                const metaRes = await fetch(graphApiUrl);
+                if (!metaRes.ok) throw new Error("Failed to fetch OneDrive metadata");
+
+                const metaData = await metaRes.json();
+                if (metaData['@microsoft.graph.downloadUrl']) {
+                    fetchUrl = metaData['@microsoft.graph.downloadUrl'];
+                    console.log("Got OneDrive download URL");
+                } else {
+                    throw new Error("OneDrive metadata did not contain download URL");
+                }
+            } catch (odErr) {
+                console.warn("OneDrive workaround failed, falling back to original URL", odErr);
+                // Fallback to original URL if logic fails, though likely to fail CORS too
+            }
         }
 
         const res = await fetch(fetchUrl);
@@ -192,7 +216,14 @@ function initCreateStoryUI(storage, refreshCallback) {
             }
         }
 
-        storage.createStory(title, initialData, { description: desc, start, end });
+        const mappings = generateTypeMappings(initialData, CONFIG.TYPE_COLORS, {});
+
+        storage.createStory(title, initialData, {
+            description: desc,
+            start,
+            end,
+            settings: { colors: mappings.colors, icons: mappings.icons }
+        });
         window.timelineData = initialData;
 
         refreshCallback({ resetView: true });
@@ -374,11 +405,27 @@ function initImportExportUI(storage, refreshCallback) {
                         if (activeStory && Array.isArray(activeStory.data)) {
                             ensureDataIds(data);
                             mergedData = [...activeStory.data, ...data];
+
                             storage.saveActiveStory(mergedData);
+
+                            // Merge Settings (Colors/Icons)
+                            const currentSettings = activeStory.settings || {};
+                            const currentColors = { ...CONFIG.TYPE_COLORS, ...(currentSettings.colors || {}) };
+                            const currentIcons = currentSettings.icons || {};
+
+                            const mappings = generateTypeMappings(data, currentColors, currentIcons);
+
+                            storage.updateStorySettings(activeStory.id, {}, {
+                                colors: mappings.colors,
+                                icons: mappings.icons
+                            });
                         } else {
                             const name = `Imported Story ${new Date().toLocaleTimeString()}`;
                             ensureDataIds(data);
-                            storage.createStory(name, data);
+                            const mappings = generateTypeMappings(data, CONFIG.TYPE_COLORS, {});
+                            storage.createStory(name, data, {
+                                settings: { colors: mappings.colors, icons: mappings.icons }
+                            });
                         }
 
                         window.timelineData = mergedData;
