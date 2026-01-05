@@ -85,8 +85,8 @@ export class TimelineRenderer {
             level.collapsed = this.collapsedGroups.has(level.level0);
 
             // Standard height based on rows (now potentially 0 or low if filtered)
-                // TODO standardHeight will be too much for rows without icons or without bars
-                // in order to calculate height we need to know how many rows have icons vs not
+            // TODO standardHeight will be too much for rows without icons or without bars
+            // in order to calculate height we need to know how many rows have icons vs not
             let standardHeight = level.rowCount * (CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING) + CONFIG.LEVEL_SPACING;
 
             // If empty AND collapsed, enforce minimum height
@@ -165,8 +165,8 @@ export class TimelineRenderer {
     }
 
     // Proxy methods for interaction module
-    handleEventHover(e, d) {
-        handleEventHover(this, e, d);
+    handleEventHover(e, d, options = {}) {
+        handleEventHover(this, e, d, options);
     }
 
     updateActiveEvents() {

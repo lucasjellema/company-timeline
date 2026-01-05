@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const galleryManager = new GalleryManager('tab-gallery', storage, {
         onHover: (d, e) => {
             renderer.highlightEvent(d.id);
-            renderer.handleEventHover(e, d);
+            renderer.handleEventHover(e, d, { hideImage: true });
         },
         onBlur: (id) => {
             renderer.unhighlightEvent(id);

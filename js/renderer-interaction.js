@@ -93,7 +93,7 @@ export function updateActiveEvents(renderer) {
     }
 }
 
-export function handleEventHover(renderer, e, d) { // Renamed slightly to accept renderer, but logic inside uses renderer properties
+export function handleEventHover(renderer, e, d, options = {}) { // Renamed slightly to accept renderer, but logic inside uses renderer properties
     // Actually, bind this methods to renderer in main class usually easier, but extracting logic:
     if (renderer.onEventHover) {
         renderer.onEventHover(e, d);
@@ -110,17 +110,19 @@ export function handleEventHover(renderer, e, d) { // Renamed slightly to accept
     const hasMap = !isNaN(lat) && !isNaN(lng);
 
     let imageHtml = '';
-    if (d.imageLocalId) {
-        // Retrieve local image
-        const localSrc = renderer.storage && renderer.storage.getImage(d.imageLocalId);
-        if (localSrc) {
-            imageHtml = `<div style="margin-bottom: 8px;"><img src="${localSrc}" style="max-width: 100%; max-height: 200px; border-radius: 4px; display: block;"></div>`;
+    if (!options.hideImage) {
+        if (d.imageLocalId) {
+            // Retrieve local image
+            const localSrc = renderer.storage && renderer.storage.getImage(d.imageLocalId);
+            if (localSrc) {
+                imageHtml = `<div style="margin-bottom: 8px;"><img src="${localSrc}" style="max-width: 100%; max-height: 200px; border-radius: 4px; display: block;"></div>`;
+            } else if (d.imageUrl) {
+                // Fallback
+                imageHtml = `<div style="margin-bottom: 8px;"><img src="${d.imageUrl}" style="max-width: 100%; max-height: 200px; border-radius: 4px; display: block;"></div>`;
+            }
         } else if (d.imageUrl) {
-            // Fallback
             imageHtml = `<div style="margin-bottom: 8px;"><img src="${d.imageUrl}" style="max-width: 100%; max-height: 200px; border-radius: 4px; display: block;"></div>`;
         }
-    } else if (d.imageUrl) {
-        imageHtml = `<div style="margin-bottom: 8px;"><img src="${d.imageUrl}" style="max-width: 100%; max-height: 200px; border-radius: 4px; display: block;"></div>`;
     }
 
     let content = `
