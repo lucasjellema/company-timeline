@@ -2,8 +2,9 @@ import { formatTooltipDate } from './utils.js';
 import { CONFIG } from './config.js';
 
 export class MapManager {
-    constructor(mapContainerId) {
+    constructor(mapContainerId, storage) {
         this.mapContainerId = mapContainerId;
+        this.storage = storage; // Store reference to storage
         this.map = null;
         this.markers = []; // Array of { marker, data, typeIcons }
         this.useEventIcons = false;
@@ -108,11 +109,19 @@ export class MapManager {
             `<svg viewBox="0 0 24 24" width="16" height="16" style="vertical-align: sub; margin-right: 6px; fill: currentColor;"><path d="${iconPath}"></path></svg>` :
             '';
 
-        const imageIconHtml = d.imageUrl ? `
+        let imgSrc = null;
+        if (d.imageLocalId && this.storage) {
+            imgSrc = this.storage.getImage(d.imageLocalId);
+        }
+        if (!imgSrc && d.imageUrl) {
+            imgSrc = d.imageUrl;
+        }
+
+        const imageIconHtml = imgSrc ? `
             <div class="map-popup-footer">
                 <div class="map-popup-image-wrapper">
                      <div class="map-popup-image-preview">
-                        <img src="${d.imageUrl}" style="width: 100%; display: block; border-radius: 2px;">
+                        <img src="${imgSrc}" style="width: 100%; display: block; border-radius: 2px;">
                      </div>
                      <div class="map-popup-icon" title="View Image">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

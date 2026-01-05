@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderer = new TimelineRenderer('#timeline-viz');
     const storage = new TimelineStorage();
     renderer.storage = storage; // Attach storage for image retrieval during rendering
-    const mapManager = new MapManager('side-panel-map');
+    const mapManager = new MapManager('side-panel-map', storage);
     const galleryManager = new GalleryManager('tab-gallery', storage, {
         onHover: (d, e) => {
             renderer.highlightEvent(d.id);
