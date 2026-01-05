@@ -7,7 +7,7 @@ import { MapManager } from './map-manager.js';
 import { GalleryManager } from './gallery-manager.js';
 import { initSplitter, initTabs, initZoomControls } from './ui-controls.js';
 import { initEventEditor } from './event-editor.js';
-import { initStoryUI } from './story-ui.js';
+import { initStoryUI, loadShippedStory } from './story-ui.js';
 import { SearchController } from './search-controller.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -637,21 +637,42 @@ document.addEventListener('DOMContentLoaded', () => {
     initStoryUI(storage, refreshHandler);
 
     // --- Initial Load ---
-    const startStory = storage.getActiveStory();
-    if (startStory) {
-        window.timelineData = startStory.data;
-        if (ensureDataIds(window.timelineData)) {
-            storage.saveActiveStory(window.timelineData); // Persist IDs
+    // --- Initial Load ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const shippedStoryParam = urlParams.get('shipped_story');
+    let loadedFromParam = false;
+
+    if (shippedStoryParam) {
+        const stories = CONFIG.SHIPPED_STORIES || [];
+        const match = stories.find(s => s.name.toLowerCase().includes(shippedStoryParam.toLowerCase()));
+
+        if (match) {
+            console.log("Loading shipped story from param:", match.name);
+            loadShippedStory(match, storage, (opts) => {
+                searchController.loadEventTypes();
+                renderTimeline(opts);
+            });
+            loadedFromParam = true;
         }
-        searchController.loadEventTypes();
-        renderTimeline();
-    } else {
-        const data = d3.csvParse(SAMPLE_CSV);
-        ensureDataIds(data);
-        storage.createStory("Sample Project Story", data);
-        window.timelineData = data;
-        searchController.loadEventTypes();
-        renderTimeline();
+    }
+
+    if (!loadedFromParam) {
+        const startStory = storage.getActiveStory();
+        if (startStory) {
+            window.timelineData = startStory.data;
+            if (ensureDataIds(window.timelineData)) {
+                storage.saveActiveStory(window.timelineData); // Persist IDs
+            }
+            searchController.loadEventTypes();
+            renderTimeline();
+        } else {
+            const data = d3.csvParse(SAMPLE_CSV);
+            ensureDataIds(data);
+            storage.createStory("Sample Project Story", data);
+            window.timelineData = data;
+            searchController.loadEventTypes();
+            renderTimeline();
+        }
     }
 
     // Resize Handler

@@ -72,56 +72,62 @@ function initShippedStoriesUI(storage, refreshCallback) {
         });
     };
 
-    const importAndLoad = async (storyConfig) => {
-        try {
-            const res = await fetch(`data/${storyConfig.file}`);
-            if (!res.ok) throw new Error(`Failed to load ${storyConfig.file}`);
-            let data = await res.json();
-
-            // Handle wrapper if present (e.g. if file is { story: { ... } } or just { ... })
-            // Assuming the file IS the story object or an array of events.
-
-            let storyObj;
-
-            if (Array.isArray(data)) {
-                // Raw Events Array
-                ensureDataIds(data);
-                storyObj = {
-                    name: storyConfig.name,
-                    description: storyConfig.description,
-                    data: data
-                };
-                // Allow storage to create
-                storage.createStory(storyObj.name, storyObj.data, { description: storyObj.description });
-            } else {
-                // Full Story Object
-                storyObj = data;
-                // Force new ID to treat as template import
-                storyObj.id = null;
-                // Ensure name/desc if missing
-                if (!storyObj.name) storyObj.name = storyConfig.name;
-                if (!storyObj.description) storyObj.description = storyConfig.description;
-
-                storage.importStory(storyObj);
-            }
-
-            // Activate
-            // storage.createStory and importStory both set the active ID internally.
-            // We just need to load the data into global state and refresh.
-            // But wait, createStory returns the story object. importStory returns it too.
-            // So we can just use the memory object or fetch active.
-
-            const activeStory = storage.getActiveStory();
-            window.timelineData = activeStory.data;
-            refreshCallback({ resetView: true });
-
+    const importAndLoad = (storyConfig) => {
+        loadShippedStory(storyConfig, storage, (opts) => {
+            refreshCallback(opts);
             modal.classList.add('hidden');
-
-        } catch (err) {
-            console.error(err);
-            alert("Failed to load story: " + err.message);
-        }
+        });
     };
+}
+
+export async function loadShippedStory(storyConfig, storage, completionCallback) {
+    try {
+        const res = await fetch(`data/${storyConfig.file}`);
+        if (!res.ok) throw new Error(`Failed to load ${storyConfig.file}`);
+        let data = await res.json();
+
+        // Handle wrapper if present (e.g. if file is { story: { ... } } or just { ... })
+        // Assuming the file IS the story object or an array of events.
+
+        let storyObj;
+
+        if (Array.isArray(data)) {
+            // Raw Events Array
+            ensureDataIds(data);
+            storyObj = {
+                name: storyConfig.name,
+                description: storyConfig.description,
+                data: data
+            };
+            // Allow storage to create
+            storage.createStory(storyObj.name, storyObj.data, { description: storyObj.description });
+        } else {
+            // Full Story Object
+            storyObj = data;
+            // Force new ID to treat as template import
+            storyObj.id = null;
+            // Ensure name/desc if missing
+            if (!storyObj.name) storyObj.name = storyConfig.name;
+            if (!storyObj.description) storyObj.description = storyConfig.description;
+
+            storage.importStory(storyObj);
+        }
+
+        // Activate
+        // storage.createStory and importStory both set the active ID internally.
+        // We just need to load the data into global state and refresh.
+
+        const activeStory = storage.getActiveStory();
+        window.timelineData = activeStory.data;
+
+        if (completionCallback) {
+            completionCallback({ resetView: true });
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("Failed to load story: " + err.message);
+    }
 }
 
 function initCreateStoryUI(storage, refreshCallback) {
