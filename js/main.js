@@ -7,7 +7,7 @@ import { MapManager } from './map-manager.js';
 import { GalleryManager } from './gallery-manager.js';
 import { initSplitter, initTabs, initZoomControls } from './ui-controls.js';
 import { initEventEditor } from './event-editor.js';
-import { initStoryUI, loadShippedStory } from './story-ui.js';
+import { initStoryUI, loadShippedStory, loadStoryFromURL } from './story-ui.js';
 import { SearchController } from './search-controller.js';
 import { ThemeManager } from './theme-manager.js';
 
@@ -662,6 +662,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             loadedFromParam = true;
         }
+    }
+
+    const storyFileUrlParam = urlParams.get('story_file_url');
+    if (!loadedFromParam && storyFileUrlParam) {
+        console.log("Loading story from URL param:", storyFileUrlParam);
+        loadStoryFromURL(storyFileUrlParam, storage, (opts) => {
+            searchController.loadEventTypes();
+            renderTimeline(opts);
+        });
+        loadedFromParam = true;
     }
 
     if (!loadedFromParam) {

@@ -80,10 +80,10 @@ function initShippedStoriesUI(storage, refreshCallback) {
     };
 }
 
-export async function loadShippedStory(storyConfig, storage, completionCallback) {
+export async function loadStoryFromURL(url, storage, completionCallback, meta = {}) {
     try {
-        const res = await fetch(`data/${storyConfig.file}`);
-        if (!res.ok) throw new Error(`Failed to load ${storyConfig.file}`);
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Failed to load ${url}`);
         let data = await res.json();
 
         // Handle wrapper if present (e.g. if file is { story: { ... } } or just { ... })
@@ -95,8 +95,8 @@ export async function loadShippedStory(storyConfig, storage, completionCallback)
             // Raw Events Array
             ensureDataIds(data);
             storyObj = {
-                name: storyConfig.name,
-                description: storyConfig.description,
+                name: meta.name || "Imported Story",
+                description: meta.description || `Loaded from ${url}`,
                 data: data
             };
             // Allow storage to create
@@ -107,16 +107,13 @@ export async function loadShippedStory(storyConfig, storage, completionCallback)
             // Force new ID to treat as template import
             storyObj.id = null;
             // Ensure name/desc if missing
-            if (!storyObj.name) storyObj.name = storyConfig.name;
-            if (!storyObj.description) storyObj.description = storyConfig.description;
+            if (!storyObj.name) storyObj.name = meta.name || "Imported Story";
+            if (!storyObj.description) storyObj.description = meta.description || "";
 
             storage.importStory(storyObj);
         }
 
         // Activate
-        // storage.createStory and importStory both set the active ID internally.
-        // We just need to load the data into global state and refresh.
-
         const activeStory = storage.getActiveStory();
         window.timelineData = activeStory.data;
 
@@ -128,6 +125,13 @@ export async function loadShippedStory(storyConfig, storage, completionCallback)
         console.error(err);
         alert("Failed to load story: " + err.message);
     }
+}
+
+export function loadShippedStory(storyConfig, storage, completionCallback) {
+    loadStoryFromURL(`data/${storyConfig.file}`, storage, completionCallback, {
+        name: storyConfig.name,
+        description: storyConfig.description
+    });
 }
 
 function initCreateStoryUI(storage, refreshCallback) {

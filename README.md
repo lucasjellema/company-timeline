@@ -25,12 +25,12 @@ A premium, interactive company timeline visualization tool powered by **D3.js**.
 - **CSV Integration**: Upload CSV files or **paste CSV text directly** to create new stories or append to existing ones.
 - **Event Gallery**: A dedicated side panel tab that creates a visual grid of event images. Automatically filters to show images for active events (under the slider) or search results.
 - **Responsive Design**: Adapts to various screen sizes with automatic re-rendering.
-- **Theme Toggle**: Switch effortlessly between **Dark Mode** (default) and **Light Mode** to suit your viewing preference. Theme preference is automatically saved.
+- **Theme Toggle**: Switch effortlessly between **Dark Mode** (default) and **Light Mode) to suit your viewing preference. Theme preference is automatically saved.
 - **Strategic Drill Down**: 
   - **Category Focus**: Double-click any top-level category (Level 0) header to filter the timeline to that specific department.
   - **Event Focus**: Double-click any **event** to enter "Extreme Focus" mode. This zooms the timeline to the event's duration and collapses all other groups to minimize noise.
 - **Resizable Interface**: Interactive splitter allows users to seamlessly resize the side panel. The timeline visualization automatically adjusts its scale and layout to fill the remaining space in real-time.
-- **Story Management**: Create new stories from scratch, switch between multiple saved stories, or load pre-packaged "Shipped Stories" (e.g., WWII, Tech History).
+- **Story Management**: Create new stories from scratch, switch between multiple saved stories, or load pre-packaged "Shipped Stories" (e.g., WWII, Tech History). Supports direct loading via URL parameters (`shipped_story` and `story_file_url`).
 - **Rich Event Editor**: Comprehensive modal for adding events with support for:
   - Custom Event Types (with specific colors/icons)
   - Date Ranges (with quick "Copy Start to End" utility)
