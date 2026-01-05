@@ -19,6 +19,7 @@
     --bg-event-item: rgba(255, 255, 255, 0.03);
     --bg-map-container: #1a1a1a;
     --bg-context-menu: var(--bg-card);
+    --bg-tooltip: rgba(15, 23, 42, 0.95);
 }
 
 [data-theme="light"] {
@@ -46,7 +47,9 @@
     --bg-level: rgba(0, 0, 0, 0.03);
     --bg-event-item: rgba(0, 0, 0, 0.03);
     --bg-map-container: #e2e8f0;
+    --bg-map-container: #e2e8f0;
     --bg-context-menu: #ffffff;
+    --bg-tooltip: rgba(255, 255, 255, 0.95);
 }
 
 * {
@@ -368,7 +371,7 @@ main {
 /* Tooltip Styles */
 .tooltip {
     position: absolute;
-    background: rgba(15, 23, 42, 0.95);
+    background: var(--bg-tooltip);
     border: 1px solid var(--primary);
     padding: 1rem;
     border-radius: 0.5rem;
