@@ -82,7 +82,18 @@ function initShippedStoriesUI(storage, refreshCallback) {
 
 export async function loadStoryFromURL(url, storage, completionCallback, meta = {}) {
     try {
-        const res = await fetch(url);
+        let fetchUrl = url;
+
+        // Auto-convert GitHub Blob URLs to Raw URLs to avoid CORS
+        // From: https://github.com/user/repo/blob/main/path/to/file.json
+        // To:   https://raw.githubusercontent.com/user/repo/main/path/to/file.json
+        if (url.includes('github.com') && url.includes('/blob/')) {
+            fetchUrl = url.replace('github.com', 'raw.githubusercontent.com')
+                .replace('/blob/', '/');
+            console.log(`Converted GitHub URL to Raw: ${fetchUrl}`);
+        }
+
+        const res = await fetch(fetchUrl);
         if (!res.ok) throw new Error(`Failed to load ${url}`);
         let data = await res.json();
 
