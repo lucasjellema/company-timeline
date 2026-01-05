@@ -479,7 +479,7 @@ export function initEventEditor(renderer, refreshCallback, storage) {
         // Clear existing items (except first maybe?)
         itemsDiv.innerHTML = `
              <div class="icon-search-box" style="position: sticky; top: 0; background-color: var(--bg-card); z-index: 10; cursor: default; padding: 6px 8px;">
-                <input type="text" placeholder="Search icons..." style="width: 100%; padding: 4px; box-sizing: border-box; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text-main); border-radius: 4px; font-size: 0.8rem;">
+                <input type="text" placeholder="Search icons..." style="width: 100%; padding: 4px; box-sizing: border-box; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); border-radius: 4px; font-size: 0.8rem;">
             </div>
             <div class="select-option" data-value="">No Icon</div>
         `;

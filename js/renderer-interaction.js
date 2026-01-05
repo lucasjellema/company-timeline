@@ -136,7 +136,7 @@ export function handleEventHover(renderer, e, d, options = {}) { // Renamed slig
         renderer.activeMapEventId = d.id;
         const mapId = `map-${d.id}`;
         content += `
-            <div id="${mapId}" style="width: 400px; height: 300px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); background: #333;"></div>
+            <div id="${mapId}" style="width: 400px; height: 300px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg-map-container);"></div>
             `;
 
         // Show interactive tooltip
@@ -167,7 +167,7 @@ export function handleEventHover(renderer, e, d, options = {}) { // Renamed slig
         renderer.activeMapEventId = null;
 
         // If local map is suppressed because panel is open, show hint?
-        const mapHint = (hasMap && renderer.isMapPanelOpen) ? `<br><em style='color: #ccc; font-size: 0.8em'>Shown on map panel</em>` : "";
+        const mapHint = (hasMap && renderer.isMapPanelOpen) ? `<br><em style='color: var(--text-muted); font-size: 0.8em'>Shown on map panel</em>` : "";
 
         // Icon for Tooltip
         const iconName = renderer.typeIcons && renderer.typeIcons[d.type ? d.type.toLowerCase() : ''];
@@ -185,7 +185,7 @@ export function highlightEvent(renderer, id) {
     // Highlight bars
     renderer.container.selectAll(`.event-bar[data-id="${id}"]`)
         .classed("highlighted", true)
-        .style("stroke", "#fff")
+        .style("stroke", "var(--text-main)")
         .style("stroke-width", "3px")
         .style("filter", "brightness(1.5) drop-shadow(0 0 10px var(--primary))");
 

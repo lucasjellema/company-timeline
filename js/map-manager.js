@@ -72,7 +72,7 @@ export class MapManager {
 
         if (this.useEventIcons && iconPath) {
             const typeKey = d.type ? d.type.toLowerCase() : '';
-            const color = d.color || (typeColors && typeColors[typeKey]) || (CONFIG.TYPE_COLORS && CONFIG.TYPE_COLORS[typeKey]) || '#6366f1';
+            const color = d.color || (typeColors && typeColors[typeKey]) || (CONFIG.TYPE_COLORS && CONFIG.TYPE_COLORS[typeKey]) || 'var(--primary)';
 
             const iconHtml = `
                 <div style="
