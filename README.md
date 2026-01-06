@@ -23,7 +23,8 @@ A premium, interactive company timeline visualization tool powered by **D3.js**.
 - **Real-time Side Panel**: Instantly see all "Simultaneous Events" occurring at the selected slider date.
 - **Dynamic Styling**: Color-coded event types (Projects, Releases, Sprints, Training) for quick visual scanning.
 - **CSV Integration**: Upload CSV files or **paste CSV text directly** to create new stories or append to existing ones.
-- **Event Gallery**: A dedicated side panel tab that creates a visual grid of event images. Automatically filters to show images for active events (under the slider) or search results.
+- **Event Gallery**: A dedicated side panel grid of event images. Automatically filters to show images for active events or search results.
+- **Context-Aware Tooltips**: Rich tooltips across the Timeline, Map, and Gallery now intelligently display the event's hierarchical context (e.g., `Parent Event > Child Event`) for clearer navigation within complex project structures.
 - **Responsive Design**: Adapts to various screen sizes with automatic re-rendering.
 - **Theme Toggle**: Switch effortlessly between **Dark Mode** (default) and **Light Mode) to suit your viewing preference. Theme preference is automatically saved.
 - **Strategic Drill Down**: 
