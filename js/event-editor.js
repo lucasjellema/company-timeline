@@ -10,6 +10,7 @@ export function initEventEditor(renderer, refreshCallback, storage) {
     const form = document.getElementById('add-event-form');
     const modalTitle = modal.querySelector('.modal-header h2');
     const submitBtn = form.querySelector('button[type="submit"]');
+    const copyDateBtn = document.getElementById('copy-date-btn');
 
     let modalMap = null;
     let modalMarker = null;
@@ -301,6 +302,18 @@ export function initEventEditor(renderer, refreshCallback, storage) {
     closeBtn.addEventListener('click', closeModal);
     cancelBtn.addEventListener('click', closeModal);
 
+    if (copyDateBtn) {
+        copyDateBtn.addEventListener('click', () => {
+            const startVal = document.getElementById('event-start').value;
+            if (startVal) {
+                document.getElementById('event-end').value = startVal;
+            }
+        });
+    }
+
+    // Global listener for closing custom select boxes (bind once)
+    document.addEventListener('click', closeAllSelect);
+
     // Clear Color Logic
     const colorInput = document.getElementById('event-color');
     const clearColorBtn = document.getElementById('clear-color-btn');
@@ -535,8 +548,6 @@ export function initEventEditor(renderer, refreshCallback, storage) {
             }
         });
 
-        // Bind global close
-        document.addEventListener('click', closeAllSelect);
 
         // Helper to update visual
         window.updateIconSelection = (val) => {
@@ -555,6 +566,11 @@ export function initEventEditor(renderer, refreshCallback, storage) {
     }
 
     function closeAllSelect(elm) {
+        // If elm is not a DOM element (e.g. it's an Event object from the click listener), treat it as null
+        if (elm && !elm.parentNode) {
+            elm = null;
+        }
+
         const items = document.getElementsByClassName("select-items");
         const selected = document.getElementsByClassName("select-selected");
         // Only close if not clicking on the element itself?

@@ -57,10 +57,34 @@
    If absolute positioned 'outside' the div, it might be clipped. 
    Let's ensure the image is inside the popup flow OR carefully positioned. 
    Actually, if I make it 'display: block' in flow, the popup will grow, which is fine. */
-.map-popup-image-wrapper:hover .map-popup-image-preview {
-    /* display: block normally works, but let's see if we want it floating.
-        Floating is better to not push content around. 
-        Leaflet .leaflet-popup-content-wrapper has overflow: visible usually. 
-        .leaflet-popup-content has specific styling.
-     */
+
+
+/* Permanent Map Labels */
+.map-event-label {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text-main) !important;
+    border-radius: 4px !important;
+    padding: 2px 6px !important;
+    font-size: 0.85em !important;
+    font-weight: 500 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+    white-space: nowrap !important;
+    opacity: 0.9 !important;
+}
+
+.leaflet-tooltip-right.map-event-label::before {
+    border-right-color: var(--border) !important;
+}
+
+.leaflet-tooltip-bottom.map-event-label::before {
+    border-bottom-color: var(--border) !important;
+}
+
+.leaflet-tooltip-left.map-event-label::before {
+    border-left-color: var(--border) !important;
+}
+
+.leaflet-tooltip-top.map-event-label::before {
+    border-top-color: var(--border) !important;
 }

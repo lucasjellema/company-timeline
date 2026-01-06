@@ -155,6 +155,23 @@ export const formatDate = (date) => {
     return `${date.getFullYear()}-${date.getMonth() + 1}`;
 };
 
+/**
+ * Formats a date string into a compact representation (yyyy, mm-yyyy, or dd-mm-yyyy).
+ * @param {string} dateStr - The date string to format.
+ * @returns {string} The compact date string.
+ */
+export const formatCompactDate = (dateStr) => {
+    const d = parseDateComponents(dateStr);
+    if (!d) return '';
+    if (d.precision === 'year') return d.year;
+
+    const m = d.month.toString().padStart(1, '0');
+    if (d.precision === 'month') return `${m}-${d.year}`;
+
+    const day = d.day.toString().padStart(2, '0');
+    return `${day}-${m}-${d.year}`;
+};
+
 const NICE_COLORS = [
     "#3B82F6", // Blue
     "#10B981", // Emerald

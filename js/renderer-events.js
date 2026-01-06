@@ -416,6 +416,22 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
     });
 }
 
+/**
+ * DEPRECATED FUNCTION: Use eventGroups with isEvent filter instead.
+ * 
+ * Draws downward-pointing triangles representing point events within a given level.
+ * Point events are laid out horizontally according to their start date and vertically according to their row index assigned by the layout-engine.
+ * Each triangle is centered on the position of the corresponding event bar (even if the event bar is not visible due to filtering).
+ * The path of the triangle is either a downward-pointing triangle (for point events) or an icon (if the event has an associated icon).
+ * On hover, a tooltip appears with the event title and type.
+ * On double-click, the onEventDblClick callback is triggered.
+ * If the event is highlighted (i.e. its ID is in the highlightedEventIds set), the triangle is rendered in a bold font and the fill color is overridden.
+ * If the event is not highlighted but its ID is in the hiddenEventIds set, the triangle is not rendered at all.
+ * @param {Renderer} renderer - The renderer instance responsible for rendering the timeline visualization.
+ * @param {D3.Selection} levelG - The D3 selection representing the level group (L0, L1, etc.) containing the point events.
+ * @param {Object} level - The level object containing point events to be rendered.
+ * @param {function} xScale - The xScale function mapping dates to horizontal positions.
+ */
 function drawEventTriangles(renderer, levelG, level, xScale) {
     if (!level.pointEvents || level.pointEvents.length === 0) {
         return; // No point events in this level
@@ -424,6 +440,7 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
     const triangleSize = CONSTANTS.EVENT.TRIANGLE_SIZE;
 
     level.pointEvents.forEach(event => {
+        console.warn("drawEventTriangles is deprecated. Update event : " + event.id + event.title + ".");
         if (renderer.hiddenEventIds && renderer.hiddenEventIds.has(event.id)) return;
 
         const x = xScale(event.startDate);

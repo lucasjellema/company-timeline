@@ -1,4 +1,4 @@
-import { formatTooltipDate } from './utils.js';
+import { formatTooltipDate, formatCompactDate } from './utils.js';
 import { CONFIG } from './config.js';
 
 export class MapManager {
@@ -142,6 +142,16 @@ export class MapManager {
             <div style="font-size:0.9em; margin-top:4px">${d.description || ''}</div>
             ${imageIconHtml}
          `);
+
+        const compactDate = formatCompactDate(d.start) + (d.end ? ` - ${formatCompactDate(d.end)}` : '');
+        const labelText = compactDate ? `${d.title} (${compactDate})` : d.title;
+
+        marker.bindTooltip(labelText, {
+            permanent: true,
+            direction: "bottom",
+            offset: [0, 15],
+            className: 'map-event-label'
+        });
 
         return marker;
     }

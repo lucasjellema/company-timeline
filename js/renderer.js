@@ -80,7 +80,7 @@ export class TimelineRenderer {
         this.xScale = d3.scaleTime().domain([minDate, maxDate]).range(range);
 
         this.totalHeight = CONFIG.PADDING.TOP;
-        layoutData.forEach(level => {
+        layoutData.forEach(level => { // iterate over level0 groups
             level.yStart = this.totalHeight; // level0 group starts vertically where previous groups have ended
             level.collapsed = this.collapsedGroups.has(level.level0);
 
