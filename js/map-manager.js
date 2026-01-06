@@ -73,9 +73,22 @@ export class MapManager {
             modalBody.appendChild(mapContainer);
             mapContainer.classList.add('fullscreen');
 
-            // Force leaflet resize
+            // Force leaflet resize and fit bounds
             setTimeout(() => {
-                if (this.map) this.map.invalidateSize();
+                if (this.map) {
+                    this.map.invalidateSize();
+
+                    // Zoom to fit all markers
+                    const points = this.markers.map(m => m.marker.getLatLng());
+                    if (points.length > 0) {
+                        this.map.fitBounds(points, {
+                            padding: [50, 50],
+                            maxZoom: 18,
+                            animate: true,
+                            duration: 0.5
+                        });
+                    }
+                }
             }, 50);
         };
 
