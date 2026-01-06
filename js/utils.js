@@ -1,3 +1,14 @@
+/**
+ * Parses a date string into a corresponding Date object.
+ * Supports multiple formats:
+ * - YYYY-MM (Month precision, defaults to 1st of month)
+ * - YYYY-MM-DD
+ * - DD-MM-YYYY
+ * - YYYY (Single year)
+ * 
+ * @param {string} dateStr - The date string to parse.
+ * @returns {Date|null} The parsed Date object, or null if input is empty/invalid.
+ */
 export const parseDate = (dateStr) => {
     if (!dateStr || dateStr.trim() === '') {
         return null; // No date provided (for events without end date)
@@ -61,6 +72,16 @@ const parseDateComponents = (dateStr) => {
     return null;
 };
 
+/**
+ * Formats a single date object into a human-readable string.
+ * Supports different levels of precision (year, month, day).
+ * @param {object} d - The date object to format.
+ * @param {string} d.year - The year of the date.
+ * @param {number} d.month - The month of the date (1-12).
+ * @param {number} d.day - The day of the date (1-31).
+ * @param {string} d.precision - The precision of the date (year, month, day).
+ * @returns {string} The formatted date string.
+ */
 const formatSingleDate = (d) => {
     if (d.precision === 'year') return d.year;
     const monthName = MONTH_NAMES[d.month - 1];
@@ -68,6 +89,15 @@ const formatSingleDate = (d) => {
     return `${getOrdinal(d.day)} ${monthName} ${d.year}`;
 };
 
+/**
+ * Generates a friendly date range string for tooltips.
+ * Intelligently merges parts of the date that are same (e.g., same year, same month)
+ * to produce a concise string like "May - June 2023".
+ * 
+ * @param {string} startStr - The start date string.
+ * @param {string} endStr - The end date string.
+ * @returns {string} The formatted date range string.
+ */
 export const formatTooltipDate = (startStr, endStr) => {
     if (!startStr) return '';
     const start = parseDateComponents(startStr);
@@ -115,6 +145,12 @@ export const formatTooltipDate = (startStr, endStr) => {
     return `${formatSingleDate(start)} - ${formatSingleDate(end)}`;
 };
 
+/**
+ * Formats a Date object into a simple "YYYY-M" string (1-based month).
+ * 
+ * @param {Date} date - The date to format.
+ * @returns {string} The formatted string.
+ */
 export const formatDate = (date) => {
     return `${date.getFullYear()}-${date.getMonth() + 1}`;
 };
@@ -136,6 +172,16 @@ const NICE_COLORS = [
 
 const AUTO_ICONS = ["circle", "star", "square", "triangle", "diamond", "hexagon"];
 
+/**
+ * Scans the provided data for unique event types and auto-generates 
+ * color and icon mappings for any that are missing.
+ * Uses a deterministic hash of the type name to assign consistent colors/icons.
+ * 
+ * @param {Array} data - The dataset to scan.
+ * @param {Object} existingColors - Existing map of type -> color.
+ * @param {Object} existingIcons - Existing map of type -> icon.
+ * @returns {Object} An object containing { colors, icons } with new mappings added.
+ */
 export const generateTypeMappings = (data, existingColors = {}, existingIcons = {}) => {
     const newColors = { ...existingColors };
     const newIcons = { ...existingIcons };
@@ -177,10 +223,27 @@ export const generateTypeMappings = (data, existingColors = {}, existingIcons = 
     return { colors: newColors, icons: newIcons };
 };
 
+/**
+ * Helper to retrieve the color for a specific event type.
+ * Returns the default color if the type is not found.
+ * 
+ * @param {string} type - The event type.
+ * @param {Object} colors - The dictionary of type->color.
+ * @returns {string} Hex color code.
+ */
 export const getEventColor = (type, colors) => {
     return colors[type.toLowerCase()] || colors.default;
 };
 
+/**
+ * Creates a tooltip controller that manages the DOM element for the tooltip.
+ * Handles:
+ * - Showing/Hiding with grace periods
+ * - Positioning relative to mouse
+ * - Interactive mode (keeping tooltip open when user hovers over it)
+ * 
+ * @returns {Object} An object with methods: { show, hide, forceHide, move, isLocked }
+ */
 export const createTooltip = () => {
     const tooltip = document.getElementById('tooltip');
     let hideTimeout = null;
@@ -256,6 +319,13 @@ export const createTooltip = () => {
     };
 };
 
+/**
+ * Ensures every item in the data array has a unique 'id'.
+ * If an ID is missing, generates a sorted unique ID based on timestamp and index.
+ * 
+ * @param {Array} data - The array of data objects.
+ * @returns {boolean} True if any IDs were generated, False otherwise.
+ */
 export const ensureDataIds = (data) => {
     let modified = false;
     data.forEach((d, i) => {
@@ -267,6 +337,13 @@ export const ensureDataIds = (data) => {
     return modified;
 };
 
+/**
+ * Parses a raw CSV string into a data array using D3, and ensures all items have IDs.
+ * 
+ * @param {string} csvContent - The raw CSV string content.
+ * @returns {Array} Parsed data array.
+ * @throws {Error} If parsing fails.
+ */
 export const parseAndPrepareCSV = (csvContent) => {
     try {
         const data = d3.csvParse(csvContent);
