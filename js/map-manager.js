@@ -12,6 +12,7 @@ export class MapManager {
         this.initResetButton();
         this.initToggle();
         this.initLabelToggle();
+        this.initPopOut();
     }
 
     initResetButton() {
@@ -42,6 +43,63 @@ export class MapManager {
                 this.updateLabelVisibility();
             });
         }
+    }
+
+    initPopOut() {
+        const popOutBtn = document.getElementById('pop-out-map-btn');
+        const modal = document.getElementById('full-map-modal');
+        const closeBtn = document.getElementById('close-map-modal-btn');
+        const modalBody = document.getElementById('full-map-modal-body');
+        const mapContainer = document.getElementById(this.mapContainerId);
+
+        if (!popOutBtn || !modal || !closeBtn || !modalBody || !mapContainer) return;
+
+        // Store original parent to return to
+        // If mapContainer has a parent, use it. If not (unlikely), error.
+        // We'll rely on appending back to the known container ID or simply the previous parent.
+        // Better: Find the parent by ID if possible, or just store reference.
+        // The parent in HTML is class "tab-content" id="tab-map", but specifically it is after header.
+        // Actually, we can just insertBefore the next sibling.
+
+        let originalParent = mapContainer.parentNode;
+        let originalNextSibling = mapContainer.nextSibling;
+
+        const openModal = () => {
+            // Re-capture parent/sibling just in case
+            originalParent = mapContainer.parentNode;
+            originalNextSibling = mapContainer.nextSibling;
+
+            modal.classList.remove('hidden');
+            modalBody.appendChild(mapContainer);
+            mapContainer.classList.add('fullscreen');
+
+            // Force leaflet resize
+            setTimeout(() => {
+                if (this.map) this.map.invalidateSize();
+            }, 50);
+        };
+
+        const closeModal = () => {
+            modal.classList.add('hidden');
+            mapContainer.classList.remove('fullscreen');
+
+            // Move back
+            if (originalParent) {
+                originalParent.insertBefore(mapContainer, originalNextSibling);
+            }
+
+            setTimeout(() => {
+                if (this.map) this.map.invalidateSize();
+            }, 50);
+        };
+
+        popOutBtn.addEventListener('click', openModal);
+        closeBtn.addEventListener('click', closeModal);
+
+        // Close on background click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
     }
 
     initIfNeeded() {
