@@ -1,5 +1,14 @@
 import { parseDate } from './utils.js';
 
+/**
+ * Process timeline data to prepare it for rendering.
+ * @param {Array} data - Original timeline data
+ * @param {Array} collapsedGroups - Level 0 groups to collapse
+ * @param {Array} groupOrder - Level 0 groups' manual order
+ * @param {Array} collapsedLevel1s - Level 1 groups to collapse
+ * @param {Array} hiddenLevel1s - Level 1 groups to hide
+ * @returns {Array} Layout data prepared for rendering
+ */
 export function processTimelineData(data, collapsedGroups = [], groupOrder = [], collapsedLevel1s = [], hiddenLevel1s = []) {
     const events = data.map((d, i) => {
         const startDate = parseDate(d.start);
@@ -36,9 +45,6 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
         // 3. If only B is in list, it comes first
         if (indexB !== -1) return 1;
 
-        // 4. Fallback: "Company" at top (if not manually ordered)
-        if (a.toLowerCase() === 'company') return -1;
-        if (b.toLowerCase() === 'company') return 1;
 
         // 5. Fallback: Alphabetical
         return a.localeCompare(b);
@@ -78,7 +84,6 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
             });
         }
 
-        // --- NEW LOGIC: Group by Level 1 ---
         // 1. Group items by Level 1
         const level1Groups = d3.group(allLevelItems, d => d.level1 || " _misc_ "); // Group by L1
 
@@ -122,18 +127,26 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
 
             // Pack bars into rows specific to this Level 1 block
             const blockRows = [];
+            // Pack bars into rows specific to this Level 1 block
+            // Iterate over all bars and position them in existing rows if possible
+            // Otherwise, create a new row for them
             groupBars.forEach(event => {
                 let placed = false;
                 for (let i = 0; i < blockRows.length; i++) {
+                    // Check if this event overlaps with any bar in the current row
+                    // If it does not overlap, place it in this row
                     if (!overlapsWithRow(event, blockRows[i])) {
                         blockRows[i].push(event);
+                        // Set the row index of the event to the current row index
                         event.rowIndex = currentLevel0RowIndex + i;
                         placed = true;
                         break;
                     }
                 }
+                // If no row was found to place the event in, create a new row
                 if (!placed) {
                     event.rowIndex = currentLevel0RowIndex + blockRows.length;
+                    // Add a new row with the event as the only element
                     blockRows.push([event]);
                 }
             });

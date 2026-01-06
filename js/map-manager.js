@@ -136,7 +136,8 @@ export class MapManager {
 
         marker.bindPopup(`
             <strong>${iconHtmlForPopup}${d.title}</strong><br>
-            Type: ${d.type}<br>
+            Type: ${d.type}
+            ${d.parentContext ? ` (${d.parentContext})` : ''}<br>
             ${formatTooltipDate(d.start, d.end)}<br>
             <div style="font-size:0.9em; margin-top:4px">${d.description || ''}</div>
             ${imageIconHtml}

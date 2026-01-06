@@ -31,7 +31,7 @@ const CONSTANTS = {
     },
     // Event rendering constants (Bars and Points)
     EVENT: {
-        START_Y_OFFSET: 50,       // Vertical offset where the first row of events starts within a level
+        START_Y_OFFSET: 40,       // Vertical offset where the first row of events starts within a level  - if the first row contains icons, then this is fine; if it is only a bar, it is way too much
         SMALL_THRESHOLD: 0.03,    // Events taking up less than 3% of viewport width are rendered as icons/points
         TRIANGLE_SIZE: 10,        // Size of the triangle shape for point events
         ICON_OFFSET_X: -12,       // Horizontal offset to center a 24px icon
@@ -54,8 +54,80 @@ const CONSTANTS = {
     }
 };
 
+/**
+ * Draws the timeline levels and events given by the layout data.
+ * @param {renderer} renderer - The renderer object.
+ * @param {svg} svg - The SVG element to draw into.
+ * @param {Array<Object>} layoutData - An array of objects, where each object represents a level in the timeline and contains the following properties:
+ *   - `yStart`: The y-coordinate of the level's starting point.
+ *   - `height`: The height of the level.
+ * A single level0 object in the timeline, containing the following properties:
+ * - `collapsed`: A boolean indicating whether the level is collapsed.
+ * - `level0`: A string representing the level 0 category of the events in this level.
+ * - `pointEvents`: An array of objects, where each object represents a point event and contains the following properties:
+ *   - `id`: A string representing the unique identifier of the event.
+ *   - `title`: A string representing the title of the event.
+ *   - `type`: A string representing the type of the event (e.g., "program", "project", etc.).
+ * - `rowCount`: The number of rows in this level.
+ * - `topBarY`: The y-coordinate of the top of the level's bar.
+ * - `yOffset`: The y-coordinate offset from the top bar's y-coordinate.
+ *
+ *   - `events`: An array of objects, where each object represents an event and contains the following properties:
+ *     - `id`: A string representing the unique identifier of the event.
+ *     - `title`: A string representing the title of the event.
+ *     - `type`: A string representing the type of the event (e.g., "program", "project", etc.).
+ *     - `level0`: A string representing the level 0 category of the event.
+ *     - `level1`: A string representing the level 1 category of the event.
+ *     - `level2`: A string representing the level 2 category of the event.
+ *     - `start`: A string representing the start date of the event in the format "YYYY-MM-DD".
+ *     - `startDate`: A Date object representing the start date of the event.
+ *     - `end`: A string representing the end date of the event in the format "YYYY-MM-DD".
+ *     - `endDate`: A Date object representing the end date of the event.
+ *     - `isEvent`: A boolean indicating whether the event is a point event or not.
+ *     - `latitude`: A string representing the latitude of the event.
+ *     - `longitude`: A string representing the longitude of the event.
+ *     - `rowIndex`: An integer representing the row index of the event within the level.
+ * @param {xScale} xScale - The x-scale of the timeline.
+ */
 export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
-    layoutData.forEach((level) => {
+    layoutData.forEach((level) => { // iterate over level0 groups
+        // Identify the parent event for this level0 context and calculate context for children
+        const allEventsInLevel = [...level.events, ...level.pointEvents];
+
+        // Level 0 Ancestor: The event definition for the group (no level1)
+        const l0Ancestor = allEventsInLevel.find(e => !e.level1 || e.level1.toString().trim() === '');
+        const l0Title = l0Ancestor ? l0Ancestor.title : null;
+
+        allEventsInLevel.forEach(e => {
+            const hasL1 = e.level1 && e.level1.toString().trim() !== '';
+            const hasL2 = e.level2 && e.level2.toString().trim() !== '';
+
+            if (hasL1) {
+                if (!hasL2) {
+                    // Level 1 Item: Parent is Level 0 Ancestor
+                    if (l0Title) {
+                        e.parentContext = l0Title;
+                    }
+                } else {
+                    // Level 2 Item: Parent chain is L0 -> L1
+                    // Find Level 1 Ancestor: Same level1, but no level2
+                    const l1Ancestor = allEventsInLevel.find(candidate =>
+                        candidate.level1 === e.level1 &&
+                        (!candidate.level2 || candidate.level2.toString().trim() === '')
+                    );
+                    const l1Title = l1Ancestor ? l1Ancestor.title : null;
+
+                    if (l0Title && l1Title) {
+                        e.parentContext = `${l0Title} > ${l1Title}`;
+                    } else if (l1Title) {
+                        e.parentContext = l1Title;
+                    } else if (l0Title) {
+                        e.parentContext = l0Title;
+                    }
+                }
+            }
+        });
+
         const levelG = svg.append("g").attr("transform", `translate(0, ${level.yStart})`);
 
         levelG.append("rect")
@@ -153,6 +225,9 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
 
         // Draw regular timeline bars
         // TODO not every group has both bars and icons; therefore the translation will often be too large
+
+        // TODO eventsToDraw have rowindex property that is the same for all events at same row - same level0, level1 and level2 values
+        // check if in events with same rowindex are both bars and icons; if one is missing, we can save on vertical space
         const eventGroups = levelG.selectAll(".event-g")
             .data(eventsToDraw).enter().append("g").attr("class", "event-g")
             .attr("transform", d => `translate(${xScale(d.startDate)}, ${CONSTANTS.EVENT.START_Y_OFFSET + d.rowIndex * (CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING)})`);

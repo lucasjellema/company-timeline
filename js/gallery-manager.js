@@ -97,6 +97,7 @@ export class GalleryManager {
                     ${iconHtml}
                     <div class="gallery-item-details">
                         <div class="gallery-item-title" title="${e.title}">${e.title}</div>
+                        ${e.parentContext ? `<div style="font-size: 0.8em; color: var(--text-muted);">${e.parentContext}</div>` : ''}
                         <div class="gallery-item-date">${dateStr}</div>
                     </div>
                 </div>

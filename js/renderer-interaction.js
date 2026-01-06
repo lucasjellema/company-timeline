@@ -127,7 +127,7 @@ export function handleEventHover(renderer, e, d, options = {}) { // Renamed slig
 
     let content = `
             <span class="tooltip-title">${d.title}</span>
-            <div style="margin-bottom:8px; font-size: 0.9em"><strong>Type:</strong> ${d.type} &middot; <strong>Period:</strong> ${formatTooltipDate(d.start, d.end)}</div>
+            <div style="margin-bottom:8px; font-size: 0.9em"><strong>Type:</strong> ${d.type} ${d.parentContext ? `&middot; ${d.parentContext}` : ''} &middot; <strong>Period:</strong> ${formatTooltipDate(d.start, d.end)}</div>
             ${imageHtml}
             <div style="margin-bottom:10px">${d.description}</div>`
 

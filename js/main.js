@@ -563,7 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="event-item" style="border-left-color: ${color}">
                     <span class="event-item-title">${e.title}</span>
                     <div class="event-item-meta">
-                        <strong>${e.level0}</strong> &middot; ${e.type}<br>
+                        <strong>${e.parentContext || e.level0}</strong> &middot; ${e.type}<br>
                         ${d3.timeFormat("%b %d, %Y")(e.startDate)} to ${e.isEvent ? 'Point Event' : d3.timeFormat("%b %d, %Y")(e.endDate)}
                     </div>
                 </div>`;
