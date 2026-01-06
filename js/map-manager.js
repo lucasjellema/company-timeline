@@ -8,8 +8,10 @@ export class MapManager {
         this.map = null;
         this.markers = []; // Array of { marker, data, typeIcons }
         this.useEventIcons = false;
+        this.showLabels = true;
         this.initResetButton();
         this.initToggle();
+        this.initLabelToggle();
     }
 
     initResetButton() {
@@ -27,6 +29,17 @@ export class MapManager {
             toggle.addEventListener('change', (e) => {
                 this.useEventIcons = e.target.checked;
                 this.refreshMarkers();
+            });
+        }
+    }
+
+    initLabelToggle() {
+        const toggle = document.getElementById('map-label-toggle');
+        if (toggle) {
+            this.showLabels = toggle.checked; // Sync initial state
+            toggle.addEventListener('change', (e) => {
+                this.showLabels = e.target.checked;
+                this.updateLabelVisibility();
             });
         }
     }
@@ -153,6 +166,9 @@ export class MapManager {
             className: 'map-event-label'
         });
 
+        // Close it immediately if labels should be hidden
+
+
         return marker;
     }
 
@@ -178,6 +194,7 @@ export class MapManager {
                 });
 
                 newMarker.addTo(this.map);
+                if (!this.showLabels) newMarker.closeTooltip();
                 item.marker = newMarker;
             }
         });
@@ -195,6 +212,7 @@ export class MapManager {
         if (!marker) return;
 
         marker.addTo(this.map);
+        if (!this.showLabels) marker.closeTooltip();
 
         marker.on('mouseover', function (e) {
             this.openPopup();
@@ -225,6 +243,18 @@ export class MapManager {
         if (this.map && points.length > 0) {
             this.map.fitBounds(points, { padding: [50, 50], maxZoom: 10, animate: true, duration: 0.5 });
         }
+    }
+
+    updateLabelVisibility() {
+        this.markers.forEach(item => {
+            if (item.marker) {
+                if (this.showLabels) {
+                    item.marker.openTooltip();
+                } else {
+                    item.marker.closeTooltip();
+                }
+            }
+        });
     }
 
     invalidateSize() {
