@@ -16,12 +16,12 @@ const CONSTANTS = {
         RADIUS: 10,               // Radius of the back button circle
         CX: 10,                   // Center X of the back button circle
         CY: 5,                    // Center Y of the back button circle
-        FILL_DEFAULT: "var(--bg-active)", // Default background color
-        FILL_HOVER: "var(--primary-light)",   // Background color on hover
-        STROKE: "var(--text-muted)",           // Stroke color for the button circle
+        FILL_DEFAULT: "rgba(255,255,255,0.1)", // Default background color
+        FILL_HOVER: "rgba(255,255,255,0.3)",   // Background color on hover
+        STROKE: "#666",           // Stroke color for the button circle
         STROKE_WIDTH: 1,          // Stroke width for the button circle
         ICON_PATH: "M 12 5 L 8 9 L 12 13",     // SVG path data for the left arrow icon
-        ICON_STROKE: "var(--text-main)",      // Color of the arrow icon
+        ICON_STROKE: "#fff",      // Color of the arrow icon
         ICON_FILL: "none",        // Fill of the arrow icon (none since it's a line)
         ICON_TRANSLATE: "translate(0, -4)"     // Adjustment to center the arrow within the circle
     },
@@ -31,12 +31,12 @@ const CONSTANTS = {
     },
     // Event rendering constants (Bars and Points)
     EVENT: {
-        START_Y_OFFSET: 40,       // Vertical offset where the first row of events starts within a level  - if the first row contains icons, then this is fine; if it is only a bar, it is way too much
+        START_Y_OFFSET: 50,       // Vertical offset where the first row of events starts within a level
         SMALL_THRESHOLD: 0.03,    // Events taking up less than 3% of viewport width are rendered as icons/points
         TRIANGLE_SIZE: 10,        // Size of the triangle shape for point events
         ICON_OFFSET_X: -12,       // Horizontal offset to center a 24px icon
         ICON_OFFSET_Y: -19,       // Vertical offset to make the icon sit on top of the timeline row
-        ICON_STROKE: "var(--text-main)",      // Stroke color for event icons/shapes
+        ICON_STROKE: "#fff",      // Stroke color for event icons/shapes
         ICON_STROKE_WIDTH: 1.5,   // Stroke width for event icons/shapes
         LABEL_Y_OFFSET_GAP: 8,    // Gap between the icon and the text label
         LABEL_Y_OFFSET_EXTRA: 2, // Additional offset for label positioning
@@ -47,87 +47,71 @@ const CONSTANTS = {
         BAR_MIN_WIDTH: 8,         // Minimum width in pixels for an event bar
         BAR_ICON_OPACITY: 0.9,    // Opacity of the icon inside an event bar
         BAR_ICON_TRANSFORM: "translate(6, 4) scale(0.7)", // Positioning and scaling for icon inside bar
-        BAR_ICON_FILL: "white",   // Color of the icon inside the bar (Keep white for contrast on colored bars)
-
+        BAR_ICON_FILL: "white",   // Color of the icon inside the bar
         BAR_LABEL_X_OFFSET: 4,    // Horizontal padding for the label inside the bar
         BAR_LABEL_Y_PAD: 10       // Vertical padding for the label relative to bar height
     }
 };
-
-/**
- * Draws the timeline levels and events given by the layout data.
- * @param {renderer} renderer - The renderer object.
- * @param {svg} svg - The SVG element to draw into.
- * @param {Array<Object>} layoutData - An array of objects, where each object represents a level in the timeline and contains the following properties:
- *   - `yStart`: The y-coordinate of the level's starting point.
- *   - `height`: The height of the level.
- * A single level0 object in the timeline, containing the following properties:
- * - `collapsed`: A boolean indicating whether the level is collapsed.
- * - `level0`: A string representing the level 0 category of the events in this level.
- * - `pointEvents`: An array of objects, where each object represents a point event and contains the following properties:
- *   - `id`: A string representing the unique identifier of the event.
- *   - `title`: A string representing the title of the event.
- *   - `type`: A string representing the type of the event (e.g., "program", "project", etc.).
- * - `rowCount`: The number of rows in this level.
- * - `topBarY`: The y-coordinate of the top of the level's bar.
- * - `yOffset`: The y-coordinate offset from the top bar's y-coordinate.
- *
- *   - `events`: An array of objects, where each object represents an event and contains the following properties:
- *     - `id`: A string representing the unique identifier of the event.
- *     - `title`: A string representing the title of the event.
- *     - `type`: A string representing the type of the event (e.g., "program", "project", etc.).
- *     - `level0`: A string representing the level 0 category of the event.
- *     - `level1`: A string representing the level 1 category of the event.
- *     - `level2`: A string representing the level 2 category of the event.
- *     - `start`: A string representing the start date of the event in the format "YYYY-MM-DD".
- *     - `startDate`: A Date object representing the start date of the event.
- *     - `end`: A string representing the end date of the event in the format "YYYY-MM-DD".
- *     - `endDate`: A Date object representing the end date of the event.
- *     - `isEvent`: A boolean indicating whether the event is a point event or not.
- *     - `latitude`: A string representing the latitude of the event.
- *     - `longitude`: A string representing the longitude of the event.
- *     - `rowIndex`: An integer representing the row index of the event within the level.
- * @param {xScale} xScale - The x-scale of the timeline.
- */
-export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
-    layoutData.forEach((level) => { // iterate over level0 groups
-        // Identify the parent event for this level0 context and calculate context for children
-        const allEventsInLevel = [...level.events, ...level.pointEvents];
-
-        // Level 0 Ancestor: The event definition for the group (no level1)
-        const l0Ancestor = allEventsInLevel.find(e => !e.level1 || e.level1.toString().trim() === '');
-        const l0Title = l0Ancestor ? l0Ancestor.title : null;
-
-        allEventsInLevel.forEach(e => {
-            const hasL1 = e.level1 && e.level1.toString().trim() !== '';
-            const hasL2 = e.level2 && e.level2.toString().trim() !== '';
-
-            if (hasL1) {
-                if (!hasL2) {
-                    // Level 1 Item: Parent is Level 0 Ancestor
-                    if (l0Title) {
-                        e.parentContext = l0Title;
-                    }
-                } else {
-                    // Level 2 Item: Parent chain is L0 -> L1
-                    // Find Level 1 Ancestor: Same level1, but no level2
-                    const l1Ancestor = allEventsInLevel.find(candidate =>
-                        candidate.level1 === e.level1 &&
-                        (!candidate.level2 || candidate.level2.toString().trim() === '')
-                    );
-                    const l1Title = l1Ancestor ? l1Ancestor.title : null;
-
-                    if (l0Title && l1Title) {
-                        e.parentContext = `${l0Title} > ${l1Title}`;
-                    } else if (l1Title) {
-                        e.parentContext = l1Title;
-                    } else if (l0Title) {
-                        e.parentContext = l0Title;
+// function to derive per level0 value a rowmap that specifies for each row index whether it contains icons, bars, or both
+const prepareActualIconsAndBarsRowMap = (layoutData, xScale, threshold, renderer) => {
+    const rowMapPerLevel0 = new Map();
+    layoutData.forEach((level) => {
+        const eventsToDraw = level.events.filter(d => {
+            if (renderer.hiddenEventIds && renderer.hiddenEventIds.has(d.id)) return false;
+            return true;
+        });
+        // loop over all events in this level
+        const rowMap = new Map();
+        eventsToDraw.forEach((event) => {
+            const w = Math.max(0, xScale(event.endDate) - xScale(event.startDate));
+            const isSmall = w < threshold;
+            const rowIndex = event.rowIndex;
+            if (!rowMap.has(rowIndex)) {
+                //console.log("Initializing row index in rowMap:", rowIndex);
+                // targetRowIndex is same as rowIndex initially, it may be updated later to indicate lifting icons up to a higher row
+                rowMap.set(rowIndex, { hasIcon: false, hasBar: false, targetRowIndex: rowIndex, level1: event.level1, level2: event.level2 });
+            }
+            const rowInfo = rowMap.get(rowIndex);
+            if (isSmall) {
+                // if small, see if we can lift the icon up to the icon row which lives just above the first row with same l0, l1,l2 or no l2   
+                // TODO
+                // find the targetRowIndex for this icon
+                // looking in previous rows starting from the top in this l0 for first row  with the same combination of l0,l1,l2 
+                let targetRowIndex = rowIndex;
+                for (let i = 0; i < rowIndex; i++) {
+                    const prevRowInfo = rowMap.get(i);
+                    // if row has same l0,l1,l2 or no l2
+                    if (prevRowInfo.level1 === event.level1 && prevRowInfo.level2 === event.level2) {
+                        targetRowIndex = i;
+                        break;
                     }
                 }
+                if (targetRowIndex < rowIndex) {
+                    rowInfo.targetRowIndex = targetRowIndex;
+                    console.log("Lifting icon for event", event.id, "from row", rowIndex, "to", targetRowIndex);
+                    // set hasicon in target row
+                    const targetRowInfo = rowMap.get(targetRowIndex);
+                    targetRowInfo.hasIcon = true;
+                } else {
+                    rowInfo.hasIcon = true;
+                }
+            } else {
+                rowInfo.hasBar = true;
             }
-        });
 
+        })
+        rowMapPerLevel0.set(level.level0, rowMap);
+    });
+    return rowMapPerLevel0;
+}
+export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
+    const viewportWidth = renderer.container.node().clientWidth;
+    const threshold = viewportWidth * CONSTANTS.EVENT.SMALL_THRESHOLD;
+    const triangleSize = CONSTANTS.EVENT.TRIANGLE_SIZE;
+
+    const actualIconsAndBarsRowMap = prepareActualIconsAndBarsRowMap(layoutData, xScale, threshold, renderer);
+
+    layoutData.forEach((level) => {
         const levelG = svg.append("g").attr("transform", `translate(0, ${level.yStart})`);
 
         levelG.append("rect")
@@ -223,30 +207,67 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
             return true;
         });
 
-        // Draw regular timeline bars
-        // TODO not every group has both bars and icons; therefore the translation will often be too large
+        console.log("Row Map for level0:", level.level0, actualIconsAndBarsRowMap.get(level.level0));
 
-        // TODO eventsToDraw have rowindex property that is the same for all events at same row - same level0, level1 and level2 values
-        // check if in events with same rowindex are both bars and icons; if one is missing, we can save on vertical space
+
+
+        // Pre-calculate Y offsets for each row index based on content ; calculate offsets for both icons (using targetRowIndex) and bars
+        const rowYOffsets = new Map();
+        let currentY = 0;
+        let maxRowIndex = 0;
+        const iconsAndBarsRowMapInCurrentLevel0 = actualIconsAndBarsRowMap.get(level.level0);
+        if (iconsAndBarsRowMapInCurrentLevel0) {
+            // Determine the maximum row index to iterate through
+            for (const rIndex of iconsAndBarsRowMapInCurrentLevel0.keys()) {
+
+                (rowYOffsets.get(rIndex) || 0)
+                if (rIndex > maxRowIndex) {
+                    maxRowIndex = rIndex;
+                }
+            }
+
+            // Iterate through each row index up to maxRowIndex to assign Y offsets
+            for (let r = 0; r <= maxRowIndex; r++) {
+                const rowInfo = iconsAndBarsRowMapInCurrentLevel0.get(r);
+                if (rowInfo) {
+                    // If the row has both icons and bars, allocate extra height
+                    if (rowInfo.hasIcon && rowInfo.hasBar) {
+                        rowYOffsets.set(r, currentY);
+                        currentY += (CONSTANTS.EVENT.TRIANGLE_SIZE + CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP + CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA) + CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING;
+                    } else if (rowInfo.hasIcon) {
+                        // Only icons
+                        rowYOffsets.set(r, currentY);
+                        currentY += (CONSTANTS.EVENT.TRIANGLE_SIZE + CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP + CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA) + CONFIG.BAR_SPACING;
+                    } else if (rowInfo.hasBar) {
+                        // Only bars
+                        rowYOffsets.set(r, currentY);
+                        currentY += CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING;
+                    }
+                }
+            }
+        }
+        console.log("Row Y Offsets for level0:", level.level0, rowYOffsets);
+
+
+        // Draw regular timeline bars
         const eventGroups = levelG.selectAll(".event-g")
             .data(eventsToDraw).enter().append("g").attr("class", "event-g")
             .attr("transform", d => `translate(${xScale(d.startDate)}, ${CONSTANTS.EVENT.START_Y_OFFSET + d.rowIndex * (CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING)})`);
 
-        const viewportWidth = renderer.container.node().clientWidth;
-        const threshold = viewportWidth * CONSTANTS.EVENT.SMALL_THRESHOLD;
-        const triangleSize = CONSTANTS.EVENT.TRIANGLE_SIZE;
+        // const eventGroups = levelG.selectAll(".event-g")
+        //     .data(eventsToDraw).enter().append("g").attr("class", "event-g")
+        //     .attr("transform", d => `translate(${xScale(d.startDate)}, 
+        //         ${(rowYOffsets.get(d.rowIndex) || 0)})`);
+
 
         eventGroups.each((d, i, nodes) => {
             const g = d3.select(nodes[i]);
 
             // Highlight Logic
             let opacity = 1;
-            let isHighlighted = false;
             if (renderer.highlightedEventIds && renderer.highlightedEventIds.size > 0) {
                 if (!renderer.highlightedEventIds.has(d.id)) {
                     opacity = 0.1; // Dim non-matching
-                } else {
-                    isHighlighted = true;
                 }
             }
             g.style("opacity", opacity);
@@ -266,59 +287,15 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                 }
 
                 // Wrapper group for positioning (to avoid conflict with CSS hover transforms on path)
-                // Check for overlapping "parent" bars to lift this icon
-                let liftY = 0;
-                // Only lift if we are seemingly on a lower row (higher index) than 0
-                if (d.rowIndex > 0) {
-                    const overlappingBar = eventsToDraw.find(b => {
-                        if (b.id === d.id) return false;
-                        if (b.rowIndex >= d.rowIndex) return false; // Must be "above"
-
-                        // Check if b is NOT small (is a bar)
-                        const wB = Math.max(0, xScale(b.endDate) - xScale(b.startDate));
-                        if (wB < threshold) return false;
-
-                        // Check Same Level 1
-                        if ((b.level1 || "") !== (d.level1 || "")) return false;
-
-                        // Check overlap
-                        return d.startDate < b.endDate && d.endDate > b.startDate;
-                    });
-
-                    if (overlappingBar) {
-                        liftY = (d.rowIndex - overlappingBar.rowIndex) * (CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING);
-                    }
-                }
-
                 const iconWrapper = g.append("g")
-                    .attr("transform", iconGroupTransform); // Initial transform
-
-                // If we need to lift, modify the transform. 
-                // We parse the existing translate or just build a new string.
-                // iconGroupTransform is "translate(x, y) scale(1)"
-                if (liftY > 0) {
-                    // Re-calculate transform with lift
-                    let baseX = CONSTANTS.EVENT.ICON_OFFSET_X;
-                    let baseY = CONSTANTS.EVENT.ICON_OFFSET_Y;
-                    if (!iconName) {
-                        baseX = 0;
-                        baseY = 0;
-                    }
-
-                    if (iconName && CONFIG.ICONS[iconName]) {
-                        iconWrapper.attr("transform", `translate(${CONSTANTS.EVENT.ICON_OFFSET_X}, ${CONSTANTS.EVENT.ICON_OFFSET_Y - liftY}) scale(1)`);
-                    } else {
-                        // Default triangle
-                        iconWrapper.attr("transform", `translate(0, ${-liftY})`);
-                    }
-                }
+                    .attr("transform", iconGroupTransform);
 
                 iconWrapper.append("path")
                     .attr("class", "event-triangle") // Reuse class for hover effects
                     .attr("d", pathD)
                     .attr("fill", d.color || getEventColor(d.type, renderer.typeColors))
-                    .attr("stroke", isHighlighted ? "var(--text-main)" : CONSTANTS.EVENT.ICON_STROKE) // Highlight stroke
-                    .attr("stroke-width", isHighlighted ? 2.5 : CONSTANTS.EVENT.ICON_STROKE_WIDTH)
+                    .attr("stroke", CONSTANTS.EVENT.ICON_STROKE)
+                    .attr("stroke-width", CONSTANTS.EVENT.ICON_STROKE_WIDTH)
                     .attr("data-id", d.id)
                     .style("cursor", "pointer")
                     .on("mouseenter", (e) => renderer.handleEventHover(e, d))
@@ -335,12 +312,6 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                         if (renderer.onEventContextMenu) {
                             renderer.onEventContextMenu(e, d);
                         }
-                    })
-                    .on("dblclick", (e) => {
-                        e.stopPropagation();
-                        if (renderer.onEventDblClick) {
-                            renderer.onEventDblClick(e, d);
-                        }
                     });
 
 
@@ -348,11 +319,10 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                 g.append("text")
                     .attr("class", "event-label") // Use event-label to match point events
                     .attr("x", 0)
-                    .attr("y", -triangleSize - CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP - CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA - liftY) // Lift label too!
+                    .attr("y", -triangleSize - CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP - CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA)
                     .attr("text-anchor", "middle")
                     .attr("font-size", CONSTANTS.EVENT.LABEL_FONT_SIZE)
-                    .attr("fill", isHighlighted ? "var(--text-main)" : CONSTANTS.EVENT.LABEL_COLOR) // Highlight text
-                    .attr("font-weight", isHighlighted ? "bold" : "normal")
+                    .attr("fill", CONSTANTS.EVENT.LABEL_COLOR)
                     .text(d.title.length > CONSTANTS.EVENT.LABEL_TRUNCATE_LIMIT ? d.title.substring(0, CONSTANTS.EVENT.LABEL_TRUNCATE_LENGTH) + '...' : d.title);
 
 
@@ -361,8 +331,6 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                 g.append("rect").attr("class", "event-bar")
                     .attr("height", CONFIG.BAR_HEIGHT).attr("fill", d => d.color || getEventColor(d.type, renderer.typeColors))
                     .attr("width", Math.max(CONSTANTS.EVENT.BAR_MIN_WIDTH, w))
-                    .attr("stroke", isHighlighted ? "var(--text-main)" : "none") // Highlight stroke
-                    .attr("stroke-width", isHighlighted ? 2 : 0)
                     .attr("data-id", d.id)
                     .on("mouseenter", (e) => {
                         if (renderer.tooltip.isLocked && renderer.tooltip.isLocked()) return;
@@ -380,12 +348,6 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                         e.preventDefault();
                         if (renderer.onEventContextMenu) {
                             renderer.onEventContextMenu(e, d);
-                        }
-                    })
-                    .on("dblclick", (e) => {
-                        e.stopPropagation();
-                        if (renderer.onEventDblClick) {
-                            renderer.onEventDblClick(e, d);
                         }
                     });
 
@@ -405,8 +367,6 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                 g.append("text").attr("class", "bar-label")
                     .attr("x", CONSTANTS.EVENT.BAR_LABEL_X_OFFSET)
                     .attr("y", CONFIG.BAR_HEIGHT + CONSTANTS.EVENT.BAR_LABEL_Y_PAD)
-                    .attr("fill", isHighlighted ? "var(--text-main)" : undefined) // Highlight text (default color handled by CSS usually, but explicit override helps)
-                    .attr("font-weight", isHighlighted ? "bold" : "normal")
                     .text(d.title);
             }
         });
@@ -416,22 +376,6 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
     });
 }
 
-/**
- * DEPRECATED FUNCTION: Use eventGroups with isEvent filter instead.
- * 
- * Draws downward-pointing triangles representing point events within a given level.
- * Point events are laid out horizontally according to their start date and vertically according to their row index assigned by the layout-engine.
- * Each triangle is centered on the position of the corresponding event bar (even if the event bar is not visible due to filtering).
- * The path of the triangle is either a downward-pointing triangle (for point events) or an icon (if the event has an associated icon).
- * On hover, a tooltip appears with the event title and type.
- * On double-click, the onEventDblClick callback is triggered.
- * If the event is highlighted (i.e. its ID is in the highlightedEventIds set), the triangle is rendered in a bold font and the fill color is overridden.
- * If the event is not highlighted but its ID is in the hiddenEventIds set, the triangle is not rendered at all.
- * @param {Renderer} renderer - The renderer instance responsible for rendering the timeline visualization.
- * @param {D3.Selection} levelG - The D3 selection representing the level group (L0, L1, etc.) containing the point events.
- * @param {Object} level - The level object containing point events to be rendered.
- * @param {function} xScale - The xScale function mapping dates to horizontal positions.
- */
 function drawEventTriangles(renderer, levelG, level, xScale) {
     if (!level.pointEvents || level.pointEvents.length === 0) {
         return; // No point events in this level
@@ -440,7 +384,6 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
     const triangleSize = CONSTANTS.EVENT.TRIANGLE_SIZE;
 
     level.pointEvents.forEach(event => {
-        console.warn("drawEventTriangles is deprecated. Update event : " + event.id + event.title + ".");
         if (renderer.hiddenEventIds && renderer.hiddenEventIds.has(event.id)) return;
 
         const x = xScale(event.startDate);
@@ -458,12 +401,9 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
 
         // Highlight Logic
         let opacity = 1;
-        let isHighlighted = false;
         if (renderer.highlightedEventIds && renderer.highlightedEventIds.size > 0) {
             if (!renderer.highlightedEventIds.has(event.id)) {
                 opacity = 0.1; // Dim non-matching
-            } else {
-                isHighlighted = true;
             }
         }
         triangleG.style("opacity", opacity);
@@ -492,8 +432,8 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
             .attr("class", "event-triangle")
             .attr("d", pathD)
             .attr("fill", event.color || getEventColor(event.type, renderer.typeColors))
-            .attr("stroke", isHighlighted ? "var(--text-main)" : CONSTANTS.EVENT.ICON_STROKE) // Highlight stroke
-            .attr("stroke-width", isHighlighted ? 2.5 : CONSTANTS.EVENT.ICON_STROKE_WIDTH)
+            .attr("stroke", CONSTANTS.EVENT.ICON_STROKE)
+            .attr("stroke-width", CONSTANTS.EVENT.ICON_STROKE_WIDTH)
             // transform attribute handled by wrapper
             .attr("data-id", event.id)
             .style("cursor", "pointer")
@@ -511,12 +451,6 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
                 if (renderer.onEventContextMenu) {
                     renderer.onEventContextMenu(e, event);
                 }
-            })
-            .on("dblclick", (e) => {
-                e.stopPropagation();
-                if (renderer.onEventDblClick) {
-                    renderer.onEventDblClick(e, event);
-                }
             });
 
         // Add a small label above the triangle
@@ -526,8 +460,7 @@ function drawEventTriangles(renderer, levelG, level, xScale) {
             .attr("y", -triangleSize - CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP - CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA) // Above the triangle
             .attr("text-anchor", "middle")
             .attr("font-size", CONSTANTS.EVENT.LABEL_FONT_SIZE)
-            .attr("fill", isHighlighted ? "var(--text-main)" : CONSTANTS.EVENT.LABEL_COLOR) // Highlight text
-            .attr("font-weight", isHighlighted ? "bold" : "normal")
+            .attr("fill", CONSTANTS.EVENT.LABEL_COLOR)
             .text(event.title.length > CONSTANTS.EVENT.LABEL_TRUNCATE_LIMIT ? event.title.substring(0, CONSTANTS.EVENT.LABEL_TRUNCATE_LENGTH) + '...' : event.title);
     });
 }
