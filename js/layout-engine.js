@@ -13,7 +13,7 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
     const events = data.map((d, i) => {
         const startDate = parseDate(d.start);
         const endDate = parseDate(d.end);
-        const isEvent = !endDate; // Event if no end date
+        const isEvent = false; // stop discerning between events and points  !endDate; // Event if no end date
 
         return {
             ...d,
