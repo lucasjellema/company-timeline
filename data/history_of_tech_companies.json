@@ -4,7 +4,7 @@
   "data": [
     {
       "start": "1975-04-04",
-      "end": "",
+      "end": "1975-04-04",
       "title": "Microsoft Founded",
       "description": "Bill Gates and Paul Allen found Microsoft to develop BASIC for the Altair 8800.",
       "type": "event",
@@ -16,7 +16,7 @@
     },
     {
       "start": "1976-04-01",
-      "end": "",
+      "end": "1976-04-01",
       "title": "Apple Founded",
       "description": "Steve Jobs and Steve Wozniak form Apple Computer to sell the Apple I.",
       "type": "event",
@@ -28,7 +28,7 @@
     },
     {
       "start": "1977-06-16",
-      "end": "",
+      "end": "1977-06-16",
       "title": "Oracle Founded",
       "description": "Larry Ellison and partners found SDL (later Oracle) to build a relational database.",
       "type": "event",
@@ -40,7 +40,7 @@
     },
     {
       "start": "1979-06-01",
-      "end": "",
+      "end": "1979-06-01",
       "title": "Oracle v2 Release",
       "description": "The first commercially available SQL-based relational database management system.",
       "type": "product",
@@ -52,7 +52,7 @@
     },
     {
       "start": "1980-12-12",
-      "end": "",
+      "end": "1980-12-12",
       "title": "Apple IPO",
       "description": "Apple goes public at $22 per share creating more millionaires than any IPO in history.",
       "type": "finance",
@@ -64,7 +64,7 @@
     },
     {
       "start": "1981-08-12",
-      "end": "",
+      "end": "1981-08-12",
       "title": "IBM PC Launch",
       "description": "IBM introduces the PC Model 5150 using Microsoft MS-DOS as the operating system.",
       "type": "product",
@@ -76,7 +76,7 @@
     },
     {
       "start": "1983-01-19",
-      "end": "",
+      "end": "1983-01-19",
       "title": "Apple Lisa",
       "description": "The first personal computer with a graphical user interface aimed at business users.",
       "type": "product",
@@ -88,7 +88,7 @@
     },
     {
       "start": "1984-01-24",
-      "end": "",
+      "end": "1984-01-24",
       "title": "Macintosh Launch",
       "description": "Apple launches the Macintosh with the iconic \"1984\" Super Bowl commercial.",
       "type": "product",
@@ -100,7 +100,7 @@
     },
     {
       "start": "1985-11-20",
-      "end": "",
+      "end": "1985-11-20",
       "title": "Windows 1.0",
       "description": "Microsoft releases its first graphical operating environment for MS-DOS.",
       "type": "product",
@@ -112,7 +112,7 @@
     },
     {
       "start": "1986-03-12",
-      "end": "",
+      "end": "1986-03-12",
       "title": "Oracle IPO",
       "description": "Oracle goes public on the NASDAQ raising $31.5 million.",
       "type": "finance",
@@ -124,7 +124,7 @@
     },
     {
       "start": "1986-03-13",
-      "end": "",
+      "end": "1986-03-13",
       "title": "Microsoft IPO",
       "description": "Microsoft goes public at $21 per share making Bill Gates a billionaire by age 31.",
       "type": "finance",
@@ -136,7 +136,7 @@
     },
     {
       "start": "1989-08-01",
-      "end": "",
+      "end": "1989-08-01",
       "title": "Microsoft Office",
       "description": "First version of the Office suite for Mac including Word Excel and PowerPoint.",
       "type": "product",
@@ -148,7 +148,7 @@
     },
     {
       "start": "1990-05-22",
-      "end": "",
+      "end": "1990-05-22",
       "title": "Windows 3.0",
       "description": "The first version of Windows to achieve widespread commercial success.",
       "type": "product",
@@ -172,7 +172,7 @@
     },
     {
       "start": "1995-08-24",
-      "end": "",
+      "end": "1995-08-24",
       "title": "Windows 95",
       "description": "Major OS launch featuring the Start Menu and a massive global marketing campaign.",
       "type": "product",
@@ -184,7 +184,7 @@
     },
     {
       "start": "1997-08-06",
-      "end": "",
+      "end": "1997-08-06",
       "title": "Microsoft Invests in Apple",
       "description": "Microsoft invests $150M in a struggling Apple to ensure the survival of its rival.",
       "type": "finance",
@@ -208,7 +208,7 @@
     },
     {
       "start": "1998-08-15",
-      "end": "",
+      "end": "1998-08-15",
       "title": "iMac G3 Launch",
       "description": "The colorful all-in-one computer that signaled Apple's return to profitability.",
       "type": "product",
@@ -220,7 +220,7 @@
     },
     {
       "start": "1998-09-04",
-      "end": "",
+      "end": "1998-09-04",
       "title": "Google Founded",
       "description": "Larry Page and Sergey Brin incorporate Google in a garage in Menlo Park.",
       "type": "event",
@@ -244,7 +244,7 @@
     },
     {
       "start": "2001-05-19",
-      "end": "",
+      "end": "2001-05-19",
       "title": "Apple Store Opens",
       "description": "The first Apple retail stores open in Tysons Corner and Glendale.",
       "type": "event",
@@ -256,7 +256,7 @@
     },
     {
       "start": "2001-10-23",
-      "end": "",
+      "end": "2001-10-23",
       "title": "iPod Launch",
       "description": "Apple introduces a pocket-sized digital music player with \"1",
       "type": "event",
@@ -268,7 +268,7 @@
     },
     {
       "start": "2001-11-15",
-      "end": "",
+      "end": "2001-11-15",
       "title": "Xbox Launch",
       "description": "Microsoft enters the gaming console market to compete with Sony and Nintendo.",
       "type": "product",
@@ -280,7 +280,7 @@
     },
     {
       "start": "2002-07-30",
-      "end": "",
+      "end": "2002-07-30",
       "title": "IBM Buys PwC Consulting",
       "description": "IBM acquires PricewaterhouseCoopers' consulting arm to pivot toward services.",
       "type": "acquisition",
@@ -292,7 +292,7 @@
     },
     {
       "start": "2004-04-01",
-      "end": "",
+      "end": "2004-04-01",
       "title": "Gmail Launch",
       "description": "Google enters the email market with a 1GB storage limit in beta.",
       "type": "product",
@@ -304,7 +304,7 @@
     },
     {
       "start": "2004-08-19",
-      "end": "",
+      "end": "2004-08-19",
       "title": "Google IPO",
       "description": "Google goes public using a Dutch Auction raising $1.67 billion.",
       "type": "finance",
@@ -316,7 +316,7 @@
     },
     {
       "start": "2005-01-14",
-      "end": "",
+      "end": "2005-01-14",
       "title": "Oracle Buys PeopleSoft",
       "description": "Oracle completes a $10.3 billion hostile takeover of its ERP rival.",
       "type": "acquisition",
@@ -328,7 +328,7 @@
     },
     {
       "start": "2005-05-01",
-      "end": "",
+      "end": "2005-05-01",
       "title": "IBM Sells PC Division",
       "description": "IBM sells its ThinkPad and PC business to Lenovo exiting the consumer market.",
       "type": "event",
@@ -340,7 +340,7 @@
     },
     {
       "start": "2005-07-11",
-      "end": "",
+      "end": "2005-07-11",
       "title": "Google Buys Android",
       "description": "Google buys the mobile startup Android for an estimated $50 million.",
       "type": "acquisition",
@@ -352,7 +352,7 @@
     },
     {
       "start": "2006-10-09",
-      "end": "",
+      "end": "2006-10-09",
       "title": "Google Buys YouTube",
       "description": "Google acquires the video platform for $1.65 billion in stock.",
       "type": "acquisition",
@@ -364,7 +364,7 @@
     },
     {
       "start": "2007-06-29",
-      "end": "",
+      "end": "2007-06-29",
       "title": "iPhone Launch",
       "description": "The original iPhone launches and begins the modern smartphone era.",
       "type": "product",
@@ -376,7 +376,7 @@
     },
     {
       "start": "2008-07-10",
-      "end": "",
+      "end": "2008-07-10",
       "title": "App Store Launch",
       "description": "Apple opens the App Store creating a new global economy for mobile software.",
       "type": "product",
@@ -388,7 +388,7 @@
     },
     {
       "start": "2010-01-27",
-      "end": "",
+      "end": "2010-01-27",
       "title": "Oracle Buys Sun",
       "description": "Oracle acquires Sun Microsystems gaining Java and MySQL for $7.4 billion.",
       "type": "acquisition",
@@ -400,7 +400,7 @@
     },
     {
       "start": "2011-05-10",
-      "end": "",
+      "end": "2011-05-10",
       "title": "Microsoft Buys Skype",
       "description": "Microsoft acquires the VOIP leader for $8.5 billion to integrate with Office.",
       "type": "acquisition",
@@ -436,7 +436,7 @@
     },
     {
       "start": "2015-10-02",
-      "end": "",
+      "end": "2015-10-02",
       "title": "Alphabet Restructure",
       "description": "Google becomes a subsidiary of a new holding company called Alphabet Inc.",
       "type": "event",
@@ -448,7 +448,7 @@
     },
     {
       "start": "2016-12-08",
-      "end": "",
+      "end": "2016-12-08",
       "title": "Microsoft Buys LinkedIn",
       "description": "Microsoft acquires the professional social network for $26.2 billion.",
       "type": "acquisition",
@@ -460,7 +460,7 @@
     },
     {
       "start": "2018-08-02",
-      "end": "",
+      "end": "2018-08-02",
       "title": "Apple $1 Trillion",
       "description": "Apple becomes the first public US company to reach a $1 trillion market cap.",
       "type": "finance",
@@ -472,7 +472,7 @@
     },
     {
       "start": "2019-07-09",
-      "end": "",
+      "end": "2019-07-09",
       "title": "IBM Buys Red Hat",
       "description": "IBM acquires the open-source leader for $34 billion to lead in Hybrid Cloud.",
       "type": "acquisition",
@@ -484,7 +484,7 @@
     },
     {
       "start": "2021-12-20",
-      "end": "",
+      "end": "2021-12-20",
       "title": "Oracle Buys Cerner",
       "description": "Oracle acquires the health records giant for $28.3 billion.",
       "type": "acquisition",
@@ -496,7 +496,7 @@
     },
     {
       "start": "2023-10-13",
-      "end": "",
+      "end": "2023-10-13",
       "title": "Microsoft Buys Activision",
       "description": "Microsoft completes $69 billion acquisition of gaming giant Activision Blizzard.",
       "type": "acquisition",
@@ -508,7 +508,7 @@
     },
     {
       "start": "2024-01-12",
-      "end": "",
+      "end": "2024-01-12",
       "title": "Microsoft Passes Apple",
       "description": "Microsoft overtakes Apple as the world's most valuable company due to AI growth.",
       "type": "finance",
@@ -520,7 +520,7 @@
     },
     {
       "start": "2025-06-15",
-      "end": "",
+      "end": "2025-06-15",
       "title": "Oracle Autonomous Data Center",
       "description": "Oracle launches its first fully AI-operated autonomous regional data hub.",
       "type": "product",
@@ -532,7 +532,7 @@
     },
     {
       "start": "2025-09-22",
-      "end": "",
+      "end": "2025-09-22",
       "title": "Alphabet $3 Trillion",
       "description": "Alphabet (Google) surpasses the $3 trillion market cap milestone.",
       "type": "finance",

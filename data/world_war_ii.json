@@ -28,7 +28,7 @@
     },
     {
       "start": "1939-09-01",
-      "end": "",
+      "end": "1939-09-01",
       "title": "Invasion of Poland",
       "description": "German forces cross the Polish border triggering the start of WWII.",
       "type": "invasion",
@@ -40,7 +40,7 @@
     },
     {
       "start": "1939-09-03",
-      "end": "",
+      "end": "1939-09-03",
       "title": "UK/France Declaration",
       "description": "Britain and France declare war on Germany following the Polish invasion.",
       "type": "declaration",
@@ -100,7 +100,7 @@
     },
     {
       "start": "1944-06-06",
-      "end": "",
+      "end": "1944-06-06",
       "title": "D-Day",
       "description": "The Allied amphibious invasion of Normandy (Operation Overlord).",
       "type": "invasion",
@@ -112,7 +112,7 @@
     },
     {
       "start": "1944-08-25",
-      "end": "",
+      "end": "1944-08-25",
       "title": "Liberation of Paris",
       "description": "Allied and Free French forces reclaim the French capital.",
       "type": "event",
@@ -148,7 +148,7 @@
     },
     {
       "start": "1945-05-07",
-      "end": "",
+      "end": "1945-05-07",
       "title": "German Surrender",
       "description": "The signing of unconditional surrender by German high command.",
       "type": "surrender",
@@ -172,7 +172,7 @@
     },
     {
       "start": "1941-06-22",
-      "end": "",
+      "end": "1941-06-22",
       "title": "Operation Barbarossa",
       "description": "The launch of the German invasion of the Soviet Union.",
       "type": "invasion",
@@ -244,7 +244,7 @@
     },
     {
       "start": "1945-04-30",
-      "end": "",
+      "end": "1945-04-30",
       "title": "Suicide of Hitler",
       "description": "Adolf Hitler commits suicide in his Berlin bunker.",
       "type": "event",
@@ -268,7 +268,7 @@
     },
     {
       "start": "1941-12-07",
-      "end": "",
+      "end": "1941-12-07",
       "title": "Pearl Harbor",
       "description": "The Japanese surprise attack on the US fleet in Hawaii.",
       "type": "invasion",
@@ -304,7 +304,7 @@
     },
     {
       "start": "1942-04-18",
-      "end": "",
+      "end": "1942-04-18",
       "title": "Doolittle Raid",
       "description": "The first US air raid on Tokyo following Pearl Harbor.",
       "type": "bombing",
@@ -400,7 +400,7 @@
     },
     {
       "start": "1945-08-06",
-      "end": "",
+      "end": "1945-08-06",
       "title": "Hiroshima Bombing",
       "description": "Atomic bombing of Hiroshima by the B-29 Enola Gay.",
       "type": "bombing",
@@ -412,7 +412,7 @@
     },
     {
       "start": "1945-08-09",
-      "end": "",
+      "end": "1945-08-09",
       "title": "Nagasaki Bombing",
       "description": "The second atomic bomb dropped on Nagasaki.",
       "type": "bombing",
@@ -424,7 +424,7 @@
     },
     {
       "start": "1945-08-15",
-      "end": "",
+      "end": "1945-08-15",
       "title": "V-J Day",
       "description": "Japan announces unconditional surrender.",
       "type": "surrender",
@@ -436,7 +436,7 @@
     },
     {
       "start": "1937-07-07",
-      "end": "",
+      "end": "1937-07-07",
       "title": "Marco Polo Bridge Incident",
       "description": "Start of the Second Sino-Japanese War.",
       "type": "battle",
@@ -580,7 +580,7 @@
     },
     {
       "start": "1943-09-03",
-      "end": "",
+      "end": "1943-09-03",
       "title": "Italian Armistice",
       "description": "Italy signs a secret armistice with the Allies.",
       "type": "surrender",
@@ -616,7 +616,7 @@
     },
     {
       "start": "1944-06-04",
-      "end": "",
+      "end": "1944-06-04",
       "title": "Liberation of Rome",
       "description": "Allied forces enter Rome after months of stalemate.",
       "type": "event",
@@ -676,7 +676,7 @@
     },
     {
       "start": "1939-12-13",
-      "end": "",
+      "end": "1939-12-13",
       "title": "Battle of the River Plate",
       "description": "The first naval battle of the war in South America.",
       "type": "battle",
@@ -688,7 +688,7 @@
     },
     {
       "start": "1941-05-27",
-      "end": "",
+      "end": "1941-05-27",
       "title": "Sinking of the Bismarck",
       "description": "Royal Navy sinks Germany's greatest battleship.",
       "type": "battle",
@@ -700,7 +700,7 @@
     },
     {
       "start": "1941-08-14",
-      "end": "",
+      "end": "1941-08-14",
       "title": "Atlantic Charter",
       "description": "Policy statement issued by Churchill and FDR.",
       "type": "conference",
@@ -712,7 +712,7 @@
     },
     {
       "start": "1942-01-20",
-      "end": "",
+      "end": "1942-01-20",
       "title": "Wannsee Conference",
       "description": "Nazi coordination of the Final Solution.",
       "type": "conference",
@@ -748,7 +748,7 @@
     },
     {
       "start": "1944-07-20",
-      "end": "",
+      "end": "1944-07-20",
       "title": "July 20 Plot",
       "description": "Assassination attempt on Hitler at the Wolf's Lair.",
       "type": "event",
@@ -772,7 +772,7 @@
     },
     {
       "start": "1945-04-12",
-      "end": "",
+      "end": "1945-04-12",
       "title": "Death of FDR",
       "description": "The passing of the US President during the war.",
       "type": "event",
@@ -784,7 +784,7 @@
     },
     {
       "start": "1945-06-26",
-      "end": "",
+      "end": "1945-06-26",
       "title": "UN Charter Signed",
       "description": "Establishment of the United Nations in San Francisco.",
       "type": "conference",
@@ -796,7 +796,7 @@
     },
     {
       "start": "1945-07-16",
-      "end": "",
+      "end": "1945-07-16",
       "title": "Trinity Test",
       "description": "The first successful detonation of a nuclear weapon.",
       "type": "event",
@@ -892,7 +892,7 @@
     },
     {
       "start": "1945-01-27",
-      "end": "",
+      "end": "1945-01-27",
       "title": "Liberation of Auschwitz",
       "description": "Soviet forces discover the main Nazi death camp.",
       "type": "event",
