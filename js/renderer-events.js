@@ -5,7 +5,7 @@ const CONSTANTS = {
     // Layout constants for the timeline levels (L0, L1, etc. containers)
     LEVEL: {
         BG_HEIGHT_OFFSET: 15,     // Reduction in height for the level background rect (padding at bottom)
-        SEPARATOR_OFFSET: 10,     // Vertical offset from bottom for the separator line
+        SEPARATOR_OFFSET: 40,     // Vertical offset from bottom for the separator line
         TITLE_X_DEFAULT: 20,      // X position of the level title text in normal view
         TITLE_X_DRILLED: 35,      // X position of the level title text when drilled down (shifted for back button)
         TITLE_Y: 25,              // Y position of the level title text
@@ -39,7 +39,7 @@ const CONSTANTS = {
         ICON_STROKE: "#fff",      // Stroke color for event icons/shapes
         ICON_STROKE_WIDTH: 1.5,   // Stroke width for event icons/shapes
         LABEL_Y_OFFSET_GAP: 8,    // Gap between the icon and the text label
-        LABEL_Y_OFFSET_EXTRA: -22, // Additional offset for label positioning
+        LABEL_Y_OFFSET_EXTRA: -26, // Additional offset for label positioning
         LABEL_FONT_SIZE: "9px",   // Font size for event labels
         LABEL_COLOR: "var(--text-muted)",      // CSS variable for label color
         LABEL_TRUNCATE_LIMIT: 15, // Character count threshold to trigger truncation
@@ -111,7 +111,7 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
 
     const actualIconsAndBarsRowMap = prepareActualIconsAndBarsRowMap(layoutData, xScale, threshold, renderer);
 
-    let currentLevel0Y = 0
+    let currentLevel0Y = 25
 
 
     

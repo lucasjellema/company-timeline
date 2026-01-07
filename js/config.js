@@ -1,7 +1,7 @@
 export const CONFIG = {
     // Padding around the main SVG visualization
     PADDING: {
-        TOP: 80,    // Space at the top for time axis and headers
+        TOP: 40,    // Space at the top for time axis and headers
         RIGHT: 40,  // Space on the right side
         BOTTOM: 40, // Space at the bottom
         LEFT: 120   // Space on the left for Level 0 category labels
