@@ -140,7 +140,7 @@ body {
 
 .btn-secondary:hover {
     border-color: var(--primary-light);
-    background: #2d3a4f;
+    background: var(--bg-active);
 }
 
 main {
@@ -863,7 +863,7 @@ main {
     display: flex;
     align-items: center;
     gap: 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--bg-hover);
 }
 
 .select-items div:last-child {
@@ -872,7 +872,7 @@ main {
 
 .select-items div:hover,
 .same-as-selected {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--bg-active);
 }
 
 .select-icon-svg {

@@ -106,6 +106,7 @@
                     </svg>
                     Upload CSV
                 </label>
+
                 <input type="file" id="csv-upload" accept=".csv" hidden>
                 <label for="json-upload" class="btn btn-secondary" style="margin-right: 8px;">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -118,6 +119,24 @@
                 </label>
                 <input type="file" id="json-upload" accept=".json" hidden>
                 <button id="download-sample" class="btn btn-secondary">Download Story</button>
+                <button id="sign-in-btn" class="btn btn-secondary" style="display: none;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                        <polyline points="10 17 15 12 10 7"></polyline>
+                        <line x1="15" y1="12" x2="3" y2="12"></line>
+                    </svg>
+                    Sign In
+                </button>
+                <button id="sign-out-btn" class="btn btn-secondary" style="display: none;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Sign Out
+                </button>
             </div>
         </div>
     </header>

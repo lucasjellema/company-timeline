@@ -25,6 +25,8 @@ The Company Timeline Visualization is a client-side, single-page application (SP
 │   └── search.css       # Styles for search and filter elements
 ├── js/
 │   ├── main.js          # Application Orchestrator
+│   ├── auth.js          # Authentication Module (MSAL integration)
+│   ├── authConfig.js    # Auth Configuration & Constants
 │   ├── layout-engine.js # Data Processing & Layout Logic
 │   ├── renderer.js      # D3 Visualization Coordinator
 │   ├── renderer-axis.js # Axis & Grid Rendering
@@ -84,6 +86,7 @@ The Company Timeline Visualization is a client-side, single-page application (SP
   - **Extreme Focus Interaction**: Detects double-clicks on individual events (bars or icons) to trigger the focus mode in the main orchestrator.
 
 ### 4. Application Logic Modules
+- **`auth.js`**: implementation of Microsoft Identity Platform (MSAL.js) authentication. Manages user sessions, handles sign-in/sign-out flows (Popup), and retrieves user profile data from Microsoft Graph API. It exposes a simplified API (`signIn`, `signOut`, `getUserDetails`) for the main orchestrator and broadcasts `msalLoginSuccess` events.
 - **`storage.js`**: Abstraction layer for `localStorage`. Handles saving, loading, listing, and deleting stories. Includes logic to merge new events into existing stories. Implements an automatic **garbage collection** system (`cleanupOrphanedFiles`) that identifies and removes unused local file artifacts (images) once per day to optimize storage usage.
 - **`story-ui.js`**: Manages the "Load Story" and "Create Story" modals. Handles the "Shipped Stories" feature (loading pre-packaged JSONs).
 - **`event-editor.js`**: Controls the "Add Event" modal form. Handles input validation, date range copying, and location selection via mini-map.
@@ -111,6 +114,16 @@ The Company Timeline Visualization is a client-side, single-page application (SP
     - **Zoom**: Updates the Scale domain and re-draws elements.
     - **Slider**: Checks `startDate <= sliderDate <= endDate` and highlights active items.
     - **Map Sync**: Slider Drag -> `main.js` updates Map pins. Hovering pin -> `renderer.js` highlights bar.
+    
+## Authentication Flow
+
+1. **Initialization**: On `DOMContentLoaded`, `main.js` ensures the MSAL script is loaded.
+2. **Check Session**: It checks for an existing active account via `auth.getAccount()`.
+3. **User State Update**: If an account exists or after a successful login event:
+    - `auth.getUserDetails()` is called to fetch profile data from Graph API.
+    - `auth.getIdTokenClaims()` retrieves token metadata.
+    - The UI is updated to show the signed-in state (Welcome message, Sign Out button).
+4. **Login Interaction**: Clicking "Sign In" triggers `auth.signIn()`, which opens a popup. On success, an `msalLoginSuccess` event is dispatched, triggering the State Update flow.
 
 ## Critical Algorithms
 

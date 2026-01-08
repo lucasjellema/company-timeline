@@ -10,8 +10,16 @@ import { initEventEditor } from './event-editor.js';
 import { initStoryUI, loadShippedStory, loadStoryFromURL } from './story-ui.js';
 import { SearchController } from './search-controller.js';
 import { ThemeManager } from './theme-manager.js';
+import * as auth from './auth.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+// Constants for application state
+const APP_STATE = {
+    initialized: false,
+    authenticated: false
+};
+
+
+document.addEventListener('DOMContentLoaded', async () => {
     // Theme Init
     const themeManager = new ThemeManager();
     const themeBtn = document.getElementById('theme-toggle-btn');
@@ -610,6 +618,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Init Modules ---
 
+    await initializeAuthentication();
+
     // UI Controls
     let resizeRaf = null;
     initSplitter('timeline-splitter', 'side-panel', mapManager, () => {
@@ -646,7 +656,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initEventEditor(renderer, refreshHandler, storage);
     initStoryUI(storage, refreshHandler);
 
-    // --- Initial Load ---
+
     // --- Initial Load ---
     const urlParams = new URLSearchParams(window.location.search);
     const shippedStoryParam = urlParams.get('shipped_story');
@@ -668,6 +678,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const storyFileUrlParam = urlParams.get('story_file_url');
     if (!loadedFromParam && storyFileUrlParam) {
+        // Auto-login for OneDrive/SharePoint
+        if (storyFileUrlParam.includes('sharepoint.com') || storyFileUrlParam.includes('1drv.ms') || storyFileUrlParam.includes('onedrive.live.com')) {
+            if (!APP_STATE.authenticated) {
+                console.log("OneDrive URL detected, attempting auto-login...");
+                try {
+                    await auth.signIn();
+                    // Give a moment for event propagation if needed, though await signIn should suffice for token
+                    await new Promise(r => setTimeout(r, 100));
+                } catch (e) {
+                    console.warn("Auto-login failed or cancelled", e);
+                }
+            }
+        }
+
         console.log("Loading story from URL param:", storyFileUrlParam);
         loadStoryFromURL(storyFileUrlParam, storage, (opts) => {
             searchController.loadEventTypes();
@@ -698,8 +722,197 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+
     // Resize Handler
     window.addEventListener('resize', () => {
         if (renderer.layoutData) renderTimeline({ preserveSlider: true });
     });
 });
+
+
+async function initializeAuthentication() {
+    // Placeholder for real authentication initialization if needed
+    console.log('Authentication system initialized');
+
+
+    // Auth Buttons Demo
+    const signInBtn = document.getElementById('sign-in-btn');
+    const signOutBtn = document.getElementById('sign-out-btn');
+
+    if (signInBtn && signOutBtn) {
+        signInBtn.addEventListener('click', () => {
+            signInBtn.style.display = 'none';
+            signOutBtn.style.display = 'inline-flex';
+            console.log('User tries to sign in');
+            handleSignIn();
+        });
+
+        signOutBtn.addEventListener('click', () => {
+            signOutBtn.style.display = 'none';
+            signInBtn.style.display = 'inline-flex';
+            handleSignOut();
+            console.log('User signed out');
+        });
+    }
+
+
+    // Authentication related initialization
+    // Add MSAL script to the page if not present
+    await ensureMsalLoaded();
+
+    // Initialize the authentication module
+    APP_STATE.initialized = auth.initializeAuth();
+
+    if (!APP_STATE.initialized) {
+        //   ui.showError("Failed to initialize authentication system");
+        return;
+    }
+
+    // Set up UI with auth callbacks and admin functionality
+    //  ui.initializeUI(handleSignIn, handleSignOut);
+
+
+    // Check for authentication event
+    // Add MSAL login success listener, broadcast from auth.js
+    window.addEventListener('msalLoginSuccess', async (event) => {
+        console.log('MSAL Login Success Event:', event.detail);
+        // Update UI or perform actions after successful login
+        const { account } = event.detail.payload;
+        if (account) {
+            console.log(`User ${account.username} logged in successfully`);
+            console.log("Successful authentication response received");
+            await updateUserState();
+
+        }
+    })
+
+    //   // Check if user is already signed in
+    await checkExistingAuth();
+
+
+    // Authentication UI is handled by `ui.initializeUI(handleSignIn, handleSignOut)`
+    // and the auth module events (`msalLoginSuccess`) which call `updateUserState()`.
+
+
+}
+/**
+ * Ensure MSAL script is loaded before proceeding
+ */
+async function ensureMsalLoaded() {
+    // Check if MSAL is already available
+    if (window.msal) {
+        return;
+    }
+
+    return new Promise((resolve) => {
+        // Create script tag for MSAL
+        const msalScript = document.createElement('script');
+        msalScript.src = "https://alcdn.msauth.net/browser/2.30.0/js/msal-browser.min.js";
+        msalScript.async = true;
+        msalScript.defer = true;
+
+        // Handle script load event
+        msalScript.onload = () => {
+            console.log("MSAL.js loaded successfully");
+            resolve();
+        };
+
+        // Handle script error
+        msalScript.onerror = () => {
+            console.error("Failed to load MSAL.js");
+            // ui.showError("Failed to load authentication library");
+            resolve(); // Resolve anyway to allow error handling
+        };
+
+        // Add the script to the document head
+        document.head.appendChild(msalScript);
+    });
+}
+
+/**
+ * Check if user is already authenticated
+ */
+async function checkExistingAuth() {
+    const account = auth.getAccount();
+    if (account) {
+        console.log("Found existing account", account.username);
+        await updateUserState();
+
+    } else {
+        // No account found, show unauthenticated state
+        APP_STATE.authenticated = false;
+        // ui.showUnauthenticatedState();
+
+    }
+}
+
+async function updateUserState() {
+    try {
+        // Get user details from Microsoft Graph API
+        const userDetails = await auth.getUserDetails();
+
+        if (userDetails) {
+            APP_STATE.authenticated = true;
+
+            // Get ID token claims for display
+            const idTokenClaims = auth.getIdTokenClaims();
+
+            // Update UI with user details and token claims
+            showAuthenticatedUser(userDetails, idTokenClaims);
+
+        } else {
+            APP_STATE.authenticated = false;
+            //    ui.showUnauthenticatedState();
+        }
+    } catch (error) {
+        console.error("Error updating user state:", error);
+        APP_STATE.authenticated = false;
+        //    ui.showUnauthenticatedState();
+
+    }
+}
+
+/**
+ * Handle sign-in button click
+ */
+function handleSignIn() {
+    if (!APP_STATE.initialized) {
+        // ui.showError("Authentication system not initialized");
+        return;
+    }
+
+    try {
+        auth.signIn();
+    } catch (error) {
+        console.error("Sign in error:", error);
+        //  ui.showError("Failed to sign in");
+    }
+}
+
+/**
+ * Handle sign-out button click
+ */
+function handleSignOut() {
+    if (!APP_STATE.initialized) {
+        return;
+    }
+
+    try {
+        auth.signOut();
+        APP_STATE.authenticated = false;
+        //   ui.showUnauthenticatedState();
+
+    } catch (error) {
+        console.error("Sign out error:", error);
+        // ui.showError("Failed to sign out");
+    }
+}
+
+function showAuthenticatedUser(userDetails, claims) {
+    const welcome = document.getElementById('welcome-message');
+    if (welcome) {
+        welcome.textContent = `Hi, ${userDetails.displayName || 'User'}`;
+        welcome.classList.remove('sr-only');
+    }
+    console.log(`Hi, ${userDetails.displayName || 'User'}`)
+}

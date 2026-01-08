@@ -2,6 +2,8 @@ import { TimelineStorage } from './storage.js';
 import { initSettingsUI } from './story-settings.js';
 import { CONFIG } from './config.js';
 import { ensureDataIds, parseAndPrepareCSV, generateTypeMappings } from './utils.js';
+import * as auth from './auth.js';
+import { Client } from "https://cdn.jsdelivr.net/npm/@microsoft/microsoft-graph-client@3.0.4/+esm";
 
 export function initStoryUI(storage, refreshCallback) {
     initCreateStoryUI(storage, refreshCallback);
@@ -101,8 +103,59 @@ export async function loadStoryFromURL(url, storage, completionCallback, meta = 
                 const graphApiUrl = `https://graph.microsoft.com/v1.0/shares/u!${encodedUrl}/driveItem`;
 
                 console.log(`Fetching OneDrive metadata from: ${graphApiUrl}`);
-                const metaRes = await fetch(graphApiUrl);
-                if (!metaRes.ok) throw new Error("Failed to fetch OneDrive metadata");
+
+                // Get token using our new auth helper
+                const token = await auth.getAccessToken();
+                const headers = {};
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                    console.log("Using authenticated session for OneDrive fetch");
+                } else {
+                    console.log("Attempting unauthenticated OneDrive fetch");
+                }
+
+                // GRAPH CLIENT
+
+                const graphClient = Client.init({
+                    authProvider: done => done(null, token)
+                });
+
+
+                function toBase64Url(str) {
+                    // base64url (no padding, + → -, / → _)
+                    return btoa(unescape(encodeURIComponent(str)))
+                        .replace(/=/g, "")
+                        .replace(/\+/g, "-")
+                        .replace(/\//g, "_");
+                }
+
+
+                const sharingUrl = 'https://conclusionfutureit-my.sharepoint.com/:u:/g/personal/lucas_jellema_amis_nl/IQCOLEe0OjYKRJ2DraB0NNUWAVzXOL_ke1FES2H9WBVuNPk?e=aENb87';
+                const shareId = 'u!' + toBase64Url(sharingUrl);
+
+                const apiUrl = `https://graph.microsoft.com/v1.0/shares/${shareId}/driveItem`;
+                // Use your access token to call this endpoint
+                const response = await graphClient.api(apiUrl).get();
+                console.log(response);
+
+//The response will contain both id (itemId) and parentReference.driveId (driveId).
+
+
+
+
+
+                const resp = await graphClient.api("/me/drive/items/{item id}}/content").get();
+                console.log("Got OneDrive download URL via Graph Client");
+                fetchUrl = resp['@microsoft.graph.downloadUrl'] || fetchUrl;
+
+                const metaRes = await fetch(graphApiUrl, { headers });
+
+                if (!metaRes.ok) {
+                    if (metaRes.status === 401 && !token) {
+                        throw new Error("Authentication required for this shared item. Please sign in.");
+                    }
+                    throw new Error(`Failed to fetch OneDrive metadata: ${metaRes.statusText}`);
+                }
 
                 const metaData = await metaRes.json();
                 if (metaData['@microsoft.graph.downloadUrl']) {
@@ -114,6 +167,9 @@ export async function loadStoryFromURL(url, storage, completionCallback, meta = 
             } catch (odErr) {
                 console.warn("OneDrive workaround failed, falling back to original URL", odErr);
                 // Fallback to original URL if logic fails, though likely to fail CORS too
+                if (odErr.message.includes("Authentication required")) {
+                    alert(odErr.message);
+                }
             }
         }
 
