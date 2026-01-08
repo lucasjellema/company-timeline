@@ -129,3 +129,7 @@ If you don't see triangles:
 - **CSS Variables**: Refactored the entire codebase to use CSS Custom Properties (e.g., `--bg-card`, `--text-main`) instead of hardcoded hex values, allowing for real-time theme switching without page reloads.
 - **Global Toggle**: A prominent toggle button in the header allows instantaneous switching between themes.
 
+### 15. Layout Optimization & Data Refinement
+- **Smart Vertical Spacing**: The layout engine now intelligently calculates vertical space. Rows containing only **point events** (icons) without accompanying duration bars consume significantly less vertical padding, resulting in a more compact and readable timeline.
+- **Data Consistency**: The layout engine and validation logic have been refined to robustly handle events with undefined end dates, treating them as point-in-time milestones. Explicit end dates (equal to start dates) in data sets are also fully supported for strict data modeling.
+

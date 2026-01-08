@@ -120,6 +120,7 @@ To ensure compact visualization without overlapping bars, the Layout Engine uses
 2. Maintain a list of "Row End Dates".
 3. For each item, place it in the first row where `Item.Start > Row.End`.
 4. If no fitting row is found, create a new row.
+5. **Optimization**: If a row contains only Point Events (icons) and no bars, it reserves significantly less vertical space (compact mode) to maximize screen real estate.
 
 ### Semantic Zoom
 The `renderer.js` adjusts the X-Axis ticks and labels based on the `zoomFactor`:
