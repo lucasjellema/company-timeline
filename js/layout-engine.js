@@ -20,8 +20,7 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
             ...d,
             id: d.id || `gen-${i}`, // Use existing ID or generate one based on index
             startDate: startDate,
-            // For point events, use 1 day duration for layout collision/overlap checks
-            endDate: endDate || (startDate ? d3.timeDay.offset(startDate, 1) : null),
+            endDate: endDate,
             isEvent: isEvent
         };
     }).filter(e => e.startDate instanceof Date && !isNaN(e.startDate));
@@ -102,19 +101,15 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
         let currentLevel0RowIndex = 0; // Tracks the Y-offset (in rows) for the entire L0 container
 
         const finalLevelEvents = [];
-        const finalPointEvents = [];
 
         sortedL1Keys.forEach(l1Key => {
             const groupItems = level1Groups.get(l1Key);
 
-            // Separate bars and points
-            const groupBars = groupItems.filter(item => !item.isEvent);
-            const groupPoints = groupItems.filter(item => item.isEvent);
 
             // Sort bars:
             // 1. "Parent" items (Level 2 is empty) come FIRST.
             // 2. Then by start date.
-            groupBars.sort((a, b) => {
+            groupItems.sort((a, b) => {
                 const aIsParent = !a.level2 || a.level2.trim() === '';
                 const bIsParent = !b.level2 || b.level2.trim() === '';
 
@@ -130,7 +125,7 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
             // Pack bars into rows specific to this Level 1 block
             // Iterate over all bars and position them in existing rows if possible
             // Otherwise, create a new row for them
-            groupBars.forEach(event => {
+            groupItems.forEach(event => {
                 let placed = false;
                 for (let i = 0; i < blockRows.length; i++) {
                     // Check if this event overlaps with any bar in the current row
@@ -151,45 +146,11 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
                 }
             });
 
-            // Position Point Events
-            groupPoints.forEach(pointEvent => {
-                pointEvent.rowIndex = currentLevel0RowIndex;
-
-                const candidates = groupBars.filter(bar =>
-                    (bar.level2 === pointEvent.level2) ||
-                    (!bar.level2)
-                );
-
-                if (candidates.length > 0) {
-                    // Try to find overlap first
-                    const overlap = candidates.find(bar =>
-                        pointEvent.startDate >= bar.startDate && pointEvent.startDate <= bar.endDate
-                    );
-
-                    if (overlap) {
-                        pointEvent.rowIndex = overlap.rowIndex;
-                    } else {
-                        let closest = candidates[0];
-                        let minDiff = Math.abs(pointEvent.startDate - closest.startDate);
-
-                        for (let i = 1; i < candidates.length; i++) {
-                            const diff = Math.abs(pointEvent.startDate - candidates[i].startDate);
-                            if (diff < minDiff) {
-                                minDiff = diff;
-                                closest = candidates[i];
-                            }
-                        }
-                        pointEvent.rowIndex = closest.rowIndex;
-                    }
-                }
-            });
-
-            finalLevelEvents.push(...groupBars);
-            finalPointEvents.push(...groupPoints);
+           
+            finalLevelEvents.push(...groupItems);
 
             // Increment offset by the height of this block
             let rowsUsed = blockRows.length;
-            if (rowsUsed === 0 && groupPoints.length > 0) rowsUsed = 1; // Reserve space if points exist but no bars
 
             currentLevel0RowIndex += rowsUsed;
         });
@@ -197,7 +158,6 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
         layout.push({
             level0,
             events: finalLevelEvents,
-            pointEvents: finalPointEvents,
             rowCount: currentLevel0RowIndex,
             yOffset: 0,
             topBarY: 45

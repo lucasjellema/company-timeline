@@ -78,8 +78,7 @@ export function updateSliderUI(renderer, sliderG) {
 }
 
 export function updateActiveEvents(renderer) {
-    // Include both standard duration events and point events (like milestones)
-    const allLayoutEvents = renderer.layoutData.flatMap(l => [...l.events, ...l.pointEvents]);
+    const allLayoutEvents = renderer.layoutData.flatMap(l => [...l.events]);
 
     const activeEvents = allLayoutEvents.filter(e =>
         renderer.sliderDate >= e.startDate && renderer.sliderDate <= e.endDate

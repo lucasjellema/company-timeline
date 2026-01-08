@@ -1,6 +1,7 @@
 import { CONFIG } from './config.js';
 import { getEventColor } from './utils.js';
 
+
 const CONSTANTS = {
     // Layout constants for the timeline levels (L0, L1, etc. containers)
     LEVEL: {
@@ -67,20 +68,18 @@ const prepareActualIconsAndBarsRowMap = (layoutData, xScale, threshold, renderer
             const isSmall = w < threshold;
             const rowIndex = event.rowIndex;
             if (!rowMap.has(rowIndex)) {
-                //console.log("Initializing row index in rowMap:", rowIndex);
                 // targetRowIndex is same as rowIndex initially, it may be updated later to indicate lifting icons up to a higher row
                 rowMap.set(rowIndex, { hasIcon: false, hasBar: false, targetRowIndex: rowIndex, level1: event.level1, level2: event.level2 });
             }
             const rowInfo = rowMap.get(rowIndex);
             if (isSmall) {
                 // if small, see if we can lift the icon up to the icon row which lives just above the first row with same l0, l1,l2 or no l2   
-                // TODO
                 // find the targetRowIndex for this icon
                 // looking in previous rows starting from the top in this l0 for first row  with the same combination of l0,l1,l2 
                 let targetRowIndex = rowIndex;
                 for (let i = 0; i < rowIndex; i++) {
                     const prevRowInfo = rowMap.get(i);
-                    // if row has same l0,l1,l2 or no l2
+                    // if row has same l1,l2 or no l2
                     if (prevRowInfo.level1 === event.level1 && prevRowInfo.level2 === event.level2) {
                         targetRowIndex = i;
                         break;
@@ -88,7 +87,7 @@ const prepareActualIconsAndBarsRowMap = (layoutData, xScale, threshold, renderer
                 }
                 if (targetRowIndex < rowIndex) {
                     rowInfo.targetRowIndex = targetRowIndex;
-                    console.log("Lifting icon for event", event.id, "from row", rowIndex, "to", targetRowIndex);
+                    // console.log("Lifting icon for event", event.id, "from row", rowIndex, "to", targetRowIndex);
                     // set hasicon in target row
                     const targetRowInfo = rowMap.get(targetRowIndex);
                     targetRowInfo.hasIcon = true;
@@ -154,9 +153,9 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
             }
             currentLevel0Y += currentY + CONSTANTS.LEVEL.SEPARATOR_OFFSET;
         }
-        console.log("Row Y Offsets for level0:", level.level0, rowYOffsets);
+      //  console.log("Row Y Offsets for level0:", level.level0, rowYOffsets);
 
-        console.log("Row Map for level0:", level.level0, actualIconsAndBarsRowMap.get(level.level0));
+      //  console.log("Row Map for level0:", level.level0, actualIconsAndBarsRowMap.get(level.level0));
 
 
 
@@ -254,7 +253,7 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
             if (renderer.hiddenEventIds && renderer.hiddenEventIds.has(d.id)) return false;
             return true;
         });
-
+            const maxEndDate = d3.max(eventsToDraw, d => d.endDate ? d.endDate : null) || new Date();
 
 
         const eventGroups = levelG.selectAll(".event-g")
@@ -275,7 +274,7 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
             }
             g.style("opacity", opacity);
 
-            const w = Math.max(0, xScale(d.endDate) - xScale(d.startDate));
+            const w = Math.max(0, xScale(d.endDate ? d.endDate : maxEndDate) - xScale(d.startDate));
             const isSmall = w < threshold;
 
             if (isSmall) {
@@ -331,28 +330,29 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
 
             } else {
                 // Render as Bar
-                g.append("rect").attr("class", "event-bar")
-                    .attr("height", CONFIG.BAR_HEIGHT).attr("fill", d => d.color || getEventColor(d.type, renderer.typeColors))
-                    .attr("width", Math.max(CONSTANTS.EVENT.BAR_MIN_WIDTH, w))
-                    .attr("data-id", d.id)
-                    .on("mouseenter", (e) => {
-                        if (renderer.tooltip.isLocked && renderer.tooltip.isLocked()) return;
-                        renderer.handleEventHover(e, d);
-                    })
-                    .on("mousemove", (e) => {
-                        if (renderer.activeMapEventId || (renderer.tooltip.isLocked && renderer.tooltip.isLocked())) return;
-                        renderer.tooltip.move(e);
-                    })
-                    .on("mouseleave", () => {
-                        renderer.tooltip.hide();
-                        renderer.activeMapEventId = null;
-                    })
-                    .on("contextmenu", (e) => {
-                        e.preventDefault();
-                        if (renderer.onEventContextMenu) {
-                            renderer.onEventContextMenu(e, d);
-                        }
-                    });
+                  g.append("rect").attr("class", "event-bar")
+                      .attr("height", CONFIG.BAR_HEIGHT).attr("fill", d => d.color || getEventColor(d.type, renderer.typeColors))
+                      .attr("width", Math.max(CONSTANTS.EVENT.BAR_MIN_WIDTH, w))
+                      .attr("data-id", d.id)
+                      .on("mouseenter", (e) => {
+                          if (renderer.tooltip.isLocked && renderer.tooltip.isLocked()) return;
+                          renderer.handleEventHover(e, d);
+                      })
+                      .on("mousemove", (e) => {
+                          if (renderer.activeMapEventId || (renderer.tooltip.isLocked && renderer.tooltip.isLocked())) return;
+                          renderer.tooltip.move(e);
+                      })
+                      .on("mouseleave", () => {
+                          renderer.tooltip.hide();
+                          renderer.activeMapEventId = null;
+                      })
+                      .on("contextmenu", (e) => {
+                          e.preventDefault();
+                          if (renderer.onEventContextMenu) {
+                              renderer.onEventContextMenu(e, d);
+                          }
+                      });
+  
 
                 // Draw Icon inside the bar
                 const iconName = d.icon || renderer.typeIcons[d.type ? d.type.toLowerCase() : ''];
@@ -374,96 +374,6 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
             }
         });
 
-        // Draw event triangles (for point events without end dates)
-        drawEventTriangles(renderer, levelG, level, xScale);
     });
 }
 
-function drawEventTriangles(renderer, levelG, level, xScale) {
-    if (!level.pointEvents || level.pointEvents.length === 0) {
-        return; // No point events in this level
-    }
-
-    const triangleSize = CONSTANTS.EVENT.TRIANGLE_SIZE;
-
-    level.pointEvents.forEach(event => {
-        if (renderer.hiddenEventIds && renderer.hiddenEventIds.has(event.id)) return;
-
-        const x = xScale(event.startDate);
-
-        if (isNaN(x)) return; // Skip if date invalid (redundant check but safe)
-
-        // Calculate Y based on the row index assigned by layout-engine
-        // Position so tip touches top of the virtual bar
-        const barY = level.topBarY + event.rowIndex * (CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING);
-
-        // Use transform for positioning the entire group
-        const triangleG = levelG.append("g")
-            .attr("class", "event-triangle-group")
-            .attr("transform", `translate(${x}, ${barY})`);
-
-        // Highlight Logic
-        let opacity = 1;
-        if (renderer.highlightedEventIds && renderer.highlightedEventIds.size > 0) {
-            if (!renderer.highlightedEventIds.has(event.id)) {
-                opacity = 0.1; // Dim non-matching
-            }
-        }
-        triangleG.style("opacity", opacity);
-
-        // Create a downward-pointing triangle relative to (0,0) (the tip)
-        // Points: top-left, top-right, bottom-center (0,0)
-        let pathD = `M ${-triangleSize / 2},${-triangleSize} L ${triangleSize / 2},${-triangleSize} L 0,0 Z`;
-        let iconGroupTransform = "";
-
-        const iconName = event.icon || renderer.typeIcons[event.type ? event.type.toLowerCase() : ''];
-        if (iconName && CONFIG.ICONS[iconName]) {
-            pathD = CONFIG.ICONS[iconName];
-            // Icon is 24x24. We want to center it horizontally on (0,0) and have it sit on top of the line.
-            // The line is at y=0.
-            // So translate x by -12 to center.
-            // Translate y by -24 to sit on top.
-            iconGroupTransform = `translate(${CONSTANTS.EVENT.ICON_OFFSET_X}, ${CONSTANTS.EVENT.ICON_OFFSET_Y}) scale(1)`;
-        }
-
-        // Create a wrapper group specifically for the icon/triangle path
-        // This ensures static transforms (translate) are kept separate from CSS hover transforms (scale)
-        const iconWrapper = triangleG.append("g")
-            .attr("transform", iconGroupTransform);
-
-        iconWrapper.append("path")
-            .attr("class", "event-triangle")
-            .attr("d", pathD)
-            .attr("fill", event.color || getEventColor(event.type, renderer.typeColors))
-            .attr("stroke", CONSTANTS.EVENT.ICON_STROKE)
-            .attr("stroke-width", CONSTANTS.EVENT.ICON_STROKE_WIDTH)
-            // transform attribute handled by wrapper
-            .attr("data-id", event.id)
-            .style("cursor", "pointer")
-            .on("mouseenter", (e) => renderer.handleEventHover(e, event))
-            .on("mousemove", (e) => {
-                if (renderer.activeMapEventId) return;
-                renderer.tooltip.move(e);
-            })
-            .on("mouseleave", () => {
-                renderer.activeMapEventId = null;
-                renderer.tooltip.hide();
-            })
-            .on("contextmenu", (e) => {
-                e.preventDefault();
-                if (renderer.onEventContextMenu) {
-                    renderer.onEventContextMenu(e, event);
-                }
-            });
-
-        // Add a small label above the triangle
-        triangleG.append("text")
-            .attr("class", "event-label")
-            .attr("x", 0) // Centered horizontally
-            .attr("y", -triangleSize - CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP - CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA) // Above the triangle
-            .attr("text-anchor", "middle")
-            .attr("font-size", CONSTANTS.EVENT.LABEL_FONT_SIZE)
-            .attr("fill", CONSTANTS.EVENT.LABEL_COLOR)
-            .text(event.title.length > CONSTANTS.EVENT.LABEL_TRUNCATE_LIMIT ? event.title.substring(0, CONSTANTS.EVENT.LABEL_TRUNCATE_LENGTH) + '...' : event.title);
-    });
-}

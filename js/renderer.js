@@ -91,7 +91,7 @@ export class TimelineRenderer {
 
             // If empty AND collapsed, enforce minimum height
             // If it has events (L0 visible events), standardHeight will be > 0 (1 row = 24+45+60 = 129px... wait 60 is padding)
-            if (level.collapsed && level.events.length === 0 && level.pointEvents.length === 0) {
+            if (level.collapsed && level.events.length === 0 ) {
                 level.height = CONFIG.LEVEL_COLLAPSED_HEIGHT;
             } else {
                 // Even if it has 0 rows but we are NOT collapsed (shouldn't happen for valid L0 unless deleted data), 
