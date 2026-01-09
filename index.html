@@ -537,6 +537,17 @@
                         <input type="hidden" id="event-lng">
                         <input type="text" id="event-location-name" class="form-control" placeholder="Location Name"
                             style="margin-top: 8px;">
+
+                        <!-- Predefined Location Selector -->
+                        <div id="named-location-container" class="hidden" style="margin-top: 8px; position: relative;">
+                            <input type="text" id="named-location-search" class="form-control"
+                                placeholder="Search saved locations..."
+                                style="font-size: 0.9rem; border-color: var(--primary);">
+                            <div id="named-location-results" class="hidden"
+                                style="position: absolute; width: 100%; max-height: 150px; overflow-y: auto; background: var(--bg-card); border: 1px solid var(--border); border-top: none; z-index: 100; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                            </div>
+                        </div>
+
                         <div id="map-coords-display" class="map-hint">No location selected</div>
                     </div>
 

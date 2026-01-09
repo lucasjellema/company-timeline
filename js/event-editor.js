@@ -168,6 +168,21 @@ export function initEventEditor(renderer, refreshCallback, storage) {
         populateDropdowns();
         initModalMap();
 
+        // Check for Named Locations
+        const namedLocContainer = document.getElementById('named-location-container');
+        if (namedLocContainer) {
+            const activeStory = storage.getActiveStory();
+            if (activeStory && activeStory.settings && activeStory.settings.locations && activeStory.settings.locations.length > 0) {
+                namedLocContainer.classList.remove('hidden');
+            } else {
+                namedLocContainer.classList.add('hidden');
+            }
+            const input = document.getElementById('named-location-search');
+            if (input) input.value = ''; // Reset
+            const results = document.getElementById('named-location-results');
+            if (results) results.classList.add('hidden');
+        }
+
         if (editMode && data) {
             // Populate Form
             document.getElementById('event-title').value = data.title || '';
@@ -863,6 +878,69 @@ export function initEventEditor(renderer, refreshCallback, storage) {
             closeModal();
         }
     });
+
+    // --- Named Location Selector Logic ---
+    const namedLocInput = document.getElementById('named-location-search');
+    const namedLocResults = document.getElementById('named-location-results');
+
+    if (namedLocInput && namedLocResults) {
+        namedLocInput.addEventListener('input', () => {
+            const query = namedLocInput.value.toLowerCase().trim();
+            const activeStory = storage.getActiveStory();
+            if (!activeStory || !activeStory.settings || !activeStory.settings.locations) {
+                namedLocResults.classList.add('hidden');
+                return;
+            }
+
+            const matches = activeStory.settings.locations.filter(l =>
+                l.name.toLowerCase().includes(query)
+            );
+
+            if (matches.length > 0) {
+                namedLocResults.innerHTML = matches.map(loc => `
+                    <div class="named-loc-result" data-id="${loc.id}" style="padding: 8px; border-bottom: 1px solid var(--border); cursor: pointer;">
+                        <div style="font-weight: 500;">${loc.name}</div>
+                        ${loc.description ? `<div style="font-size: 0.8rem; color: var(--text-muted);">${loc.description}</div>` : ''}
+                    </div>
+                `).join('');
+                namedLocResults.classList.remove('hidden');
+
+                namedLocResults.querySelectorAll('.named-loc-result').forEach(el => {
+                    el.addEventListener('click', () => {
+                        const id = el.dataset.id;
+                        const loc = activeStory.settings.locations.find(l => l.id === id);
+                        if (loc) {
+                            updateMapWithCoordinates(loc.lat, loc.lng);
+                            const locNameField = document.getElementById('event-location-name');
+                            if (locNameField) locNameField.value = loc.name;
+                            namedLocInput.value = ''; // Reset search
+                            namedLocResults.classList.add('hidden');
+                        }
+                    });
+                    // Hover effect
+                    el.addEventListener('mouseenter', () => el.style.backgroundColor = 'var(--bg-hover)');
+                    el.addEventListener('mouseleave', () => el.style.backgroundColor = 'transparent');
+                });
+            } else {
+                namedLocResults.innerHTML = '<div style="padding: 8px; color: var(--text-muted); font-size: 0.9rem;">No matches found</div>';
+                namedLocResults.classList.remove('hidden');
+            }
+        });
+
+        // Hide on blur (delayed to allow click)
+        namedLocInput.addEventListener('blur', () => {
+            setTimeout(() => {
+                namedLocResults.classList.add('hidden');
+            }, 200);
+        });
+
+        namedLocInput.addEventListener('focus', () => {
+            // Show all if empty
+            if (namedLocInput.value.trim() === '') {
+                namedLocInput.dispatchEvent(new Event('input'));
+            }
+        });
+    }
 
     // Import CSV Logic - moved from main or keep separate? 
     // The main 'Upload CSV' button in header is global, not inside modal.
