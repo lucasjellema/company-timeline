@@ -13,7 +13,9 @@ export class MapManager {
             showTitle: true,
             showStart: true,
             showEnd: true,
-            showLocation: false
+            showLocation: false,
+            showL0: false,
+            showL1: false
         };
         this.initResetButton();
         this.initToggle();
@@ -69,6 +71,8 @@ export class MapManager {
                     document.getElementById('label-show-start').checked = this.labelConfig.showStart;
                     document.getElementById('label-show-end').checked = this.labelConfig.showEnd;
                     document.getElementById('label-show-location').checked = this.labelConfig.showLocation;
+                    document.getElementById('label-show-l0').checked = this.labelConfig.showL0;
+                    document.getElementById('label-show-l1').checked = this.labelConfig.showL1;
                 }
             }
         };
@@ -83,6 +87,8 @@ export class MapManager {
                 this.labelConfig.showStart = document.getElementById('label-show-start').checked;
                 this.labelConfig.showEnd = document.getElementById('label-show-end').checked;
                 this.labelConfig.showLocation = document.getElementById('label-show-location').checked;
+                this.labelConfig.showL0 = document.getElementById('label-show-l0').checked;
+                this.labelConfig.showL1 = document.getElementById('label-show-l1').checked;
 
                 this.updateLabelContent();
                 modal.classList.add('hidden');
@@ -280,7 +286,7 @@ export class MapManager {
          `);
 
         let labelText = '';
-        const cfg = this.labelConfig || { showTitle: true, showStart: true, showEnd: true, showLocation: false };
+        const cfg = this.labelConfig || { showTitle: true, showStart: true, showEnd: true, showLocation: false, showL0: false, showL1: false };
 
         if (cfg.showTitle) {
             labelText += d.title;
@@ -297,6 +303,14 @@ export class MapManager {
 
         if (datePart) {
             labelText += (labelText ? ` (${datePart})` : datePart);
+        }
+
+        let contextPart = [];
+        if (cfg.showL0 && d.level0) contextPart.push(d.level0);
+        if (cfg.showL1 && d.level1) contextPart.push(d.level1);
+
+        if (contextPart.length > 0) {
+            labelText += (labelText ? ` [${contextPart.join(' > ')}]` : contextPart.join(' > '));
         }
 
         if (cfg.showLocation && d.locationName) {
@@ -426,6 +440,14 @@ export class MapManager {
 
                 if (datePart) {
                     labelText += (labelText ? ` (${datePart})` : datePart);
+                }
+
+                let contextPart = [];
+                if (cfg.showL0 && d.level0) contextPart.push(d.level0);
+                if (cfg.showL1 && d.level1) contextPart.push(d.level1);
+
+                if (contextPart.length > 0) {
+                    labelText += (labelText ? ` [${contextPart.join(' > ')}]` : contextPart.join(' > '));
                 }
 
                 if (cfg.showLocation && d.locationName) {
