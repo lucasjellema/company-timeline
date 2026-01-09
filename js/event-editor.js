@@ -722,14 +722,30 @@ export function initEventEditor(renderer, refreshCallback, storage) {
             el.addEventListener('mouseleave', () => el.style.backgroundColor = 'transparent');
         });
 
-        // Click outside to close
+        // Click outside & ESC to close
         const closeResults = (e) => {
-            if (!geoResults.contains(e.target) && e.target !== geoInput && e.target !== geoBtn) {
-                geoResults.classList.add('hidden');
-                document.removeEventListener('click', closeResults);
+            // Check for Click Outside
+            if (e.type === 'click') {
+                if (!geoResults.contains(e.target) && e.target !== geoInput && e.target !== geoBtn) {
+                    hideResults();
+                }
+            }
+            // Check for ESC
+            else if (e.type === 'keydown' && e.key === 'Escape') {
+                hideResults();
             }
         };
-        setTimeout(() => document.addEventListener('click', closeResults), 0);
+
+        const hideResults = () => {
+            geoResults.classList.add('hidden');
+            document.removeEventListener('click', closeResults);
+            document.removeEventListener('keydown', closeResults);
+        };
+
+        setTimeout(() => {
+            document.addEventListener('click', closeResults);
+            document.addEventListener('keydown', closeResults);
+        }, 0);
     }
 
     form.addEventListener('submit', (e) => {
