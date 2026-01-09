@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const mapManager = new MapManager('side-panel-map', storage);
     const galleryManager = new GalleryManager('tab-gallery', storage, {
         onHover: (d, e) => {
-            renderer.highlightEvent(d.id);
+            renderer.highlightEvent(d.id, true);
             renderer.handleEventHover(e, d, { hideImage: true });
         },
         onBlur: (id) => {

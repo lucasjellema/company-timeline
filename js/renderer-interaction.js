@@ -189,19 +189,26 @@ export function handleEventHover(renderer, e, d, options = {}) { // Renamed slig
     }
 }
 
-export function highlightEvent(renderer, id) {
+export function highlightEvent(renderer, id, shouldScroll = false) {
     // Highlight bars
-    renderer.container.selectAll(`.event-bar[data-id="${id}"]`)
-        .classed("highlighted", true)
+    const bars = renderer.container.selectAll(`.event-bar[data-id="${id}"]`);
+    bars.classed("highlighted", true)
         .style("stroke", "var(--text-main)")
         .style("stroke-width", "3px")
         .style("filter", "brightness(1.5) drop-shadow(0 0 10px var(--primary))");
 
     // Highlight triangles
-    renderer.container.selectAll(`.event-triangle[data-id="${id}"]`)
-        .classed("highlighted", true)
+    const triangles = renderer.container.selectAll(`.event-triangle[data-id="${id}"]`);
+    triangles.classed("highlighted", true)
         .style("stroke-width", "3px")
         .style("filter", "brightness(1.5) drop-shadow(0 0 10px var(--primary))");
+
+    if (shouldScroll) {
+        const node = bars.node() || triangles.node();
+        if (node) {
+            node.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+        }
+    }
 }
 
 export function unhighlightEvent(renderer, id) {
