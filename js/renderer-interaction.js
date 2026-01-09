@@ -156,7 +156,16 @@ export function handleEventHover(renderer, e, d, options = {}) { // Renamed slig
                     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OSM</a>'
                 }).addTo(map);
 
-                L.marker([lat, lng]).addTo(map);
+                const marker = L.marker([lat, lng]).addTo(map);
+
+                if (d.locationName) {
+                    marker.bindTooltip(d.locationName, {
+                        permanent: true,
+                        direction: 'bottom', // Match MapManager direction
+                        offset: [0, 15],     // Match MapManager offset
+                        className: 'map-event-label' // Match MapManager class
+                    });
+                }
 
                 // Stop propagation to prevent bubbling issues
                 mapEl.addEventListener('mousedown', (evt) => evt.stopPropagation());

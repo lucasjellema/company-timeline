@@ -237,7 +237,6 @@ export function initEventEditor(renderer, refreshCallback, storage) {
                 document.getElementById('event-lng').value = lng;
                 if (document.getElementById('event-location-name')) {
                     document.getElementById('event-location-name').value = data.locationName || '';
-                    if (data.locationName) document.getElementById('geo-search-input').value = data.locationName;
                 }
                 document.getElementById('map-coords-display').textContent = `Selected: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
 
