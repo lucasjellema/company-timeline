@@ -622,10 +622,103 @@
                         <textarea id="settings-desc" rows="3"></textarea>
                     </div>
 
-                    <div class="form-group">
-                        <label>Event Type Colors</label>
-                        <div id="color-settings-container" class="color-grid">
-                            <!-- Dynamic color pickers will go here -->
+                    <div class="form-group collapsible-section" id="settings-colors-collapsible"
+                        style="border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem; margin-bottom: 1rem;">
+                        <div class="collapsible-header"
+                            style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                            <label style="cursor: pointer; margin-bottom: 0; font-weight: 500;">Event Type
+                                Colors</label>
+                            <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" style="transition: transform 0.2s;">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="collapsible-content" style="padding-top: 1rem;">
+                            <div id="color-settings-container" class="color-grid">
+                                <!-- Dynamic color pickers will go here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group collapsible-section collapsed" id="settings-locations-collapsible"
+                        style="border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem; margin-bottom: 1rem;">
+                        <div class="collapsible-header"
+                            style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                            <label style="cursor: pointer; margin-bottom: 0; font-weight: 500;">Predefined Named
+                                Locations</label>
+                            <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" style="transition: transform 0.2s;">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="collapsible-content" style="padding-top: 1rem;">
+                            <div id="settings-locations-container">
+                                <div class="form-group" style="margin-bottom: 0.5rem;">
+                                    <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <input type="text" id="settings-loc-search"
+                                            placeholder="Search location (e.g. City, Address)..." style="flex-grow: 1;">
+                                        <button type="button" id="settings-loc-search-btn" class="btn btn-secondary">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <circle cx="11" cy="11" r="8"></circle>
+                                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div id="settings-loc-search-results" class="hidden"
+                                        style="margin-bottom: 0.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; max-height: 200px; overflow-y: auto;">
+                                    </div>
+
+                                    <div id="settings-map" class="modal-map-container"
+                                        style="height: 200px; margin-bottom: 0.5rem;"></div>
+                                    <input type="hidden" id="settings-loc-lat">
+                                    <input type="hidden" id="settings-loc-lng">
+                                    <input type="hidden" id="settings-loc-id"> <!-- For editing -->
+
+                                    <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <input type="text" id="settings-loc-name" class="form-control"
+                                            placeholder="Location Name" style="flex: 1;">
+                                    </div>
+                                    <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <textarea id="settings-loc-desc" class="form-control" rows="2"
+                                            placeholder="Description (Optional)" style="flex: 1;"></textarea>
+                                        <button type="button" id="settings-loc-add-btn" class="btn btn-primary"
+                                            title="Add/Update Location" style="align-self: flex-start;">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="settings-divider"
+                                    style="height: 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1rem;">
+                                </div>
+
+                                <div class="locations-list-container">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <div>
+                                            <label style="margin-bottom: 0; display: inline-block;">Predefined
+                                                Locations</label>
+                                            <a href="#" id="settings-loc-show-all"
+                                                style="font-size: 0.8rem; margin-left: 0.5rem; text-decoration: none;">(Show
+                                                All)</a>
+                                        </div>
+                                        <input type="text" id="settings-loc-filter" placeholder="Filter..."
+                                            class="form-control"
+                                            style="width: 120px; font-size: 0.8rem; padding: 2px 6px; height: auto;">
+                                    </div>
+                                    <div id="settings-locations-list"
+                                        style="max-height: 200px; overflow-y: auto; background: var(--bg-input); border: 1px solid var(--border); border-radius: 4px;">
+                                        <!-- Populated via JS -->
+                                        <div class="empty-state"
+                                            style="padding: 1rem; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+                                            No locations defined.</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
