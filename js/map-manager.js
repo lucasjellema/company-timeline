@@ -9,9 +9,16 @@ export class MapManager {
         this.markers = []; // Array of { marker, data, typeIcons }
         this.useEventIcons = false;
         this.showLabels = true;
+        this.labelConfig = {
+            showTitle: true,
+            showStart: true,
+            showEnd: true,
+            showLocation: false
+        };
         this.initResetButton();
         this.initToggle();
         this.initLabelToggle();
+        this.initLabelSettings();
         this.initPopOut();
     }
 
@@ -43,6 +50,51 @@ export class MapManager {
                 this.updateLabelVisibility();
             });
         }
+    }
+
+    initLabelSettings() {
+        const btn = document.getElementById('map-label-settings-btn');
+        const modal = document.getElementById('map-label-settings-modal');
+        const closeBtn = document.getElementById('close-map-label-settings-btn');
+        const applyBtn = document.getElementById('save-map-label-settings-btn');
+
+        if (!btn || !modal) return;
+
+        const toggleModal = () => {
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                // Load current config into inputs
+                if (this.labelConfig) {
+                    document.getElementById('label-show-title').checked = this.labelConfig.showTitle;
+                    document.getElementById('label-show-start').checked = this.labelConfig.showStart;
+                    document.getElementById('label-show-end').checked = this.labelConfig.showEnd;
+                    document.getElementById('label-show-location').checked = this.labelConfig.showLocation;
+                }
+            }
+        };
+
+        btn.addEventListener('click', toggleModal);
+        if (closeBtn) closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+
+        if (applyBtn) {
+            applyBtn.addEventListener('click', () => {
+                if (!this.labelConfig) this.labelConfig = {};
+                this.labelConfig.showTitle = document.getElementById('label-show-title').checked;
+                this.labelConfig.showStart = document.getElementById('label-show-start').checked;
+                this.labelConfig.showEnd = document.getElementById('label-show-end').checked;
+                this.labelConfig.showLocation = document.getElementById('label-show-location').checked;
+
+                this.updateLabelContent();
+                modal.classList.add('hidden');
+            });
+        }
+
+        // Close on click outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
     }
 
     initPopOut() {
@@ -227,8 +279,31 @@ export class MapManager {
             ${imageIconHtml}
          `);
 
-        const compactDate = formatCompactDate(d.start) + (d.end ? ` - ${formatCompactDate(d.end)}` : '');
-        const labelText = compactDate ? `${d.title} (${compactDate})` : d.title;
+        let labelText = '';
+        const cfg = this.labelConfig || { showTitle: true, showStart: true, showEnd: true, showLocation: false };
+
+        if (cfg.showTitle) {
+            labelText += d.title;
+        }
+
+        let datePart = '';
+        if (cfg.showStart || cfg.showEnd) {
+            const s = cfg.showStart ? formatCompactDate(d.start) : '';
+            const e = cfg.showEnd && d.end ? formatCompactDate(d.end) : '';
+            if (s && e) datePart = `${s} - ${e}`;
+            else if (s) datePart = s;
+            else if (e) datePart = e; // Unlikely but possible
+        }
+
+        if (datePart) {
+            labelText += (labelText ? ` (${datePart})` : datePart);
+        }
+
+        if (cfg.showLocation && d.locationName) {
+            labelText += (labelText ? ` @ ${d.locationName}` : d.locationName);
+        }
+
+        if (!labelText) labelText = d.title; // Fallback
 
         marker.bindTooltip(labelText, {
             permanent: true,
@@ -324,6 +399,42 @@ export class MapManager {
                 } else {
                     item.marker.closeTooltip();
                 }
+            }
+        });
+    }
+
+    updateLabelContent() {
+        // Refresh all labels based on new config
+        this.markers.forEach(item => {
+            const d = item.data;
+            if (item.marker && d) {
+                let labelText = '';
+                const cfg = this.labelConfig;
+
+                if (cfg.showTitle) {
+                    labelText += d.title;
+                }
+
+                let datePart = '';
+                if (cfg.showStart || cfg.showEnd) {
+                    const s = cfg.showStart ? formatCompactDate(d.start) : '';
+                    const e = cfg.showEnd && d.end ? formatCompactDate(d.end) : '';
+                    if (s && e) datePart = `${s} - ${e}`;
+                    else if (s) datePart = s;
+                    else if (e) datePart = e;
+                }
+
+                if (datePart) {
+                    labelText += (labelText ? ` (${datePart})` : datePart);
+                }
+
+                if (cfg.showLocation && d.locationName) {
+                    labelText += (labelText ? ` @ ${d.locationName}` : d.locationName);
+                }
+
+                if (!labelText) labelText = d.title;
+
+                item.marker.setTooltipContent(labelText);
             }
         });
     }
