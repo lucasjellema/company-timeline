@@ -58,6 +58,10 @@
     box-sizing: border-box;
 }
 
+.hidden {
+    display: none !important;
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -387,6 +391,7 @@ main {
 }
 
 .tooltip.hidden {
+    display: block !important;
     opacity: 0;
 }
 
