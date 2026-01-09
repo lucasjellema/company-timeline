@@ -33,7 +33,14 @@
 * [X] process url param at startup to retrieve a timeline story file from a URL 
 * [X] add light theme?
 * [ ] process url param at startup to retrieve a timeline story file from a URL at a Microsoft EntraId protected location (first login, then retrieve file)
-* [ ] do not reserve vertical space for a bar if there is no bar to be displayed
-* [ ] do not reserve vertical space for icons if there no icons  to be displayed
+* [X] do not reserve vertical space for a bar if there is no bar to be displayed
+* [X] do not reserve vertical space for icons if there no icons  to be displayed
 * [ ] full export of story, including local image files
 * [ ] full import of story, including image files to be stored locally
+* [X] show parent context (L0.title voor L1, L0.title >L1.title for L2) - in tooltip, on events panel (derive in )
+* [ ] named locations = allow user to define locations with a name and select these locations for events; show name in tooltip on map and perhaps as label on the map?
+* [ ] stop with point events and remove special code section for triangles function drawEventTriangles 
+* [X] show label on map 
+* [ ] nested bars: L1 bars within L0 bars; L2 bars within L1 bars
+* [X] provide search field with map in Edit Event dialog; retrieve and list locations (from OpenStreetMap geocoding api); allow user to select a location 
+* [ ] map panel: configure label shown for pinpoints: what elements should the location label contain? (locationName, start/end-date, event name, content titles from L0 and L1)

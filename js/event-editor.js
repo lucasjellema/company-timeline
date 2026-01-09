@@ -235,6 +235,10 @@ export function initEventEditor(renderer, refreshCallback, storage) {
             if (!isNaN(lat) && !isNaN(lng)) {
                 document.getElementById('event-lat').value = lat;
                 document.getElementById('event-lng').value = lng;
+                if (document.getElementById('event-location-name')) {
+                    document.getElementById('event-location-name').value = data.locationName || '';
+                    if (data.locationName) document.getElementById('geo-search-input').value = data.locationName;
+                }
                 document.getElementById('map-coords-display').textContent = `Selected: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
 
                 setTimeout(() => {
@@ -278,6 +282,17 @@ export function initEventEditor(renderer, refreshCallback, storage) {
     function clearMapSelection() {
         document.getElementById('event-lat').value = '';
         document.getElementById('event-lng').value = '';
+        const locNameInput = document.getElementById('event-location-name');
+        if (locNameInput) locNameInput.value = '';
+
+        const searchInput = document.getElementById('geo-search-input');
+        if (searchInput) searchInput.value = '';
+        const searchResults = document.getElementById('geo-search-results');
+        if (searchResults) {
+            searchResults.innerHTML = '';
+            searchResults.classList.add('hidden');
+        }
+
         document.getElementById('map-coords-display').textContent = 'No location selected';
         if (modalMarker && modalMap) {
             modalMap.removeLayer(modalMarker);
@@ -612,6 +627,111 @@ export function initEventEditor(renderer, refreshCallback, storage) {
         });
     }
 
+    // --- Geo Search Logic ---
+    const geoInput = document.getElementById('geo-search-input');
+    const geoBtn = document.getElementById('geo-search-btn');
+    const geoResults = document.getElementById('geo-search-results');
+    const locNameInput = document.getElementById('event-location-name');
+
+    if (geoBtn && geoInput && geoResults) {
+        geoBtn.addEventListener('click', () => {
+            const query = geoInput.value.trim();
+            if (!query) return;
+
+            // Show loading state?
+            geoBtn.disabled = true;
+            geoBtn.innerHTML = '<span class="loading-spinner" style="width:12px; height:12px; border:2px solid currentColor; border-top-color:transparent; border-radius:50%; display:inline-block; animation:spin 1s linear infinite;"></span>';
+
+            const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=jsonv2&limit=5&addressdetails=1`;
+
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    renderGeoResults(data);
+                })
+                .catch(err => {
+                    console.error("Geo search failed", err);
+                    alert("Search failed. Please try again.");
+                })
+                .finally(() => {
+                    geoBtn.disabled = false;
+                    geoBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>`;
+                });
+        });
+
+        // Also allow Enter key
+        geoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                geoBtn.click();
+            }
+        });
+    }
+
+    function renderGeoResults(data) {
+        if (!data || data.length === 0) {
+            geoResults.innerHTML = '<div style="padding: 8px; color: var(--text-muted); font-size: 0.9rem;">No results found.</div>';
+            geoResults.classList.remove('hidden');
+            return;
+        }
+
+        const list = data.map(item => {
+            const displayName = item.display_name;
+            // Shorten name if too long?
+            return `
+                <div class="geo-result-item" data-lat="${item.lat}" data-lon="${item.lon}" data-name="${item.display_name.replace(/"/g, '&quot;')}" style="padding: 8px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s;">
+                    <div style="font-weight: 500; font-size: 0.9rem;">${item.name || displayName.split(',')[0]}</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${displayName}</div>
+                </div>
+            `;
+        }).join('');
+
+        geoResults.innerHTML = list;
+        geoResults.classList.remove('hidden');
+
+        // Add listeners
+        geoResults.querySelectorAll('.geo-result-item').forEach(el => {
+            el.addEventListener('click', () => {
+                const lat = parseFloat(el.dataset.lat);
+                const lon = parseFloat(el.dataset.lon);
+                const name = el.dataset.name;
+
+                // Update Form
+                document.getElementById('event-lat').value = lat;
+                document.getElementById('event-lng').value = lon;
+                if (locNameInput) locNameInput.value = name;
+
+                // Update UI
+                geoInput.value = name; // Show selected name in search box
+                document.getElementById('map-coords-display').textContent = `Selected: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+                geoResults.classList.add('hidden');
+
+                // Update Map
+                if (modalMap) {
+                    if (modalMarker) modalMap.removeLayer(modalMarker);
+                    modalMarker = L.marker([lat, lon]).addTo(modalMap);
+                    modalMap.setView([lat, lon], 12); // Zoom in on result
+                }
+            });
+            // Hover effect via JS if not CSS (inline style handled basics)
+            el.addEventListener('mouseenter', () => el.style.backgroundColor = 'var(--bg-hover)');
+            el.addEventListener('mouseleave', () => el.style.backgroundColor = 'transparent');
+        });
+
+        // Click outside to close
+        const closeResults = (e) => {
+            if (!geoResults.contains(e.target) && e.target !== geoInput && e.target !== geoBtn) {
+                geoResults.classList.add('hidden');
+                document.removeEventListener('click', closeResults);
+            }
+        };
+        setTimeout(() => document.addEventListener('click', closeResults), 0);
+    }
+
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -631,6 +751,7 @@ export function initEventEditor(renderer, refreshCallback, storage) {
             imageLocalId: document.getElementById('event-image-local-id').value || null,
             lattitude: document.getElementById('event-lat').value,
             longitude: document.getElementById('event-lng').value,
+            locationName: document.getElementById('event-location-name') ? document.getElementById('event-location-name').value : null,
             icon: document.getElementById('event-icon').value || null,
             color: colorVal
         };
