@@ -1,5 +1,5 @@
 import { CONFIG, SAMPLE_CSV } from './config.js';
-import { parseDate, ensureDataIds, generateTypeMappings } from './utils.js';
+import { parseDate, ensureDataIds, generateTypeMappings, formatDateFriendly, formatMonthYearFriendly } from './utils.js';
 import { processTimelineData } from './layout-engine.js';
 import { TimelineRenderer } from './renderer.js';
 import { TimelineStorage } from './storage.js';
@@ -544,7 +544,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let lastActiveEventIds = "";
 
     renderer.onSliderMove = (date, activeEvents) => {
-        if (dateLabel) dateLabel.textContent = d3.timeFormat("%B %Y")(date);
+        if (dateLabel) dateLabel.textContent = formatMonthYearFriendly(date);
 
         const currentIds = activeEvents.map(e => e.id).sort((a, b) => a - b).join(',');
         if (currentIds === lastActiveEventIds) return;
@@ -572,7 +572,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <span class="event-item-title">${e.title}</span>
                     <div class="event-item-meta">
                         <strong>${e.parentContext || e.level0}</strong> &middot; ${e.type}<br>
-                        ${d3.timeFormat("%b %d, %Y")(e.startDate)} to ${e.isEvent ? 'Point Event' : d3.timeFormat("%b %d, %Y")(e.endDate)}
+                        ${formatDateFriendly(e.startDate)} to ${e.isEvent ? 'Point Event' : formatDateFriendly(e.endDate)}
                     </div>
                 </div>`;
             }).join('');

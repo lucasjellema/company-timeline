@@ -63,6 +63,29 @@ const getOrdinal = (n) => {
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
 };
 
+const SHORT_MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/**
+ * Formats a Date to "Jan 1, 2023" style (no zero padding).
+ */
+export const formatDateFriendly = (date) => {
+    if (!date) return '';
+    const m = SHORT_MONTH_NAMES[date.getMonth()];
+    const d = date.getDate(); // No padding
+    const y = date.getFullYear(); // No padding (e.g. 590)
+    return `${m} ${d}, ${y}`;
+};
+
+/**
+ * Formats a Date to "January 2023" style (no zero padding for year).
+ */
+export const formatMonthYearFriendly = (date) => {
+    if (!date) return '';
+    const m = MONTH_NAMES[date.getMonth()];
+    const y = date.getFullYear(); // No padding
+    return `${m} ${y}`;
+};
+
 const parseDateComponents = (dateStr) => {
     if (!dateStr) return null;
     const parts = dateStr.trim().split('-');
@@ -83,10 +106,11 @@ const parseDateComponents = (dateStr) => {
  * @returns {string} The formatted date string.
  */
 const formatSingleDate = (d) => {
-    if (d.precision === 'year') return d.year;
+    const year = parseInt(d.year, 10);
+    if (d.precision === 'year') return String(year);
     const monthName = MONTH_NAMES[d.month - 1];
-    if (d.precision === 'month') return `${monthName} ${d.year}`;
-    return `${getOrdinal(d.day)} ${monthName} ${d.year}`;
+    if (d.precision === 'month') return `${monthName} ${year}`;
+    return `${getOrdinal(d.day)} ${monthName} ${year}`;
 };
 
 /**
@@ -163,13 +187,14 @@ export const formatDate = (date) => {
 export const formatCompactDate = (dateStr) => {
     const d = parseDateComponents(dateStr);
     if (!d) return '';
-    if (d.precision === 'year') return d.year;
+    const year = parseInt(d.year, 10);
+    if (d.precision === 'year') return String(year);
 
-    const m = d.month.toString().padStart(1, '0');
-    if (d.precision === 'month') return `${m}-${d.year}`;
+    const m = d.month;
+    if (d.precision === 'month') return `${m}-${year}`;
 
-    const day = d.day.toString().padStart(2, '0');
-    return `${day}-${m}-${d.year}`;
+    const day = d.day;
+    return `${day}-${m}-${year}`;
 };
 
 const NICE_COLORS = [

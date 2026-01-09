@@ -75,26 +75,26 @@ export function drawAxis(svg, xScale, width, totalHeight, zoomFactor) {
                 // Show week number for weekly view
                 const weekNum = d3.timeWeek.count(d3.timeYear(d), d);
                 if (month === 0 && weekNum <= 1) {
-                    return d3.timeFormat("%Y")(d);
+                    return String(d.getFullYear());
                 }
-                return d3.timeFormat("%b %d")(d);
+                return `${d3.timeFormat("%b")(d)} ${d.getDate()}`;
             } else if (formatType === 'month') {
                 // Show month abbreviation for monthly view
                 if (month === 0) {
-                    return d3.timeFormat("%Y")(d);
+                    return String(d.getFullYear());
                 }
                 return d3.timeFormat("%b")(d);
             } else if (formatType === 'quarter') {
                 // Show quarters for quarterly view
                 if (month === 0) {
-                    return d3.timeFormat("%Y")(d);
+                    return String(d.getFullYear());
                 }
                 if (month % 3 === 0) {
                     return d3.timeFormat("Q%q")(d);
                 }
                 return "";
             } else {
-                return d3.timeFormat("%Y")(d);
+                return String(d.getFullYear());
             }
         });
 
