@@ -626,16 +626,76 @@ export function initEventEditor(renderer, refreshCallback, storage) {
         });
     }
 
+    // --- Map Paste Logic ---
+    let isMapHovered = false;
+    const mapContainer = document.getElementById('modal-map');
+
+    if (mapContainer) {
+        mapContainer.addEventListener('mouseenter', () => isMapHovered = true);
+        mapContainer.addEventListener('mouseleave', () => isMapHovered = false);
+    }
+
+    document.addEventListener('paste', (e) => {
+        if (!isMapHovered) return;
+
+        // Ensure we are in a valid state (modal open) though isMapHovered implies visible
+        const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+        const coords = parseCoordinates(pastedText);
+
+        if (coords) {
+            e.preventDefault();
+
+            // Optionally update the search input to show what was pasted
+            if (geoInput) geoInput.value = pastedText;
+
+            updateMapWithCoordinates(coords.lat, coords.lng);
+        }
+    });
+
     // --- Geo Search Logic ---
     const geoInput = document.getElementById('geo-search-input');
     const geoBtn = document.getElementById('geo-search-btn');
     const geoResults = document.getElementById('geo-search-results');
     const locNameInput = document.getElementById('event-location-name');
 
+    // Helper to check for coordinates
+    function parseCoordinates(text) {
+        if (!text) return null;
+        const parts = text.split(',');
+        if (parts.length === 2) {
+            const lat = parseFloat(parts[0].trim());
+            const lng = parseFloat(parts[1].trim());
+            if (!isNaN(lat) && !isNaN(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180) {
+                return { lat, lng };
+            }
+        }
+        return null;
+    }
+
+    function updateMapWithCoordinates(lat, lng) {
+        document.getElementById('event-lat').value = lat;
+        document.getElementById('event-lng').value = lng;
+        document.getElementById('map-coords-display').textContent = `Selected: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+
+        if (modalMap) {
+            if (modalMarker) modalMap.removeLayer(modalMarker);
+            modalMarker = L.marker([lat, lng]).addTo(modalMap);
+            modalMap.setView([lat, lng], 15);
+        }
+        if (geoResults) geoResults.classList.add('hidden');
+    }
+
     if (geoBtn && geoInput && geoResults) {
         geoBtn.addEventListener('click', () => {
             const query = geoInput.value.trim();
             if (!query) return;
+
+            // 1. Check if direct coordinates
+            const coords = parseCoordinates(query);
+            if (coords) {
+                updateMapWithCoordinates(coords.lat, coords.lng);
+                return;
+            }
 
             // Show loading state?
             geoBtn.disabled = true;
@@ -660,6 +720,18 @@ export function initEventEditor(renderer, refreshCallback, storage) {
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>`;
                 });
+        });
+
+        // Paste support for Google Maps coordinates
+        geoInput.addEventListener('paste', (e) => {
+            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+            const coords = parseCoordinates(pastedText);
+
+            if (coords) {
+                e.preventDefault();
+                geoInput.value = pastedText;
+                updateMapWithCoordinates(coords.lat, coords.lng);
+            }
         });
 
         // Also allow Enter key
