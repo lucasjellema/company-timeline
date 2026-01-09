@@ -36,11 +36,11 @@ const CONSTANTS = {
         SMALL_THRESHOLD: 0.03,    // Events taking up less than 3% of viewport width are rendered as icons/points
         TRIANGLE_SIZE: 10,        // Size of the triangle shape for point events
         ICON_OFFSET_X: -12,       // Horizontal offset to center a 24px icon
-        ICON_OFFSET_Y: 7,       // Vertical offset to make the icon sit on top of the timeline row
+        ICON_OFFSET_Y: -23,       // Vertical offset to make the icon sit on top of the timeline row
         ICON_STROKE: "#fff",      // Stroke color for event icons/shapes
         ICON_STROKE_WIDTH: 1.5,   // Stroke width for event icons/shapes
         LABEL_Y_OFFSET_GAP: 8,    // Gap between the icon and the text label
-        LABEL_Y_OFFSET_EXTRA: -26, // Additional offset for label positioning
+        LABEL_Y_OFFSET_EXTRA: 4, // Additional offset for label positioning
         LABEL_FONT_SIZE: "9px",   // Font size for event labels
         LABEL_COLOR: "var(--text-muted)",      // CSS variable for label color
         LABEL_TRUNCATE_LIMIT: 15, // Character count threshold to trigger truncation
@@ -135,18 +135,17 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
             // Iterate through each row index up to maxRowIndex to assign Y offsets
             for (let r = 0; r <= maxRowIndex; r++) {
                 const rowInfo = iconsAndBarsRowMapInCurrentLevel0.get(r);
+                rowYOffsets.set(r, currentY);
                 if (rowInfo) {
                     // If the row has both icons and bars, allocate extra height
                     if (rowInfo.hasIcon && rowInfo.hasBar) {
-                        rowYOffsets.set(r, currentY);
-                        currentY += (CONSTANTS.EVENT.TRIANGLE_SIZE + CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP + CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA) + CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING;
+                        currentY += (CONSTANTS.EVENT.TRIANGLE_SIZE + CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP + CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA) 
+                                     + CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING;
                     } else if (rowInfo.hasIcon) {
                         // Only icons
-                        rowYOffsets.set(r, currentY);
-                        currentY += (CONSTANTS.EVENT.TRIANGLE_SIZE + CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP + CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA) + CONFIG.BAR_SPACING;
+                        currentY += (CONSTANTS.EVENT.TRIANGLE_SIZE + CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP + CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA) ;
                     } else if (rowInfo.hasBar) {
                         // Only bars
-                        rowYOffsets.set(r, currentY);
                         currentY += CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING;
                     }
                 }
@@ -278,14 +277,14 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
             const isSmall = w < threshold;
 
             if (isSmall) {
-                // Render as instant event (Icon only)
+                // Render as instant event (Icon only) - elevated vs bar
                 const iconName = d.icon || renderer.typeIcons[d.type ? d.type.toLowerCase() : ''];
                 let pathD = `M ${-triangleSize / 2},${-triangleSize} L ${triangleSize / 2},${-triangleSize} L 0,0 Z`;
                 let iconGroupTransform = "";
 
                 if (iconName && CONFIG.ICONS[iconName]) {
                     pathD = CONFIG.ICONS[iconName];
-                    iconGroupTransform = `translate(${CONSTANTS.EVENT.ICON_OFFSET_X}, ${CONSTANTS.EVENT.ICON_OFFSET_Y}) scale(1)`;
+                    iconGroupTransform = `translate(${CONSTANTS.EVENT.ICON_OFFSET_X}, ${CONSTANTS.EVENT.ICON_OFFSET_Y }) scale(1)`;
                 }
 
                 // Wrapper group for positioning (to avoid conflict with CSS hover transforms on path)
@@ -325,7 +324,8 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                     .attr("text-anchor", "middle")
                     .attr("font-size", CONSTANTS.EVENT.LABEL_FONT_SIZE)
                     .attr("fill", CONSTANTS.EVENT.LABEL_COLOR)
-                    .text(d.title.length > CONSTANTS.EVENT.LABEL_TRUNCATE_LIMIT ? d.title.substring(0, CONSTANTS.EVENT.LABEL_TRUNCATE_LENGTH) + '...' : d.title);
+                   .text(d.title.length > CONSTANTS.EVENT.LABEL_TRUNCATE_LIMIT ? d.title.substring(0, CONSTANTS.EVENT.LABEL_TRUNCATE_LENGTH) + '...' : d.title);
+ 
 
 
             } else {
