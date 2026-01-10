@@ -6,7 +6,7 @@
 export const msalConfig = {
     auth: {
         // 'Application (client) ID' of app registration in Azure portal - this value is a GUID
-        clientId: "c0461816-7078-466b-9329-6be5824c82dd",
+        clientId: "391394d8-ffa1-4ce7-a850-3a60e69d7fb3",
         // Full directory URL, in the form of https://login.microsoftonline.com/<tenant-id>
         authority: "https://login.microsoftonline.com/21429da9-e4ad-45f9-9a6f-cd126a64274b",
         // Full redirect URL, in form of http://localhost:5500 or window.location.origin (to work dynamically from various origins - especially the development environment and the production)
@@ -48,6 +48,6 @@ export const msalConfig = {
  * https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent#openid-connect-scopes
  */
 export const loginRequest = {
-      scopes: ["User.Read","openid","profile"]
+      scopes: ["User.Read","openid","profile", "Files.Read"]
 }
 
