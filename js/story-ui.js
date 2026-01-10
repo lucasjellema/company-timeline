@@ -36,6 +36,7 @@ function initShippedStoriesUI(storage, refreshCallback) {
     }
 
     // Close on overlay click
+    // Close on overlay click
     if (modal) {
         modal.addEventListener('click', (e) => {
             if (e.target === modal) modal.classList.add('hidden');
@@ -138,7 +139,7 @@ export async function loadStoryFromURL(url, storage, completionCallback, meta = 
                 const response = await graphClient.api(apiUrl).get();
                 console.log(response);
 
-//The response will contain both id (itemId) and parentReference.driveId (driveId).
+                //The response will contain both id (itemId) and parentReference.driveId (driveId).
 
 
 
@@ -423,106 +424,113 @@ function initLoadStoryUI(storage, refreshCallback) {
 
     if (openBtn) openBtn.addEventListener('click', openModal);
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 }
 
 function initImportExportUI(storage, refreshCallback) {
     // Download
-    document.getElementById('download-sample').addEventListener('click', () => {
-        const activeStory = storage.getActiveStory();
-        if (activeStory) {
-            const jsonContent = JSON.stringify(activeStory, null, 2);
-            const blob = new Blob([jsonContent], { type: 'application/json' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            const safeName = (activeStory.name || 'story').replace(/[^a-z0-9]/gi, '_').toLowerCase();
-            a.download = `${safeName}.json`;
-            a.click();
-            window.URL.revokeObjectURL(url);
-        } else {
-            alert("No active story to download.");
-        }
-    });
+    const downloadBtn = document.getElementById('download-sample');
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', () => {
+            const activeStory = storage.getActiveStory();
+            if (activeStory) {
+                const jsonContent = JSON.stringify(activeStory, null, 2);
+                const blob = new Blob([jsonContent], { type: 'application/json' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                const safeName = (activeStory.name || 'story').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                a.download = `${safeName}.json`;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            } else {
+                alert("No active story to download.");
+            }
+        });
+    }
 
     // CSV Upload
     const uploadInput = document.getElementById('csv-upload');
-    uploadInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                try {
-                    const data = d3.csvParse(event.target.result);
-                    const activeStory = storage.getActiveStory();
+    if (uploadInput) {
+        uploadInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = d3.csvParse(event.target.result);
+                        const activeStory = storage.getActiveStory();
 
-                    if (confirm(`Importing CSV. Merge ${data.length} events into the current story "${activeStory ? activeStory.name : 'New Story'}"?`)) {
-                        let mergedData = data;
-                        if (activeStory && Array.isArray(activeStory.data)) {
-                            ensureDataIds(data);
-                            mergedData = [...activeStory.data, ...data];
+                        if (confirm(`Importing CSV. Merge ${data.length} events into the current story "${activeStory ? activeStory.name : 'New Story'}"?`)) {
+                            let mergedData = data;
+                            if (activeStory && Array.isArray(activeStory.data)) {
+                                ensureDataIds(data);
+                                mergedData = [...activeStory.data, ...data];
 
-                            storage.saveActiveStory(mergedData);
+                                storage.saveActiveStory(mergedData);
 
-                            // Merge Settings (Colors/Icons)
-                            const currentSettings = activeStory.settings || {};
-                            const currentColors = { ...CONFIG.TYPE_COLORS, ...(currentSettings.colors || {}) };
-                            const currentIcons = currentSettings.icons || {};
+                                // Merge Settings (Colors/Icons)
+                                const currentSettings = activeStory.settings || {};
+                                const currentColors = { ...CONFIG.TYPE_COLORS, ...(currentSettings.colors || {}) };
+                                const currentIcons = currentSettings.icons || {};
 
-                            const mappings = generateTypeMappings(data, currentColors, currentIcons);
+                                const mappings = generateTypeMappings(data, currentColors, currentIcons);
 
-                            storage.updateStorySettings(activeStory.id, {}, {
-                                colors: mappings.colors,
-                                icons: mappings.icons
-                            });
-                        } else {
-                            const name = `Imported Story ${new Date().toLocaleTimeString()}`;
-                            ensureDataIds(data);
-                            const mappings = generateTypeMappings(data, CONFIG.TYPE_COLORS, {});
-                            storage.createStory(name, data, {
-                                settings: { colors: mappings.colors, icons: mappings.icons }
-                            });
+                                storage.updateStorySettings(activeStory.id, {}, {
+                                    colors: mappings.colors,
+                                    icons: mappings.icons
+                                });
+                            } else {
+                                const name = `Imported Story ${new Date().toLocaleTimeString()}`;
+                                ensureDataIds(data);
+                                const mappings = generateTypeMappings(data, CONFIG.TYPE_COLORS, {});
+                                storage.createStory(name, data, {
+                                    settings: { colors: mappings.colors, icons: mappings.icons }
+                                });
+                            }
+
+                            window.timelineData = mergedData;
+                            refreshCallback({ resetView: true });
                         }
-
-                        window.timelineData = mergedData;
-                        refreshCallback({ resetView: true });
+                    } catch (error) {
+                        console.error("Error parsing CSV:", error);
+                        alert("Failed to parse CSV.");
                     }
-                } catch (error) {
-                    console.error("Error parsing CSV:", error);
-                    alert("Failed to parse CSV.");
-                }
-            };
-            reader.readAsText(file);
-        }
-    });
+                };
+                reader.readAsText(file);
+            }
+        });
+    }
 
     // JSON Upload
     const uploadJsonInput = document.getElementById('json-upload');
-    uploadJsonInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                try {
-                    const story = JSON.parse(event.target.result);
-                    if (story && Array.isArray(story.data)) {
-                        if (confirm(`Replace active story with "${story.name || 'Uploaded Story'}"?`)) {
-                            ensureDataIds(story.data);
-                            storage.importStory(story);
-                            window.timelineData = story.data;
-                            console.log("Story imported:", story.name);
-                            refreshCallback({ resetView: true });
+    if (uploadJsonInput) {
+        uploadJsonInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const story = JSON.parse(event.target.result);
+                        if (story && Array.isArray(story.data)) {
+                            if (confirm(`Replace active story with "${story.name || 'Uploaded Story'}"?`)) {
+                                ensureDataIds(story.data);
+                                storage.importStory(story);
+                                window.timelineData = story.data;
+                                console.log("Story imported:", story.name);
+                                refreshCallback({ resetView: true });
+                            }
+                        } else {
+                            alert("Invalid Story JSON format.");
                         }
-                    } else {
-                        alert("Invalid Story JSON format.");
+                    } catch (err) {
+                        console.error("Error parsing JSON:", err);
+                        alert("Failed to parse JSON file.");
                     }
-                } catch (err) {
-                    console.error("Error parsing JSON:", err);
-                    alert("Failed to parse JSON file.");
-                }
-            };
-            reader.readAsText(file);
-        }
-        e.target.value = '';
-    });
+                };
+                reader.readAsText(file);
+            }
+            e.target.value = '';
+        });
+    }
 }

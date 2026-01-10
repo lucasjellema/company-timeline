@@ -1,0 +1,139 @@
+<main id="app">
+    <div class="app-layout">
+        <div id="timeline-container" class="viz-card">
+            <div id="timeline-viz"></div>
+        </div>
+        <div id="timeline-splitter" class="splitter"></div>
+        <aside id="side-panel" class="side-panel">
+            <div class="panel-nav">
+                <button class="nav-tab active" data-tab="events">Events</button>
+                <button class="nav-tab" data-tab="search">Search</button>
+                <button class="nav-tab" data-tab="map">Map</button>
+                <button class="nav-tab" data-tab="gallery">Gallery</button>
+            </div>
+
+            <div id="tab-events" class="tab-content active">
+                <div class="panel-header">
+                    <h3>Simultaneous Events</h3>
+                    <div id="current-slider-date" class="current-date">Jan 2023</div>
+                </div>
+                <div id="active-events-list" class="events-list">
+                    <div class="empty-state">Drag the slider to see events active at a point in time.</div>
+                </div>
+            </div>
+            <div id="tab-map" class="tab-content">
+                <div class="panel-header">
+                    <h3>Geographic View</h3>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button id="pop-out-map-btn" class="btn-xs btn-secondary" title="Expand Map">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                            </svg>
+                        </button>
+                        <button id="reset-map-btn" class="btn-xs btn-secondary">Reset Pins</button>
+                    </div>
+                </div>
+                <div id="side-panel-map" class="side-map-container"></div>
+                <div class="map-instructions">Hover over timeline events to add them to the map.</div>
+                <div class="toggle-switch-container">
+                    <span class="toggle-label">Pins</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="map-marker-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">Icons</span>
+
+                    <div style="width: 1rem;"></div> <!-- Spacer -->
+
+                    <span class="toggle-label">Labels</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="map-label-toggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <button id="map-label-settings-btn" class="btn-icon" title="Label Settings"
+                        style="margin-left: 0.5rem; padding: 4px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path
+                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div id="tab-gallery" class="tab-content">
+                <div class="panel-header">
+                    <h3>Event Gallery</h3>
+                </div>
+                <div id="gallery-grid" class="gallery-grid">
+                    <!-- Populated dynamically -->
+                </div>
+                <div id="gallery-empty-state" class="empty-state hidden">No images found for current view.</div>
+            </div>
+            <div id="tab-search" class="tab-content">
+                <div class="panel-header">
+                    <h3>Search & Filter</h3>
+                    <button id="clear-search-btn" class="btn-xs btn-secondary">Clear</button>
+                </div>
+                <div class="search-controls">
+                    <div class="form-group small-gap">
+                        <label for="search-text">Keywords</label>
+                        <input type="text" id="search-text" placeholder="Title, desc, group..." class="form-control">
+                    </div>
+
+                    <div class="form-group small-gap collapsible-section collapsed" id="event-types-collapsible">
+                        <div class="collapsible-header"
+                            style="display: flex; justify-content: flex-start; gap: 0.5rem; align-items: center; cursor: pointer; margin-bottom: 0.5rem;">
+                            <label style="cursor: pointer; margin-bottom: 0;">Event Types</label>
+                            <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" style="transition: transform 0.2s;">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="collapsible-content">
+                            <div id="search-types-container" class="checkbox-grid">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group small-gap">
+                        <label>Date Range (YYYY[-MM])</label>
+                        <div class="flex-row">
+                            <input type="text" id="search-min-date" placeholder="From" class="form-control">
+                            <span class="separator">-</span>
+                            <input type="text" id="search-max-date" placeholder="Until" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group small-gap">
+                        <label>Duration (days)</label>
+                        <div class="flex-row">
+                            <input type="number" id="search-min-duration" placeholder="Min" class="form-control">
+                            <span class="separator">-</span>
+                            <input type="number" id="search-max-duration" placeholder="Max" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group checkbox-row">
+                        <input type="checkbox" id="search-hide-non-matching">
+                        <label for="search-hide-non-matching">Hide non-matching events</label>
+                    </div>
+                </div>
+
+                <div class="form-actions-panel"
+                    style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border);">
+                    <button id="apply-search-btn" class="btn btn-primary btn-block">Search & Zoom</button>
+                </div>
+
+                <div id="search-results-stats" class="search-stats hidden">
+                    Found <span id="search-match-count">0</span> events.
+                </div>
+            </div>
+
+
+        </aside>
+    </div>
+</main>

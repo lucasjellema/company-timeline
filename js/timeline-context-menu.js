@@ -96,13 +96,21 @@ export class TimelineContextMenu {
 
     bindMenuAction(id, callback) {
         const el = document.getElementById(id);
-        if (!el) return;
-        const newEl = el.cloneNode(true);
-        el.parentNode.replaceChild(newEl, el);
-        newEl.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.ctxMenu.classList.add('hidden');
-            if (this.ctxMenuContext) callback(this.ctxMenuContext);
-        });
+        if (!el) {
+            // console.warn(`Context menu element #${id} not found.`); // Reduce noise
+            return;
+        }
+
+        // Remove old listeners to prevent duplicates
+        // Since we can't easily remove anonymous functions or specific ones without reference,
+        // and we are likely re-initializing or binding once, 
+        // using 'onclick' is a simple way to replace any existing handler.
+        // For more complex events, we might need a different approach.
+        el.onclick = (e) => {
+            if (this.contextMenuTarget) {
+                callback(this.contextMenuTarget);
+                this.hideMenu();
+            }
+        };
     }
 }

@@ -11,7 +11,7 @@ import { ThemeManager } from './theme-manager.js';
 import { APP_STATE, initializeAuthentication, handleSignIn } from './app-auth.js';
 import { TimelineController } from './timeline-controller.js';
 
-document.addEventListener('DOMContentLoaded', async () => {
+export const mountApp = async () => {
     // Theme Init
     const themeManager = new ThemeManager();
     const themeBtn = document.getElementById('theme-toggle-btn');
@@ -153,4 +153,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.addEventListener('resize', () => {
         if (renderer.layoutData) controller.renderTimeline({ preserveSlider: true });
     });
-});
+};
+// Auto-execution removed; invoked by loader.js

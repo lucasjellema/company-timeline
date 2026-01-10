@@ -65,19 +65,21 @@ export function initSettingsUI(storage, refreshCallback) {
     if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
 
     // Setup collapsible sections
-    const collapsibles = form.querySelectorAll('.collapsible-section');
-    collapsibles.forEach(section => {
-        const header = section.querySelector('.collapsible-header');
-        if (header) {
-            header.addEventListener('click', () => {
-                section.classList.toggle('collapsed');
-                // Lazy init map if locations section is opened
-                if (section.id === 'settings-locations-collapsible' && !section.classList.contains('collapsed')) {
-                    setTimeout(() => initSettingsMap(), 200);
-                }
-            });
-        }
-    });
+    if (form) {
+        const collapsibles = form.querySelectorAll('.collapsible-section');
+        collapsibles.forEach(section => {
+            const header = section.querySelector('.collapsible-header');
+            if (header) {
+                header.addEventListener('click', () => {
+                    section.classList.toggle('collapsed');
+                    // Lazy init map if locations section is opened
+                    if (section.id === 'settings-locations-collapsible' && !section.classList.contains('collapsed')) {
+                        setTimeout(() => initSettingsMap(), 200);
+                    }
+                });
+            }
+        });
+    }
 
     // --- Location Logic ---
 
@@ -578,48 +580,59 @@ export function initSettingsUI(storage, refreshCallback) {
         }
     }
 
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const activeStory = storage.getActiveStory();
-        if (!activeStory) return;
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const activeStory = storage.getActiveStory();
+            if (!activeStory) return;
 
-        const newName = document.getElementById('settings-title').value;
-        const newDesc = document.getElementById('settings-desc').value;
+            const newName = document.getElementById('settings-title').value;
+            const newDesc = document.getElementById('settings-desc').value;
 
-        const newColors = {};
-        colorContainer.querySelectorAll('input[type="color"]').forEach(input => {
-            newColors[input.name.replace('color-', '')] = input.value;
-        });
+            const newColors = {};
+            if (colorContainer) {
+                colorContainer.querySelectorAll('input[type="color"]').forEach(input => {
+                    newColors[input.name.replace('color-', '')] = input.value;
+                });
 
-        const newIcons = {};
-        colorContainer.querySelectorAll('input.icon-input-hidden').forEach(input => {
-            if (input.value) newIcons[input.name.replace('icon-', '')] = input.value;
-        });
+                const newIcons = {};
+                colorContainer.querySelectorAll('input.icon-input-hidden').forEach(input => {
+                    if (input.value) newIcons[input.name.replace('icon-', '')] = input.value;
+                });
 
-        storage.updateStorySettings(activeStory.id,
-            { name: newName, description: newDesc },
-            { colors: newColors, icons: newIcons, locations: currentLocations }
-        );
-
-        // Handle CSV Import
-        const csvPaste = document.getElementById('settings-csv-paste').value;
-        if (csvPaste && csvPaste.trim()) {
-            try {
-                const newEvents = parseAndPrepareCSV(csvPaste);
-                if (newEvents.length > 0) {
-                    const currentData = activeStory.data || [];
-                    const mergedData = [...currentData, ...newEvents];
-                    storage.saveActiveStory(mergedData);
-                    window.timelineData = mergedData; // Update global state
-                    alert(`Imported ${newEvents.length} events.`);
-                }
-            } catch (err) {
-                alert(err.message);
-                return; // Don't close modal if error? or maybe just warn
+                // Update with collected data
+                storage.updateStorySettings(activeStory.id,
+                    { name: newName, description: newDesc },
+                    { colors: newColors, icons: newIcons, locations: currentLocations }
+                );
+            } else {
+                // Fallback if color container missing
+                storage.updateStorySettings(activeStory.id,
+                    { name: newName, description: newDesc },
+                    { locations: currentLocations }
+                );
             }
-        }
 
-        closeModal();
-        refreshCallback({ preserveSlider: true });
-    });
+            // Handle CSV Import
+            const csvPaste = document.getElementById('settings-csv-paste').value;
+            if (csvPaste && csvPaste.trim()) {
+                try {
+                    const newEvents = parseAndPrepareCSV(csvPaste);
+                    if (newEvents.length > 0) {
+                        const currentData = activeStory.data || [];
+                        const mergedData = [...currentData, ...newEvents];
+                        storage.saveActiveStory(mergedData);
+                        window.timelineData = mergedData; // Update global state
+                        alert(`Imported ${newEvents.length} events.`);
+                    }
+                } catch (err) {
+                    alert(err.message);
+                    return; // Don't close modal if error? or maybe just warn
+                }
+            }
+
+            closeModal();
+            refreshCallback({ preserveSlider: true });
+        });
+    }
 }
