@@ -1,73 +1,73 @@
-start,end,title,description,type,level0,level1,level2,lattitude,longitude
-1975-04-04,,Microsoft Founded,Bill Gates and Paul Allen found Microsoft to develop BASIC for the Altair 8800.,event,Microsoft,Corporate,Founding,35.0844,-106.6504
-1976-04-01,,Apple Founded,Steve Jobs and Steve Wozniak form Apple Computer to sell the Apple I.,event,Apple,Corporate,Founding,37.3230,-122.0322
-1977-06-16,,Oracle Founded,Larry Ellison and partners found SDL (later Oracle) to build a relational database.,event,Oracle,Corporate,Founding,37.5295,-122.2530
-1979-06-01,,Oracle v2 Release,The first commercially available SQL-based relational database management system.,product,Oracle,Software,Database,,
-1980-12-12,,Apple IPO,Apple goes public at $22 per share creating more millionaires than any IPO in history.,finance,Apple,Corporate,Market,37.3318,-122.0312
-1981-08-12,,IBM PC Launch,IBM introduces the PC Model 5150 using Microsoft MS-DOS as the operating system.,product,IBM,Computing,Hardware,,
-1983-01-19,,Apple Lisa,The first personal computer with a graphical user interface aimed at business users.,product,Apple,Computing,Hardware,,
-1984-01-24,,Macintosh Launch,Apple launches the Macintosh with the iconic "1984" Super Bowl commercial.,product,Apple,Computing,Hardware,,
-1985-11-20,,Windows 1.0,Microsoft releases its first graphical operating environment for MS-DOS.,product,Microsoft,Software,OS,,
-1986-03-12,,Oracle IPO,Oracle goes public on the NASDAQ raising $31.5 million.,finance,Oracle,Corporate,Market,,
-1986-03-13,,Microsoft IPO,Microsoft goes public at $21 per share making Bill Gates a billionaire by age 31.,finance,Microsoft,Corporate,Market,47.6740,-122.1215
-1989-08-01,,Microsoft Office,First version of the Office suite for Mac including Word Excel and PowerPoint.,product,Microsoft,Software,Productivity,,
-1990-05-22,,Windows 3.0,The first version of Windows to achieve widespread commercial success.,product,Microsoft,Software,OS,,
-1993-01-01,1993-12-31,IBM Crisis Year,IBM reports a record $8 billion loss leading to a massive strategic overhaul.,finance,IBM,Corporate,Financial,,
-1995-08-24,,Windows 95,Major OS launch featuring the Start Menu and a massive global marketing campaign.,product,Microsoft,Software,OS,,
-1997-08-06,,Microsoft Invests in Apple,Microsoft invests $150M in a struggling Apple to ensure the survival of its rival.,finance,Apple,Corporate,Strategic,,
-1997-09-16,2011-08-24,Steve Jobs 2nd Term,Jobs returns to lead Apple's transformation into a consumer electronics giant.,reign,Apple,Leadership,Executive,,
-1998-08-15,,iMac G3 Launch,The colorful all-in-one computer that signaled Apple's return to profitability.,product,Apple,Computing,Hardware,,
-1998-09-04,,Google Founded,Larry Page and Sergey Brin incorporate Google in a garage in Menlo Park.,event,Google,Corporate,Founding,37.4419,-122.1430
-2000-01-13,2014-02-04,Steve Ballmer Era,Ballmer leads Microsoft through the PC era peak and the launch of Azure and Xbox.,reign,Microsoft,Leadership,Executive,,
-2001-05-19,,Apple Store Opens,The first Apple retail stores open in Tysons Corner and Glendale.,event,Apple,Corporate,Retail,,
-2001-10-23,,iPod Launch,Apple introduces a pocket-sized digital music player with "1,000 songs.",product,Apple,Consumer,Hardware,,
-2001-11-15,,Xbox Launch,Microsoft enters the gaming console market to compete with Sony and Nintendo.,product,Microsoft,Consumer,Hardware,,
-2002-07-30,,IBM Buys PwC Consulting,IBM acquires PricewaterhouseCoopers' consulting arm to pivot toward services.,acquisition,IBM,Services,Expansion,,
-2004-04-01,,Gmail Launch,Google enters the email market with a 1GB storage limit in beta.,product,Google,Services,Software,,
-2004-08-19,,Google IPO,Google goes public using a Dutch Auction raising $1.67 billion.,finance,Google,Corporate,Market,,
-2005-01-14,,Oracle Buys PeopleSoft,Oracle completes a $10.3 billion hostile takeover of its ERP rival.,acquisition,Oracle,Software,Strategy,,
-2005-05-01,,IBM Sells PC Division,IBM sells its ThinkPad and PC business to Lenovo exiting the consumer market.,event,IBM,Corporate,Divestment,,
-2005-07-11,,Google Buys Android,Google buys the mobile startup Android for an estimated $50 million.,acquisition,Google,Mobile,Strategy,,
-2006-10-09,,Google Buys YouTube,Google acquires the video platform for $1.65 billion in stock.,acquisition,Google,Web,Media,,
-2007-06-29,,iPhone Launch,The original iPhone launches and begins the modern smartphone era.,product,Apple,Mobile,Hardware,,
-2008-07-10,,App Store Launch,Apple opens the App Store creating a new global economy for mobile software.,product,Apple,Mobile,Services,,
-2010-01-27,,Oracle Buys Sun,Oracle acquires Sun Microsystems gaining Java and MySQL for $7.4 billion.,acquisition,Oracle,Corporate,Infrastructure,,
-2011-05-10,,Microsoft Buys Skype,Microsoft acquires the VOIP leader for $8.5 billion to integrate with Office.,acquisition,Microsoft,Communications,Software,,
-2011-08-24,2026-01-03,Tim Cook Era,Tim Cook succeeds Jobs and grows Apple into the world's most valuable company.,reign,Apple,Leadership,Executive,,
-2014-02-04,2026-01-03,Satya Nadella Era,Nadella pivots Microsoft to "Cloud-first Mobile-first" revitalizing the company.,reign,Microsoft,Leadership,Executive,,
-2015-10-02,,Alphabet Restructure,Google becomes a subsidiary of a new holding company called Alphabet Inc.,event,Google,Corporate,Structure,,
-2016-12-08,,Microsoft Buys LinkedIn,Microsoft acquires the professional social network for $26.2 billion.,acquisition,Microsoft,Social,Platform,,
-2018-08-02,,Apple $1 Trillion,Apple becomes the first public US company to reach a $1 trillion market cap.,finance,Apple,Corporate,Market,,
-2019-07-09,,IBM Buys Red Hat,IBM acquires the open-source leader for $34 billion to lead in Hybrid Cloud.,acquisition,IBM,Cloud,Strategy,,
-2021-12-20,,Oracle Buys Cerner,Oracle acquires the health records giant for $28.3 billion.,acquisition,Oracle,Healthcare,Cloud,,
-2023-10-13,,Microsoft Buys Activision,Microsoft completes $69 billion acquisition of gaming giant Activision Blizzard.,acquisition,Microsoft,Consumer,Gaming,,
-2024-01-12,,Microsoft Passes Apple,Microsoft overtakes Apple as the world's most valuable company due to AI growth.,finance,Microsoft,Corporate,Market,,
-2025-06-15,,Oracle Autonomous Data Center,Oracle launches its first fully AI-operated autonomous regional data hub.,product,Oracle,Cloud,Infrastructure,,
-2025-09-22,,Alphabet $3 Trillion,Alphabet (Google) surpasses the $3 trillion market cap milestone.,finance,Google,Corporate,Market,,
-1975-04-04,2000-01-13,Bill Gates CEO Tenure,The era of Microsoft's explosive growth from a startup to a global software monopoly.,reign,Microsoft,Leadership,Executive,47.6740,-122.1215
-1977-06-16,2014-09-18,Larry Ellison CEO Era,One of the longest tenures in tech history building Oracle into a database powerhouse.,reign,Oracle,Leadership,Executive,37.5295,-122.2530
-1981-08-12,2005-05-01,IBM PC Division Life,The lifespan of IBM's internal development and sale of personal computers.,product,IBM,Computing,Hardware,,
-1985-09-16,1997-09-16,Apple "Wilderness" Years,The period of decline and leadership instability at Apple between Jobs' two tenures.,period,Apple,Corporate,Strategy,,
-1989-08-01,2026-01-03,Microsoft Office Lifecycle,The ongoing evolution of the world's dominant productivity suite across platforms.,product,Microsoft,Software,Productivity,,
-1992-01-01,2001-12-31,The Browser Wars,The intense competition between Netscape and Microsoft's Internet Explorer.,period,Microsoft,Web,Browser,,
-1993-04-01,2002-12-31,Gerstner Turnaround,Louis Gerstner's transformation of IBM from a hardware firm to a services giant.,reign,IBM,Leadership,Executive,,
-1997-09-16,2011-08-24,Steve Jobs 2nd Term,The "Golden Era" of Apple including the launch of iMac iPod and iPhone.,reign,Apple,Leadership,Executive,,
-1998-05-18,2001-11-02,US v. Microsoft Antitrust,The landmark legal battle regarding Microsoft's bundling of IE with Windows.,period,Microsoft,Legal,Corporate,,
-2000-01-01,2010-12-31,The Lost Decade,A period where Microsoft's stock remained stagnant while pivoting to web services.,period,Microsoft,Finance,Market,,
-2001-03-24,2020-11-12,Mac OS X Classic Era,The lifespan of the "Cheetah" through "Catalina" operating system architecture.,product,Apple,Software,OS,,
-2001-05-19,2026-01-03,Apple Retail Expansion,The growth of Apple Stores from the first two locations to a global presence.,period,Apple,Corporate,Retail,,
-2004-01-01,2015-12-31,Oracle's M&A Spree,A decade of aggressive acquisitions including PeopleSoft Siebel and Sun.,period,Oracle,Corporate,M&A,,
-2006-03-01,2026-01-03,Google Cloud Evolution,The long-term development of Google's cloud infrastructure and workspace tools.,product,Google,Cloud,Infrastructure,,
-2007-01-01,2013-12-31,iPhone vs BlackBerry Era,The specific window of time where the iPhone disrupted and ended RIM's dominance.,period,Apple,Market,Mobile,,
-2008-01-01,2015-12-31,The Big Data Wave,Google and IBM's heavy investment and dominance in large-scale data analytics.,period,Google,Data,Research,,
-2010-01-01,2020-12-31,Oracle v. Google Litigation,The 10-year legal battle over the use of Java APIs in the Android OS.,period,Oracle,Legal,Intellectual Property,,
-2010-04-03,2026-01-03,iPad Product Lifecycle,The era of the tablet computer as a distinct product category for Apple.,product,Apple,Computing,Hardware,,
-2011-01-01,2026-01-03,The Watson AI Era,IBM's long-term push to brand its AI and cognitive computing under Watson.,period,IBM,AI,Marketing,,
-2011-08-24,2026-01-03,Tim Cook Era,The operational expansion era focusing on services and wearable tech.,reign,Apple,Leadership,Executive,,
-2012-06-18,2026-01-03,Microsoft Surface Era,Microsoft's ongoing venture into first-party hardware for Windows.,product,Microsoft,Computing,Hardware,,
-2014-02-04,2026-01-03,Satya Nadella Era,The "Cloud First" era which saw Microsoft's valuation exceed $3 trillion.,reign,Microsoft,Leadership,Executive,,
-2015-01-01,2026-01-03,Waymo Self-Driving Project,Alphabet's long-term bet on autonomous vehicle technology.,project,Google,Innovation,Transport,,
-2016-01-01,2026-01-03,Google Silicon Era,Google's shift toward designing custom chips (TPUs and Tensor) for its devices.,period,Google,Hardware,Infrastructure,,
-2017-01-01,2026-01-03,Oracle Cloud Infrastructure,Oracle's pivot to Gen 2 Cloud to compete with AWS and Azure.,product,Oracle,Cloud,Infrastructure,,
-2020-01-01,2023-12-31,The Silicon Transition,Apple's 3-year phase-out of Intel chips in favor of Apple Silicon (M-series).,project,Apple,Computing,Hardware,,
-2022-01-01,2026-01-03,The Generative AI Race,The intense period of LLM development following the rise of ChatGPT.,period,Google,AI,Strategy,,
+start,end,title,description,type,level0,level1,level2,lattitude,longitude,locationName
+1975-04-04,1975-04-04,Microsoft Founded,Bill Gates and Paul Allen found Microsoft to develop BASIC for the Altair 8800.,event,Microsoft,Corporate,Founding,35.0844,-106.6504,Albuquerque NM (MITS Headquarters)
+1976-04-01,1976-04-01,Apple Founded,Steve Jobs and Steve Wozniak form Apple Computer to sell the Apple I.,event,Apple,Corporate,Founding,37.3230,-122.0322,Los Altos CA (Jobs Garage)
+1977-06-16,1977-06-16,Oracle Founded,Larry Ellison and partners found SDL (later Oracle) to build a relational database.,event,Oracle,Corporate,Founding,37.5295,-122.2530,Santa Clara CA (First Office)
+1979-06-01,1979-06-01,Oracle v2 Release,The first commercially available SQL-based relational database management system.,product,Oracle,Software,Database,37.5295,-122.2530,Santa Clara CA
+1980-12-12,1980-12-12,Apple IPO,Apple goes public at $22 per share creating more millionaires than any IPO in history.,finance,Apple,Corporate,Market,37.3318,-122.0312,Cupertino CA (Mariani Ave)
+1981-08-12,1981-08-12,IBM PC Launch,IBM introduces the PC Model 5150 using Microsoft MS-DOS as the operating system.,product,IBM,Computing,Hardware,26.3722,-80.1021,Boca Raton FL (IBM Building 051)
+1983-01-19,1983-01-19,Apple Lisa,The first personal computer with a graphical user interface aimed at business users.,product,Apple,Computing,Hardware,37.3318,-122.0312,Cupertino CA (Mariani Ave)
+1984-01-24,1984-01-24,Macintosh Launch,Apple launches the Macintosh with the iconic "1984" Super Bowl commercial.,product,Apple,Computing,Hardware,37.3318,-122.0312,Cupertino CA (Mariani Ave)
+1985-11-20,1985-11-20,Windows 1.0,Microsoft releases its first graphical operating environment for MS-DOS.,product,Microsoft,Software,OS,47.6200,-122.3493,Seattle WA (Northup Building)
+1986-03-12,1986-03-12,Oracle IPO,Oracle goes public on the NASDAQ raising $31.5 million.,finance,Oracle,Corporate,Market,37.5483,-122.2741,Belmont CA (Oracle Tower)
+1986-03-13,1986-03-13,Microsoft IPO,Microsoft goes public at $21 per share making Bill Gates a billionaire by age 31.,finance,Microsoft,Corporate,Market,47.6740,-122.1215,Redmond WA (Main Campus)
+1989-08-01,1989-08-01,Microsoft Office,First version of the Office suite for Mac including Word Excel and PowerPoint.,product,Microsoft,Software,Productivity,47.6740,-122.1215,Redmond WA
+1990-05-22,1990-05-22,Windows 3.0,The first version of Windows to achieve widespread commercial success.,product,Microsoft,Software,OS,47.6740,-122.1215,Redmond WA
+1993-01-01,1993-12-31,IBM Crisis Year,IBM reports a record $8 billion loss leading to a massive strategic overhaul.,finance,IBM,Corporate,Financial,41.1083,-73.7075,Armonk NY (Global Headquarters)
+1995-08-24,1995-08-24,Windows 95,Major OS launch featuring the Start Menu and a massive global marketing campaign.,product,Microsoft,Software,OS,47.6740,-122.1215,Redmond WA
+1997-08-06,1997-08-06,Microsoft Invests in Apple,Microsoft invests $150M in a struggling Apple to ensure the survival of its rival.,finance,Apple,Corporate,Strategic,37.3318,-122.0312,Cupertino CA (Infinite Loop)
+1997-09-16,2011-08-24,Steve Jobs 2nd Term,Jobs returns to lead Apple's transformation into a consumer electronics giant.,reign,Apple,Leadership,Executive,37.3318,-122.0312,Cupertino CA (Infinite Loop)
+1998-08-15,1998-08-15,iMac G3 Launch,The colorful all-in-one computer that signaled Apple's return to profitability.,product,Apple,Computing,Hardware,37.3318,-122.0312,Cupertino CA (Infinite Loop)
+1998-09-04,1998-09-04,Google Founded,Larry Page and Sergey Brin incorporate Google in a garage in Menlo Park.,event,Google,Corporate,Founding,37.4419,-122.1430,Menlo Park CA (Susan Wojcicki Garage)
+2000-01-13,2014-02-04,Steve Ballmer Era,Ballmer leads Microsoft through the PC era peak and the launch of Azure and Xbox.,reign,Microsoft,Leadership,Executive,47.6740,-122.1215,Redmond WA
+2001-05-19,2001-05-19,Apple Store Opens,The first Apple retail stores open in Tysons Corner and Glendale.,event,Apple,Corporate,Retail,38.9172,-77.2223,McLean VA (Tysons Corner)
+2001-10-23,2001-10-23,iPod Launch,Apple introduces a pocket-sized digital music player with "1,000 songs.",product,Apple,Consumer,Hardware,37.3318,-122.0312,Cupertino CA (Infinite Loop)
+2001-11-15,2001-11-15,Xbox Launch,Microsoft enters the gaming console market to compete with Sony and Nintendo.,product,Microsoft,Consumer,Hardware,47.6740,-122.1215,Redmond WA
+2002-07-30,2002-07-30,IBM Buys PwC Consulting,IBM acquires PricewaterhouseCoopers' consulting arm to pivot toward services.,acquisition,IBM,Services,Expansion,41.1083,-73.7075,Armonk NY
+2004-04-01,2004-04-01,Gmail Launch,Google enters the email market with a 1GB storage limit in beta.,product,Google,Services,Software,37.4220,-122.0841,Mountain View CA (Googleplex)
+2004-08-19,2004-08-19,Google IPO,Google goes public using a Dutch Auction raising $1.67 billion.,finance,Google,Corporate,Market,37.4220,-122.0841,Mountain View CA (Googleplex)
+2005-01-14,2005-01-14,Oracle Buys PeopleSoft,Oracle completes a $10.3 billion hostile takeover of its ERP rival.,acquisition,Oracle,Software,Strategy,37.5295,-122.2530,Redwood Shores CA
+2005-05-01,2005-05-01,IBM Sells PC Division,IBM sells its ThinkPad and PC business to Lenovo exiting the consumer market.,event,IBM,Corporate,Divestment,41.1083,-73.7075,Armonk NY
+2005-07-11,2005-07-11,Google Buys Android,Google buys the mobile startup Android for an estimated $50 million.,acquisition,Google,Mobile,Strategy,37.4220,-122.0841,Mountain View CA (Googleplex)
+2006-10-09,2006-10-09,Google Buys YouTube,Google acquires the video platform for $1.65 billion in stock.,acquisition,Google,Web,Media,37.6279,-122.4267,San Bruno CA (YouTube HQ)
+2007-06-29,2007-06-29,iPhone Launch,The original iPhone launches and begins the modern smartphone era.,product,Apple,Mobile,Hardware,37.3318,-122.0312,Cupertino CA (Infinite Loop)
+2008-07-10,2008-07-10,App Store Launch,Apple opens the App Store creating a new global economy for mobile software.,product,Apple,Mobile,Services,37.3318,-122.0312,Cupertino CA (Infinite Loop)
+2010-01-27,2010-01-27,Oracle Buys Sun,Oracle acquires Sun Microsystems gaining Java and MySQL for $7.4 billion.,acquisition,Oracle,Corporate,Infrastructure,37.5295,-122.2530,Redwood Shores CA
+2011-05-10,2011-05-10,Microsoft Buys Skype,Microsoft acquires the VOIP leader for $8.5 billion to integrate with Office.,acquisition,Microsoft,Communications,Software,47.6740,-122.1215,Redmond WA
+2011-08-24,2026-01-03,Tim Cook Era,Tim Cook succeeds Jobs and grows Apple into the world's most valuable company.,reign,Apple,Leadership,Executive,37.3347,-122.0090,Cupertino CA (Apple Park)
+2014-02-04,2026-01-03,Satya Nadella Era,Nadella pivots Microsoft to "Cloud-first Mobile-first" revitalizing the company.,reign,Microsoft,Leadership,Executive,47.6740,-122.1215,Redmond WA
+2015-10-02,2015-10-02,Alphabet Restructure,Google becomes a subsidiary of a new holding company called Alphabet Inc.,event,Google,Corporate,Structure,37.4220,-122.0841,Mountain View CA (Googleplex)
+2016-12-08,2016-12-08,Microsoft Buys LinkedIn,Microsoft acquires the professional social network for $26.2 billion.,acquisition,Microsoft,Social,Platform,37.4233,-122.0913,Mountain View CA (LinkedIn HQ)
+2018-08-02,2018-08-02,Apple $1 Trillion,Apple becomes the first public US company to reach a $1 trillion market cap.,finance,Apple,Corporate,Market,37.3347,-122.0090,Cupertino CA (Apple Park)
+2019-07-09,2019-07-09,IBM Buys Red Hat,IBM acquires the open-source leader for $34 billion to lead in Hybrid Cloud.,acquisition,IBM,Cloud,Strategy,35.7758,-78.6385,Raleigh NC (Red Hat Tower)
+2021-12-20,2021-12-20,Oracle Buys Cerner,Oracle acquires the health records giant for $28.3 billion.,acquisition,Oracle,Healthcare,Cloud,39.1415,-94.5714,North Kansas City MO (Cerner HQ)
+2023-10-13,2023-10-13,Microsoft Buys Activision,Microsoft completes $69 billion acquisition of gaming giant Activision Blizzard.,acquisition,Microsoft,Consumer,Gaming,34.0208,-118.4735,Santa Monica CA (Activision HQ)
+2024-01-12,2024-01-12,Microsoft Passes Apple,Microsoft overtakes Apple as the world's most valuable company due to AI growth.,finance,Microsoft,Corporate,Market,47.6740,-122.1215,Redmond WA
+2025-06-15,2025-06-15,Oracle Autonomous Data Center,Oracle launches its first fully AI-operated autonomous regional data hub.,product,Oracle,Cloud,Infrastructure,30.4005,-97.7126,Austin TX (Oracle Austin Campus)
+2025-09-22,2025-09-22,Alphabet $3 Trillion,Alphabet (Google) surpasses the $3 trillion market cap milestone.,finance,Google,Corporate,Market,37.4220,-122.0841,Mountain View CA (Googleplex)
+1975-04-04,2000-01-13,Bill Gates CEO Tenure,The era of Microsoft's explosive growth from a startup to a global software monopoly.,reign,Microsoft,Leadership,Executive,47.6740,-122.1215,Redmond WA (Main Campus)
+1977-06-16,2014-09-18,Larry Ellison CEO Era,One of the longest tenures in tech history building Oracle into a database powerhouse.,reign,Oracle,Leadership,Executive,37.5295,-122.2530,Redwood Shores CA
+1981-08-12,2005-05-01,IBM PC Division Life,The lifespan of IBM's internal development and sale of personal computers.,product,IBM,Computing,Hardware,26.3722,-80.1021,Boca Raton FL
+1985-09-16,1997-09-16,Apple "Wilderness" Years,The period of decline and leadership instability at Apple between Jobs' two tenures.,period,Apple,Corporate,Strategy,37.3318,-122.0312,Cupertino CA
+1989-08-01,2026-01-03,Microsoft Office Lifecycle,The ongoing evolution of the world's dominant productivity suite across platforms.,product,Microsoft,Software,Productivity,47.6740,-122.1215,Redmond WA
+1992-01-01,2001-12-31,The Browser Wars,The intense competition between Netscape and Microsoft's Internet Explorer.,period,Microsoft,Web,Browser,47.6740,-122.1215,Redmond WA
+1993-04-01,2002-12-31,Gerstner Turnaround,Louis Gerstner's transformation of IBM from a hardware firm to a services giant.,reign,IBM,Leadership,Executive,41.1083,-73.7075,Armonk NY
+1997-09-16,2011-08-24,Steve Jobs 2nd Term,The "Golden Era" of Apple including the launch of iMac iPod and iPhone.,reign,Apple,Leadership,Executive,37.3318,-122.0312,Cupertino CA (Infinite Loop)
+1998-05-18,2001-11-02,US v. Microsoft Antitrust,The landmark legal battle regarding Microsoft's bundling of IE with Windows.,period,Microsoft,Legal,Corporate,38.8951,-77.0364,Washington DC (US District Court)
+2000-01-01,2010-12-31,The Lost Decade,A period where Microsoft's stock remained stagnant while pivoting to web services.,period,Microsoft,Finance,Market,47.6740,-122.1215,Redmond WA
+2001-03-24,2020-11-12,Mac OS X Classic Era,The lifespan of the "Cheetah" through "Catalina" operating system architecture.,product,Apple,Software,OS,37.3318,-122.0312,Cupertino CA
+2001-05-19,2026-01-03,Apple Retail Expansion,The growth of Apple Stores from the first two locations to a global presence.,period,Apple,Corporate,Retail,37.3318,-122.0312,Cupertino CA
+2004-01-01,2015-12-31,Oracle's M&A Spree,A decade of aggressive acquisitions including PeopleSoft Siebel and Sun.,period,Oracle,Corporate,M&A,37.5295,-122.2530,Redwood Shores CA
+2006-03-01,2026-01-03,Google Cloud Evolution,The long-term development of Google's cloud infrastructure and workspace tools.,product,Google,Cloud,Infrastructure,37.4220,-122.0841,Mountain View CA
+2007-01-01,2013-12-31,iPhone vs BlackBerry Era,The specific window of time where the iPhone disrupted and ended RIM's dominance.,period,Apple,Market,Mobile,37.3318,-122.0312,Cupertino CA
+2008-01-01,2015-12-31,The Big Data Wave,Google and IBM's heavy investment and dominance in large-scale data analytics.,period,Google,Data,Research,37.4220,-122.0841,Mountain View CA
+2010-01-01,2020-12-31,Oracle v. Google Litigation,The 10-year legal battle over the use of Java APIs in the Android OS.,period,Oracle,Legal,Intellectual Property,37.7749,-122.4194,San Francisco CA (Federal Court)
+2010-04-03,2026-01-03,iPad Product Lifecycle,The era of the tablet computer as a distinct product category for Apple.,product,Apple,Computing,Hardware,37.3318,-122.0312,Cupertino CA
+2011-01-01,2026-01-03,The Watson AI Era,IBM's long-term push to brand its AI and cognitive computing under Watson.,period,IBM,AI,Marketing,41.2100,-73.7163,Yorktown Heights NY (T.J. Watson Research)
+2011-08-24,2026-01-03,Tim Cook Era,The operational expansion era focusing on services and wearable tech.,reign,Apple,Leadership,Executive,37.3347,-122.0090,Cupertino CA (Apple Park)
+2012-06-18,2026-01-03,Microsoft Surface Era,Microsoft's ongoing venture into first-party hardware for Windows.,product,Microsoft,Computing,Hardware,47.6740,-122.1215,Redmond WA
+2014-02-04,2026-01-03,Satya Nadella Era,The "Cloud First" era which saw Microsoft's valuation exceed $3 trillion.,reign,Microsoft,Leadership,Executive,47.6740,-122.1215,Redmond WA
+2015-01-01,2026-01-03,Waymo Self-Driving Project,Alphabet's long-term bet on autonomous vehicle technology.,project,Google,Innovation,Transport,37.4220,-122.0841,Mountain View CA
+2016-01-01,2026-01-03,Google Silicon Era,Google's shift toward designing custom chips (TPUs and Tensor) for its devices.,period,Google,Hardware,Infrastructure,37.4220,-122.0841,Mountain View CA
+2017-01-01,2026-01-03,Oracle Cloud Infrastructure,Oracle's pivot to Gen 2 Cloud to compete with AWS and Azure.,product,Oracle,Cloud,Infrastructure,37.5295,-122.2530,Redwood Shores CA
+2020-01-01,2023-12-31,The Silicon Transition,Apple's 3-year phase-out of Intel chips in favor of Apple Silicon (M-series).,project,Apple,Computing,Hardware,37.3347,-122.0090,Cupertino CA
+2022-01-01,2026-01-03,The Generative AI Race,The intense period of LLM development following the rise of ChatGPT.,period,Google,AI,Strategy,37.4220,-122.0841,Mountain View CA

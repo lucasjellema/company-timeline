@@ -133,3 +133,8 @@ If you don't see triangles:
 - **Smart Vertical Spacing**: The layout engine now intelligently calculates vertical space. Rows containing only **point events** (icons) without accompanying duration bars consume significantly less vertical padding, resulting in a more compact and readable timeline.
 - **Data Consistency**: The layout engine and validation logic have been refined to robustly handle events with undefined end dates, treating them as point-in-time milestones. Explicit end dates (equal to start dates) in data sets are also fully supported for strict data modeling.
 
+### 16. Named Locations Support
+- **CSV Support**: The CSV importer now recognizes a `locationName` column.
+- **Data Mapping**: Values in this column are automatically mapped to the event's `locationName` property.
+- **Visualization**: When present, the location name is displayed in map tooltips and event details.
+
