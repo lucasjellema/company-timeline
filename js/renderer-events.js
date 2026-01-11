@@ -76,24 +76,43 @@ const prepareActualIconsAndBarsRowMap = (layoutData, xScale, threshold, renderer
                 // if small, see if we can lift the icon up to the icon row which lives just above the first row with same l0, l1,l2 or no l2   
                 // find the targetRowIndex for this icon
                 // looking in previous rows starting from the top in this l0 for first row  with the same combination of l0,l1,l2 
+                // NOTE: how do we find a bar in the same row (which means that the current row can the targetRow for the icon) ?
                 let targetRowIndex = rowIndex;
+                let targetSolution = 0
                 for (let i = 0; i < rowIndex; i++) {
                     const prevRowInfo = rowMap.get(i);
-                    // if row has same l1,l2 or no l2
-                    if (prevRowInfo.level1 === event.level1 && prevRowInfo.level2 === event.level2) {
+// TODO if targetrow itself has a targetrow different from itself, we need to follow the chain to the top  
+                    // both have same l1 prevRow has no l2
+                    if (prevRowInfo.level1 === event.level1 && (!prevRowInfo.level2 || prevRowInfo.level2.trim() === '') && targetSolution < 2  ) {
                         targetRowIndex = i;
-                        break;
+                        targetSolution = 2;
+                        continue;
+                    }
+                    // both have same l1 and same l2 , we have a good option, but we continue our search for better option (no l2)
+                    if (prevRowInfo.level1 === event.level1 && (event.level2 && prevRowInfo.level2 == event.level2) && targetSolution < 3 ) {
+                        targetRowIndex = i;
+                        targetSolution = 3;
+                        continue;
+                    }
+                    // row has l1 , prevRow has no l1 => promote to level 0 level is worth 1 
+                    if ((!prevRowInfo.level1 || prevRowInfo.level1.trim() === '') && targetSolution < 1) {
+                        targetRowIndex = i;
+                        targetSolution = 1;
+                        continue;
                     }
                 }
                 if (targetRowIndex < rowIndex) {
+                    // TODO check if the target row already has an icon or a bar; if it has neither, it is no good
                     rowInfo.targetRowIndex = targetRowIndex;
-                    // console.log("Lifting icon for event", event.id, "from row", rowIndex, "to", targetRowIndex);
+                    console.log("Lifting icon for event", event.id, "from row", rowIndex, "to", targetRowIndex);
+                    console.log(`target row info:`, rowMap.get(targetRowIndex));
                     // set hasicon in target row
                     const targetRowInfo = rowMap.get(targetRowIndex);
                     targetRowInfo.hasIcon = true;
                 } else {
                     rowInfo.hasIcon = true;
                 }
+            
             } else {
                 rowInfo.hasBar = true;
             }
@@ -256,15 +275,18 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
         const maxEndDate = d3.max(eventsToDraw, d => d.endDate ? d.endDate : null) || new Date();
 
 
+
+        // rowYOffsets has the y offsets for each row index in this level0
+        // hoevrer, some icons may have been lifted to a higher row (targetRowIndex)
+        // so when drawing each event, we need to use the targetRowIndex to get the correct y offset    
         const eventGroups = levelG.selectAll(".event-g")
             .data(eventsToDraw).enter().append("g").attr("class", "event-g")
-            .attr("transform", d => `translate(${xScale(d.startDate)}, 
-                ${(rowYOffsets.get(d.rowIndex) || 0)})`);
+             .attr("transform", d => `translate(${xScale(d.startDate)}, 
+                 ${(rowYOffsets.get(d.rowIndex) || 0)})`);
 
 
         eventGroups.each((d, i, nodes) => {
             const g = d3.select(nodes[i]);
-
             // Highlight Logic
             let opacity = 1;
             if (renderer.highlightedEventIds && renderer.highlightedEventIds.size > 0) {
@@ -278,6 +300,14 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
             const isSmall = w < threshold;
 
             if (isSmall) {
+                // in this case , the rowindex must be reinterprted as th targetRowIndex to get the correct y offset
+                const targetRowIndex = // get from map
+                    actualIconsAndBarsRowMap.get(level.level0).get(d.rowIndex).targetRowIndex;
+                const y = rowYOffsets.get(targetRowIndex) || 0;
+                // update group's translation attribute with recalculated vertical displacement
+                g.attr("transform", d => `translate(${xScale(d.startDate)}, ${y})`);
+
+
                 // Render as instant event (Icon only) - elevated vs bar
                 const iconName = d.icon || renderer.typeIcons[d.type ? d.type.toLowerCase() : ''];
                 let pathD = `M ${-triangleSize / 2},${-triangleSize} L ${triangleSize / 2},${-triangleSize} L 0,0 Z`;
