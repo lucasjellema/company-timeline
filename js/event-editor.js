@@ -881,8 +881,8 @@ export function initEventEditor(renderer, refreshCallback, storage) {
                 // New ID will be handled by ensureDataIds usually, but let's trust storage on save or add max ID?
                 // For now, simple push. IDs might be missing until reload?
                 // Ensure ID
-                const maxId = window.timelineData.reduce((max, d) => Math.max(max, d.id || 0), 0);
-                formData.id = maxId + 1;
+                // Generate robust ID
+                formData.id = `evt-${Date.now()}`;
                 window.timelineData.push(formData);
             }
             refreshCallback(); // Triggers render and save
