@@ -88,7 +88,9 @@ export class TimelineContextMenu {
         const activeStory = this.storage.getActiveStory();
         if (!activeStory) return;
 
-        this.ctxMenu.classList.remove('hidden');
+console.log("context menu category:", category, "currentOrder:", currentOrder);
+// TODO when category is empty, the context menu is opened outside any category, e.g. on the border area
+       if (category)        this.ctxMenu.classList.remove('hidden');
 
         // Prevent menu from going off-screen
         const menuWidth = 180; // aprox width
@@ -127,24 +129,35 @@ export class TimelineContextMenu {
         // OR user wants Expand/Collapse All visible ALWAYS? The request says "context menu for the border", which implies a separate menu or context.
         // Assuming "border" click triggers global context, and existing category click triggers category context.
 
+        let showMoveUp = false;
+        let showMoveDown = false;
+        let showExpand = false;
+        let showCollapse = false;
+
         if (category) {
-            if (btnUp) btnUp.style.display = canMoveUp ? 'flex' : 'none';
-            if (btnDown) btnDown.style.display = canMoveDown ? 'flex' : 'none';
-            if (btnExpand) btnExpand.style.display = isCollapsed ? 'flex' : 'none';
-            if (btnCollapse) btnCollapse.style.display = !isCollapsed ? 'flex' : 'none';
-
-            if (btnExpandAll) btnExpandAll.style.display = 'none';
-            if (btnCollapseAll) btnCollapseAll.style.display = 'none';
-        } else {
-            // Global Context (Border Click)
-            if (btnUp) btnUp.style.display = 'none';
-            if (btnDown) btnDown.style.display = 'none';
-            if (btnExpand) btnExpand.style.display = 'none';
-            if (btnCollapse) btnCollapse.style.display = 'none'; // Can't collapse specific if none selected
-
-            if (btnExpandAll) btnExpandAll.style.display = 'flex';
-            if (btnCollapseAll) btnCollapseAll.style.display = 'flex';
+            showMoveUp = canMoveUp;
+            showMoveDown = canMoveDown;
+            showExpand = isCollapsed;
+            showCollapse = !isCollapsed;
         }
+
+        // Apply visibility
+        if (btnUp) btnUp.style.display = showMoveUp ? 'flex' : 'none';
+        if (btnDown) btnDown.style.display = showMoveDown ? 'flex' : 'none';
+        if (btnExpand) btnExpand.style.display = showExpand ? 'flex' : 'none';
+        if (btnCollapse) btnCollapse.style.display = showCollapse ? 'flex' : 'none';
+
+        // Check if any other relevant options are visible (including edit/delete if they were active)
+        const hasOtherOptions = showMoveUp || showMoveDown || showExpand || showCollapse; // || showEdit || showDelete
+
+        // Only show Expand All / Collapse All if NO other options are present
+        const showGlobal = !hasOtherOptions;
+
+        // if (btnExpandAll) btnExpandAll.style.display = showGlobal ? 'flex' : 'none';
+        // if (btnCollapseAll) btnCollapseAll.style.display = showGlobal ? 'flex' : 'none';
+        // TODO find a way to only show these when right-clicking on the border area 
+        if (btnExpandAll) btnExpandAll.style.display =  'none';
+        if (btnCollapseAll) btnCollapseAll.style.display =  'none';
 
         if (btnEdit) btnEdit.style.display = 'none';
         if (btnDelete) btnDelete.style.display = 'none';
