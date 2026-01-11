@@ -169,10 +169,21 @@ export function initEventEditor(renderer, refreshCallback, storage) {
         initModalMap();
 
         // Check for Named Locations
+        // Check for Named Locations
         const namedLocContainer = document.getElementById('named-location-container');
         if (namedLocContainer) {
+            // Check settings locations OR event locations
+            let hasLocations = false;
             const activeStory = storage.getActiveStory();
+
             if (activeStory && activeStory.settings && activeStory.settings.locations && activeStory.settings.locations.length > 0) {
+                hasLocations = true;
+            } else if (window.timelineData) {
+                // Check if any event has a locationName
+                hasLocations = window.timelineData.some(e => e.locationName && e.locationName.trim().length > 0);
+            }
+
+            if (hasLocations) {
                 namedLocContainer.classList.remove('hidden');
             } else {
                 namedLocContainer.classList.add('hidden');
@@ -883,16 +894,53 @@ export function initEventEditor(renderer, refreshCallback, storage) {
     const namedLocInput = document.getElementById('named-location-search');
     const namedLocResults = document.getElementById('named-location-results');
 
+    function getAllAvailableLocations(activeStory) {
+        const locations = [];
+        const seenNames = new Set();
+
+        // 1. Story Settings Locations
+        if (activeStory && activeStory.settings && activeStory.settings.locations) {
+            activeStory.settings.locations.forEach(loc => {
+                locations.push(loc);
+                seenNames.add(loc.name.toLowerCase());
+            });
+        }
+
+        // 2. Event Locations
+        if (window.timelineData) {
+            window.timelineData.forEach(ev => {
+                if (ev.locationName) {
+                    const name = ev.locationName.trim();
+                    if (!name) return;
+
+                    if (!seenNames.has(name.toLowerCase())) {
+                        const lat = parseFloat(ev.lattitude || ev.latitude);
+                        const lng = parseFloat(ev.longitude || ev.longtitude);
+
+                        if (!isNaN(lat) && !isNaN(lng)) {
+                            locations.push({
+                                id: `evt-${ev.id}`,
+                                name: name,
+                                description: `In event: ${ev.title || 'Untitled'}`,
+                                lat: lat,
+                                lng: lng
+                            });
+                            seenNames.add(name.toLowerCase());
+                        }
+                    }
+                }
+            });
+        }
+        return locations.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
     if (namedLocInput && namedLocResults) {
         namedLocInput.addEventListener('input', () => {
             const query = namedLocInput.value.toLowerCase().trim();
             const activeStory = storage.getActiveStory();
-            if (!activeStory || !activeStory.settings || !activeStory.settings.locations) {
-                namedLocResults.classList.add('hidden');
-                return;
-            }
 
-            const matches = activeStory.settings.locations.filter(l =>
+            const allLocs = getAllAvailableLocations(activeStory);
+            const matches = allLocs.filter(l =>
                 l.name.toLowerCase().includes(query)
             );
 
@@ -908,7 +956,17 @@ export function initEventEditor(renderer, refreshCallback, storage) {
                 namedLocResults.querySelectorAll('.named-loc-result').forEach(el => {
                     el.addEventListener('click', () => {
                         const id = el.dataset.id;
-                        const loc = activeStory.settings.locations.find(l => l.id === id);
+                        // Use the allLocs logic again or store it? 
+                        // We need to find from the combined list. 
+                        // Since we just rendered based on 'matches' which came from 'allLocs', 
+                        // we can't easily access 'allLocs' here unless we regenerate or it's in scope.
+                        // Ideally we grab properties from data attributes if possible, OR regenerate.
+                        // Regenerating is safer to ensure we get the object.
+
+                        const activeStory = storage.getActiveStory();
+                        const allLocs = getAllAvailableLocations(activeStory);
+                        const loc = allLocs.find(l => l.id === id);
+
                         if (loc) {
                             updateMapWithCoordinates(loc.lat, loc.lng);
                             const locNameField = document.getElementById('event-location-name');
