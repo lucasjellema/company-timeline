@@ -113,9 +113,9 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
     let currentLevel0Y = 25
 
 
-    
+
     layoutData.forEach((level) => {
-       const levelG = svg.append("g").attr("transform", `translate(0, ${currentLevel0Y})`);
+        const levelG = svg.append("g").attr("transform", `translate(0, ${currentLevel0Y})`);
 
         // Pre-calculate Y offsets for each row index based on content ; calculate offsets for both icons (using targetRowIndex) and bars
         const rowYOffsets = new Map();
@@ -139,11 +139,11 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                 if (rowInfo) {
                     // If the row has both icons and bars, allocate extra height
                     if (rowInfo.hasIcon && rowInfo.hasBar) {
-                        currentY += (CONSTANTS.EVENT.TRIANGLE_SIZE + CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP + CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA) 
-                                     + CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING;
+                        currentY += (CONSTANTS.EVENT.TRIANGLE_SIZE + CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP + CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA)
+                            + CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING;
                     } else if (rowInfo.hasIcon) {
                         // Only icons
-                        currentY += (CONSTANTS.EVENT.TRIANGLE_SIZE + CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP + CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA) ;
+                        currentY += (CONSTANTS.EVENT.TRIANGLE_SIZE + CONSTANTS.EVENT.LABEL_Y_OFFSET_GAP + CONSTANTS.EVENT.LABEL_Y_OFFSET_EXTRA);
                     } else if (rowInfo.hasBar) {
                         // Only bars
                         currentY += CONFIG.BAR_HEIGHT + CONFIG.BAR_SPACING;
@@ -152,9 +152,9 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
             }
             currentLevel0Y += currentY + CONSTANTS.LEVEL.SEPARATOR_OFFSET;
         }
-      //  console.log("Row Y Offsets for level0:", level.level0, rowYOffsets);
+        //  console.log("Row Y Offsets for level0:", level.level0, rowYOffsets);
 
-      //  console.log("Row Map for level0:", level.level0, actualIconsAndBarsRowMap.get(level.level0));
+        //  console.log("Row Map for level0:", level.level0, actualIconsAndBarsRowMap.get(level.level0));
 
 
 
@@ -252,7 +252,7 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
             if (renderer.hiddenEventIds && renderer.hiddenEventIds.has(d.id)) return false;
             return true;
         });
-            const maxEndDate = d3.max(eventsToDraw, d => d.endDate ? d.endDate : null) || new Date();
+        const maxEndDate = d3.max(eventsToDraw, d => d.endDate ? d.endDate : null) || new Date();
 
 
         const eventGroups = levelG.selectAll(".event-g")
@@ -284,7 +284,7 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
 
                 if (iconName && CONFIG.ICONS[iconName]) {
                     pathD = CONFIG.ICONS[iconName];
-                    iconGroupTransform = `translate(${CONSTANTS.EVENT.ICON_OFFSET_X}, ${CONSTANTS.EVENT.ICON_OFFSET_Y }) scale(1)`;
+                    iconGroupTransform = `translate(${CONSTANTS.EVENT.ICON_OFFSET_X}, ${CONSTANTS.EVENT.ICON_OFFSET_Y}) scale(1)`;
                 }
 
                 // Wrapper group for positioning (to avoid conflict with CSS hover transforms on path)
@@ -310,6 +310,7 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                     })
                     .on("contextmenu", (e) => {
                         e.preventDefault();
+                        e.stopPropagation();
                         if (renderer.onEventContextMenu) {
                             renderer.onEventContextMenu(e, d);
                         }
@@ -324,35 +325,36 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
                     .attr("text-anchor", "middle")
                     .attr("font-size", CONSTANTS.EVENT.LABEL_FONT_SIZE)
                     .attr("fill", CONSTANTS.EVENT.LABEL_COLOR)
-                   .text(d.title.length > CONSTANTS.EVENT.LABEL_TRUNCATE_LIMIT ? d.title.substring(0, CONSTANTS.EVENT.LABEL_TRUNCATE_LENGTH) + '...' : d.title);
- 
+                    .text(d.title.length > CONSTANTS.EVENT.LABEL_TRUNCATE_LIMIT ? d.title.substring(0, CONSTANTS.EVENT.LABEL_TRUNCATE_LENGTH) + '...' : d.title);
+
 
 
             } else {
                 // Render as Bar
-                  g.append("rect").attr("class", "event-bar")
-                      .attr("height", CONFIG.BAR_HEIGHT).attr("fill", d => d.color || getEventColor(d.type, renderer.typeColors))
-                      .attr("width", Math.max(CONSTANTS.EVENT.BAR_MIN_WIDTH, w))
-                      .attr("data-id", d.id)
-                      .on("mouseenter", (e) => {
-                          if (renderer.tooltip.isLocked && renderer.tooltip.isLocked()) return;
-                          renderer.handleEventHover(e, d);
-                      })
-                      .on("mousemove", (e) => {
-                          if (renderer.activeMapEventId || (renderer.tooltip.isLocked && renderer.tooltip.isLocked())) return;
-                          renderer.tooltip.move(e);
-                      })
-                      .on("mouseleave", () => {
-                          renderer.tooltip.hide();
-                          renderer.activeMapEventId = null;
-                      })
-                      .on("contextmenu", (e) => {
-                          e.preventDefault();
-                          if (renderer.onEventContextMenu) {
-                              renderer.onEventContextMenu(e, d);
-                          }
-                      });
-  
+                g.append("rect").attr("class", "event-bar")
+                    .attr("height", CONFIG.BAR_HEIGHT).attr("fill", d => d.color || getEventColor(d.type, renderer.typeColors))
+                    .attr("width", Math.max(CONSTANTS.EVENT.BAR_MIN_WIDTH, w))
+                    .attr("data-id", d.id)
+                    .on("mouseenter", (e) => {
+                        if (renderer.tooltip.isLocked && renderer.tooltip.isLocked()) return;
+                        renderer.handleEventHover(e, d);
+                    })
+                    .on("mousemove", (e) => {
+                        if (renderer.activeMapEventId || (renderer.tooltip.isLocked && renderer.tooltip.isLocked())) return;
+                        renderer.tooltip.move(e);
+                    })
+                    .on("mouseleave", () => {
+                        renderer.tooltip.hide();
+                        renderer.activeMapEventId = null;
+                    })
+                    .on("contextmenu", (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (renderer.onEventContextMenu) {
+                            renderer.onEventContextMenu(e, d);
+                        }
+                    });
+
 
                 // Draw Icon inside the bar
                 const iconName = d.icon || renderer.typeIcons[d.type ? d.type.toLowerCase() : ''];

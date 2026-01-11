@@ -23,6 +23,15 @@ export class TimelineRenderer {
         this.totalHeight = 0;
         this.activeMapEventId = null;
         this.isMapPanelOpen = false;
+        this.onContainerContextMenu = null;
+
+        this.container.on("contextmenu", (event) => {
+            // Prevent default browser context menu
+            event.preventDefault();
+            if (this.onContainerContextMenu) {
+                this.onContainerContextMenu(event);
+            }
+        });
     }
 
     render(layoutData, options = {}) {

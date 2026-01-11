@@ -173,6 +173,9 @@ export class TimelineController {
             const currentOrder = this.renderer.layoutData.map(l => l.level0);
             this.contextMenu.show(e, category, currentOrder);
         };
+        this.renderer.onContainerContextMenu = (e) => {
+            this.contextMenu.show(e, null, null, window.timelineData);
+        };
 
         this.renderer.onSliderMove = (date, activeEvents) => this.handleSliderMove(date, activeEvents);
         this.renderer.onEventHover = (e, d) => this.handleEventHover(e, d);
