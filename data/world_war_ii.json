@@ -36,7 +36,8 @@
       "level1": "Western Front",
       "level2": "Invasion",
       "lattitude": "52.23",
-      "longitude": "21.01"
+      "longitude": "21.01",
+      "locationName": "Warsaw, Poland"
     },
     {
       "start": "1939-09-03",
@@ -48,19 +49,21 @@
       "level1": "Western Front",
       "level2": "Diplomacy",
       "lattitude": "51.50",
-      "longitude": "-0.12"
+      "longitude": "-0.12",
+      "locationName": "London, UK"
     },
     {
       "start": "1940-04-09",
       "end": "1940-06-10",
-      "title": "Operation Weserübung",
+      "title": "Operation Weser\u00fcbung",
       "description": "German invasion of Denmark and Norway to secure iron ore.",
       "type": "campaign",
       "level0": "Europe",
       "level1": "Western Front",
       "level2": "Invasion",
       "lattitude": "59.91",
-      "longitude": "10.75"
+      "longitude": "10.75",
+      "locationName": "Oslo, Norway"
     },
     {
       "start": "1940-05-26",
@@ -72,7 +75,8 @@
       "level1": "Western Front",
       "level2": "Evacuation",
       "lattitude": "51.03",
-      "longitude": "2.37"
+      "longitude": "2.37",
+      "locationName": "Dunkirk, France"
     },
     {
       "start": "1940-07-10",
@@ -84,7 +88,8 @@
       "level1": "Western Front",
       "level2": "Air War",
       "lattitude": "51.50",
-      "longitude": "-0.12"
+      "longitude": "-0.12",
+      "locationName": "London, UK"
     },
     {
       "start": "1940-09-07",
@@ -96,7 +101,8 @@
       "level1": "Western Front",
       "level2": "Air War",
       "lattitude": "51.50",
-      "longitude": "-0.12"
+      "longitude": "-0.12",
+      "locationName": "London, UK"
     },
     {
       "start": "1944-06-06",
@@ -108,7 +114,8 @@
       "level1": "Western Front",
       "level2": "Liberation",
       "lattitude": "49.36",
-      "longitude": "-0.87"
+      "longitude": "-0.87",
+      "locationName": "Normandy, France"
     },
     {
       "start": "1944-08-25",
@@ -120,7 +127,8 @@
       "level1": "Western Front",
       "level2": "Liberation",
       "lattitude": "48.85",
-      "longitude": "2.35"
+      "longitude": "2.35",
+      "locationName": "Paris, France"
     },
     {
       "start": "1944-09-17",
@@ -132,7 +140,8 @@
       "level1": "Western Front",
       "level2": "Offensive",
       "lattitude": "51.98",
-      "longitude": "5.91"
+      "longitude": "5.91",
+      "locationName": "Arnhem, Netherlands"
     },
     {
       "start": "1944-12-16",
@@ -144,7 +153,8 @@
       "level1": "Western Front",
       "level2": "Counter-offensive",
       "lattitude": "50.12",
-      "longitude": "5.92"
+      "longitude": "5.92",
+      "locationName": "Ardennes, Belgium"
     },
     {
       "start": "1945-05-07",
@@ -156,7 +166,8 @@
       "level1": "Western Front",
       "level2": "Victory",
       "lattitude": "49.45",
-      "longitude": "4.03"
+      "longitude": "4.03",
+      "locationName": "Reims, France"
     },
     {
       "start": "1941-06-22",
@@ -180,7 +191,8 @@
       "level1": "Eastern Front",
       "level2": "Invasion",
       "lattitude": "53.90",
-      "longitude": "27.56"
+      "longitude": "27.56",
+      "locationName": "Minsk, Belarus"
     },
     {
       "start": "1941-10-02",
@@ -192,7 +204,8 @@
       "level1": "Eastern Front",
       "level2": "Defense",
       "lattitude": "55.75",
-      "longitude": "37.61"
+      "longitude": "37.61",
+      "locationName": "Moscow, USSR"
     },
     {
       "start": "1942-08-23",
@@ -204,7 +217,8 @@
       "level1": "Eastern Front",
       "level2": "Siege",
       "lattitude": "48.70",
-      "longitude": "44.51"
+      "longitude": "44.51",
+      "locationName": "Volgograd, USSR"
     },
     {
       "start": "1943-07-05",
@@ -216,7 +230,8 @@
       "level1": "Eastern Front",
       "level2": "Offensive",
       "lattitude": "51.73",
-      "longitude": "36.19"
+      "longitude": "36.19",
+      "locationName": "Kursk, USSR"
     },
     {
       "start": "1944-06-22",
@@ -228,7 +243,8 @@
       "level1": "Eastern Front",
       "level2": "Offensive",
       "lattitude": "53.90",
-      "longitude": "27.56"
+      "longitude": "27.56",
+      "locationName": "Minsk, Belarus"
     },
     {
       "start": "1945-04-16",
@@ -240,7 +256,8 @@
       "level1": "Eastern Front",
       "level2": "Fall of Berlin",
       "lattitude": "52.52",
-      "longitude": "13.40"
+      "longitude": "13.40",
+      "locationName": "Berlin, Germany"
     },
     {
       "start": "1945-04-30",
@@ -252,7 +269,8 @@
       "level1": "Eastern Front",
       "level2": "Fall of Berlin",
       "lattitude": "52.51",
-      "longitude": "13.38"
+      "longitude": "13.38",
+      "locationName": "Berlin, Germany"
     },
     {
       "start": "1941-12-07",
@@ -276,7 +294,8 @@
       "level1": "Pacific",
       "level2": "Attack",
       "lattitude": "21.36",
-      "longitude": "-157.95"
+      "longitude": "-157.95",
+      "locationName": "Pearl Harbor, Hawaii"
     },
     {
       "start": "1941-12-08",
@@ -288,7 +307,8 @@
       "level1": "Pacific",
       "level2": "Invasion",
       "lattitude": "1.35",
-      "longitude": "103.81"
+      "longitude": "103.81",
+      "locationName": "Singapore"
     },
     {
       "start": "1942-04-09",
@@ -300,7 +320,8 @@
       "level1": "Pacific",
       "level2": "Atrocity",
       "lattitude": "14.58",
-      "longitude": "120.45"
+      "longitude": "120.45",
+      "locationName": "Bataan, Philippines"
     },
     {
       "start": "1942-04-18",
@@ -312,7 +333,8 @@
       "level1": "Pacific",
       "level2": "Air War",
       "lattitude": "35.67",
-      "longitude": "139.65"
+      "longitude": "139.65",
+      "locationName": "Tokyo, Japan"
     },
     {
       "start": "1942-05-04",
@@ -324,7 +346,8 @@
       "level1": "Pacific",
       "level2": "Naval Battle",
       "lattitude": "-12.00",
-      "longitude": "154.00"
+      "longitude": "154.00",
+      "locationName": "Coral Sea"
     },
     {
       "start": "1942-06-04",
@@ -336,7 +359,8 @@
       "level1": "Pacific",
       "level2": "Naval Battle",
       "lattitude": "28.20",
-      "longitude": "-177.37"
+      "longitude": "-177.37",
+      "locationName": "Midway Atoll"
     },
     {
       "start": "1942-08-07",
@@ -348,7 +372,8 @@
       "level1": "Pacific",
       "level2": "Island Hopping",
       "lattitude": "-9.44",
-      "longitude": "159.97"
+      "longitude": "159.97",
+      "locationName": "Guadalcanal, Solomon Islands"
     },
     {
       "start": "1944-06-19",
@@ -360,7 +385,8 @@
       "level1": "Pacific",
       "level2": "Naval Battle",
       "lattitude": "15.00",
-      "longitude": "135.00"
+      "longitude": "135.00",
+      "locationName": "Philippine Sea"
     },
     {
       "start": "1944-10-23",
@@ -372,7 +398,8 @@
       "level1": "Pacific",
       "level2": "Naval Battle",
       "lattitude": "10.50",
-      "longitude": "125.00"
+      "longitude": "125.00",
+      "locationName": "Leyte Gulf, Philippines"
     },
     {
       "start": "1945-02-19",
@@ -384,7 +411,8 @@
       "level1": "Pacific",
       "level2": "Invasion",
       "lattitude": "24.78",
-      "longitude": "141.32"
+      "longitude": "141.32",
+      "locationName": "Iwo Jima, Japan"
     },
     {
       "start": "1945-04-01",
@@ -396,7 +424,8 @@
       "level1": "Pacific",
       "level2": "Invasion",
       "lattitude": "26.21",
-      "longitude": "127.67"
+      "longitude": "127.67",
+      "locationName": "Okinawa, Japan"
     },
     {
       "start": "1945-08-06",
@@ -408,7 +437,8 @@
       "level1": "Pacific",
       "level2": "Nuclear",
       "lattitude": "34.38",
-      "longitude": "132.45"
+      "longitude": "132.45",
+      "locationName": "Hiroshima, Japan"
     },
     {
       "start": "1945-08-09",
@@ -420,7 +450,8 @@
       "level1": "Pacific",
       "level2": "Nuclear",
       "lattitude": "32.75",
-      "longitude": "129.86"
+      "longitude": "129.86",
+      "locationName": "Nagasaki, Japan"
     },
     {
       "start": "1945-08-15",
@@ -432,7 +463,8 @@
       "level1": "Pacific",
       "level2": "Victory",
       "lattitude": "35.68",
-      "longitude": "139.76"
+      "longitude": "139.76",
+      "locationName": "Tokyo Bay, Japan"
     },
     {
       "start": "1937-07-07",
@@ -444,7 +476,8 @@
       "level1": "CBI",
       "level2": "China",
       "lattitude": "39.84",
-      "longitude": "116.21"
+      "longitude": "116.21",
+      "locationName": "Beijing, China"
     },
     {
       "start": "1937-12-13",
@@ -456,7 +489,8 @@
       "level1": "CBI",
       "level2": "China",
       "lattitude": "32.06",
-      "longitude": "118.79"
+      "longitude": "118.79",
+      "locationName": "Nanjing, China"
     },
     {
       "start": "1940-10",
@@ -468,7 +502,8 @@
       "level1": "CBI",
       "level2": "Logistics",
       "lattitude": "27.32",
-      "longitude": "95.14"
+      "longitude": "95.14",
+      "locationName": "Assam, India"
     },
     {
       "start": "1944-03",
@@ -480,7 +515,8 @@
       "level1": "CBI",
       "level2": "India",
       "lattitude": "24.81",
-      "longitude": "93.94"
+      "longitude": "93.94",
+      "locationName": "Imphal, India"
     },
     {
       "start": "1940-06-10",
@@ -516,7 +552,8 @@
       "level1": "North Africa",
       "level2": "Siege",
       "lattitude": "32.08",
-      "longitude": "23.94"
+      "longitude": "23.94",
+      "locationName": "Tobruk, Libya"
     },
     {
       "start": "1942-10-23",
@@ -528,7 +565,8 @@
       "level1": "North Africa",
       "level2": "Offensive",
       "lattitude": "30.83",
-      "longitude": "28.95"
+      "longitude": "28.95",
+      "locationName": "El Alamein, Egypt"
     },
     {
       "start": "1942-11-08",
@@ -540,7 +578,8 @@
       "level1": "North Africa",
       "level2": "Invasion",
       "lattitude": "35.75",
-      "longitude": "-5.80"
+      "longitude": "-5.80",
+      "locationName": "Casablanca, Morocco"
     },
     {
       "start": "1943-02-19",
@@ -552,7 +591,8 @@
       "level1": "North Africa",
       "level2": "Offensive",
       "lattitude": "35.25",
-      "longitude": "8.74"
+      "longitude": "8.74",
+      "locationName": "Kasserine Pass, Tunisia"
     },
     {
       "start": "1943-07-10",
@@ -576,7 +616,8 @@
       "level1": "Mediterranean",
       "level2": "Invasion",
       "lattitude": "37.50",
-      "longitude": "14.00"
+      "longitude": "14.00",
+      "locationName": "Sicily, Italy"
     },
     {
       "start": "1943-09-03",
@@ -588,7 +629,8 @@
       "level1": "Mediterranean",
       "level2": "Diplomacy",
       "lattitude": "37.07",
-      "longitude": "15.28"
+      "longitude": "15.28",
+      "locationName": "Cassibile, Italy"
     },
     {
       "start": "1944-01-17",
@@ -600,7 +642,8 @@
       "level1": "Mediterranean",
       "level2": "Siege",
       "lattitude": "41.49",
-      "longitude": "13.81"
+      "longitude": "13.81",
+      "locationName": "Cassino, Italy"
     },
     {
       "start": "1944-01-22",
@@ -612,7 +655,8 @@
       "level1": "Mediterranean",
       "level2": "Invasion",
       "lattitude": "41.44",
-      "longitude": "12.62"
+      "longitude": "12.62",
+      "locationName": "Anzio, Italy"
     },
     {
       "start": "1944-06-04",
@@ -624,7 +668,8 @@
       "level1": "Mediterranean",
       "level2": "Liberation",
       "lattitude": "41.90",
-      "longitude": "12.49"
+      "longitude": "12.49",
+      "locationName": "Rome, Italy"
     },
     {
       "start": "1941-04-01",
@@ -648,7 +693,8 @@
       "level1": "Middle East",
       "level2": "Occupation",
       "lattitude": "35.68",
-      "longitude": "51.38"
+      "longitude": "51.38",
+      "locationName": "Tehran, Iran"
     },
     {
       "start": "1939-09-03",
@@ -684,7 +730,8 @@
       "level1": "Global",
       "level2": "Naval War",
       "lattitude": "-34.80",
-      "longitude": "-56.30"
+      "longitude": "-56.30",
+      "locationName": "Montevideo, Uruguay"
     },
     {
       "start": "1941-05-27",
@@ -696,7 +743,8 @@
       "level1": "Global",
       "level2": "Naval War",
       "lattitude": "48.16",
-      "longitude": "-16.20"
+      "longitude": "-16.20",
+      "locationName": "Atlantic Ocean"
     },
     {
       "start": "1941-08-14",
@@ -708,7 +756,8 @@
       "level1": "Global",
       "level2": "Diplomacy",
       "lattitude": "47.00",
-      "longitude": "-52.00"
+      "longitude": "-52.00",
+      "locationName": "Placentia Bay, Newfoundland"
     },
     {
       "start": "1942-01-20",
@@ -720,7 +769,8 @@
       "level1": "Global",
       "level2": "Holocaust",
       "lattitude": "52.43",
-      "longitude": "13.16"
+      "longitude": "13.16",
+      "locationName": "Berlin, Germany"
     },
     {
       "start": "1943-01-14",
@@ -732,7 +782,8 @@
       "level1": "Global",
       "level2": "Diplomacy",
       "lattitude": "33.57",
-      "longitude": "-7.58"
+      "longitude": "-7.58",
+      "locationName": "Casablanca, Morocco"
     },
     {
       "start": "1944-07-01",
@@ -744,7 +795,8 @@
       "level1": "Global",
       "level2": "Diplomacy",
       "lattitude": "44.25",
-      "longitude": "-71.44"
+      "longitude": "-71.44",
+      "locationName": "Bretton Woods, NH, USA"
     },
     {
       "start": "1944-07-20",
@@ -756,7 +808,8 @@
       "level1": "Global",
       "level2": "Resistance",
       "lattitude": "54.14",
-      "longitude": "21.49"
+      "longitude": "21.49",
+      "locationName": "Rastenburg, East Prussia"
     },
     {
       "start": "1945-02-04",
@@ -768,7 +821,8 @@
       "level1": "Global",
       "level2": "Diplomacy",
       "lattitude": "44.47",
-      "longitude": "34.14"
+      "longitude": "34.14",
+      "locationName": "Yalta, USSR"
     },
     {
       "start": "1945-04-12",
@@ -780,7 +834,8 @@
       "level1": "Global",
       "level2": "Domestic",
       "lattitude": "32.88",
-      "longitude": "-84.85"
+      "longitude": "-84.85",
+      "locationName": "Warm Springs, GA, USA"
     },
     {
       "start": "1945-06-26",
@@ -792,7 +847,8 @@
       "level1": "Global",
       "level2": "Diplomacy",
       "lattitude": "37.77",
-      "longitude": "-122.41"
+      "longitude": "-122.41",
+      "locationName": "San Francisco, CA, USA"
     },
     {
       "start": "1945-07-16",
@@ -804,7 +860,8 @@
       "level1": "Global",
       "level2": "Nuclear",
       "lattitude": "33.67",
-      "longitude": "-106.47"
+      "longitude": "-106.47",
+      "locationName": "Alamogordo, NM, USA"
     },
     {
       "start": "",
@@ -828,7 +885,8 @@
       "level1": "Global",
       "level2": "Justice",
       "lattitude": "49.44",
-      "longitude": "11.04"
+      "longitude": "11.04",
+      "locationName": "Nuremberg, Germany"
     },
     {
       "start": "1941-10",
@@ -840,7 +898,8 @@
       "level1": "Global",
       "level2": "Nuclear",
       "lattitude": "35.88",
-      "longitude": "-106.29"
+      "longitude": "-106.29",
+      "locationName": "Los Alamos, NM, USA"
     },
     {
       "start": "1939-11-30",
@@ -852,7 +911,8 @@
       "level1": "Eastern Front",
       "level2": "Finland",
       "lattitude": "60.16",
-      "longitude": "24.93"
+      "longitude": "24.93",
+      "locationName": "Helsinki, Finland"
     },
     {
       "start": "1941-01",
@@ -876,7 +936,8 @@
       "level1": "CBI",
       "level2": "Invasion",
       "lattitude": "16.86",
-      "longitude": "96.19"
+      "longitude": "96.19",
+      "locationName": "Yangon, Myanmar"
     },
     {
       "start": "1944-11",
@@ -888,7 +949,8 @@
       "level1": "Western Front",
       "level2": "Offensive",
       "lattitude": "51.00",
-      "longitude": "6.00"
+      "longitude": "6.00",
+      "locationName": "Rhineland, Germany"
     },
     {
       "start": "1945-01-27",
@@ -900,7 +962,8 @@
       "level1": "Eastern Front",
       "level2": "Holocaust",
       "lattitude": "50.03",
-      "longitude": "19.20"
+      "longitude": "19.20",
+      "locationName": "O\u015bwi\u0119cim, Poland"
     },
     {
       "start": "1941-09-08",
@@ -912,7 +975,8 @@
       "level1": "Eastern Front",
       "level2": "Siege",
       "lattitude": "59.93",
-      "longitude": "30.33"
+      "longitude": "30.33",
+      "locationName": "Saint Petersburg, Russia"
     },
     {
       "start": "1941-12-07",
@@ -972,7 +1036,8 @@
       "level1": "Pre-War",
       "level2": "Diplomacy",
       "lattitude": "48.1374",
-      "longitude": "11.5755"
+      "longitude": "11.5755",
+      "locationName": "Munich, Germany"
     },
     {
       "start": "1942-01-20",
@@ -984,7 +1049,8 @@
       "level1": "Axis",
       "level2": "Planning",
       "lattitude": "52.4319",
-      "longitude": "13.1645"
+      "longitude": "13.1645",
+      "locationName": "Berlin, Germany"
     },
     {
       "start": "1943-05-12",
@@ -996,7 +1062,8 @@
       "level1": "Strategic",
       "level2": "Planning",
       "lattitude": "38.8977",
-      "longitude": "-77.0365"
+      "longitude": "-77.0365",
+      "locationName": "Washington D.C., USA"
     },
     {
       "start": "1943-08-17",
@@ -1008,7 +1075,8 @@
       "level1": "Strategic",
       "level2": "Planning",
       "lattitude": "46.8123",
-      "longitude": "-71.2063"
+      "longitude": "-71.2063",
+      "locationName": "Quebec City, Canada"
     },
     {
       "start": "1943-10-18",
@@ -1020,7 +1088,8 @@
       "level1": "Allied",
       "level2": "Diplomacy",
       "lattitude": "55.7558",
-      "longitude": "37.6173"
+      "longitude": "37.6173",
+      "locationName": "Moscow, USSR"
     },
     {
       "start": "1943-11-22",
@@ -1032,7 +1101,8 @@
       "level1": "Pacific",
       "level2": "Diplomacy",
       "lattitude": "30.0444",
-      "longitude": "31.2357"
+      "longitude": "31.2357",
+      "locationName": "Cairo, Egypt"
     },
     {
       "start": "1943-11-28",
@@ -1044,7 +1114,8 @@
       "level1": "Allied",
       "level2": "Diplomacy",
       "lattitude": "35.6892",
-      "longitude": "51.389"
+      "longitude": "51.389",
+      "locationName": "Tehran, Iran"
     },
     {
       "start": "1944-07-01",
@@ -1056,7 +1127,8 @@
       "level1": "Post-War",
       "level2": "Economy",
       "lattitude": "44.2562",
-      "longitude": "-71.4404"
+      "longitude": "-71.4404",
+      "locationName": "Bretton Woods, NH, USA"
     },
     {
       "start": "1944-08-21",
@@ -1068,7 +1140,8 @@
       "level1": "Post-War",
       "level2": "Organization",
       "lattitude": "38.9138",
-      "longitude": "-77.0621"
+      "longitude": "-77.0621",
+      "locationName": "Washington D.C., USA"
     },
     {
       "start": "1944-10-09",
@@ -1080,7 +1153,8 @@
       "level1": "Allied",
       "level2": "Diplomacy",
       "lattitude": "55.7558",
-      "longitude": "37.6173"
+      "longitude": "37.6173",
+      "locationName": "Moscow, USSR"
     },
     {
       "start": "1945-01-30",
@@ -1092,7 +1166,8 @@
       "level1": "Strategic",
       "level2": "Planning",
       "lattitude": "35.8989",
-      "longitude": "14.5145"
+      "longitude": "14.5145",
+      "locationName": "Malta"
     },
     {
       "start": "1945-02-04",
@@ -1104,7 +1179,8 @@
       "level1": "Allied",
       "level2": "Diplomacy",
       "lattitude": "44.4795",
-      "longitude": "34.1495"
+      "longitude": "34.1495",
+      "locationName": "Yalta, USSR"
     },
     {
       "start": "1945-04-25",
@@ -1116,7 +1192,8 @@
       "level1": "Post-War",
       "level2": "Organization",
       "lattitude": "37.7749",
-      "longitude": "-122.4194"
+      "longitude": "-122.4194",
+      "locationName": "San Francisco, CA, USA"
     },
     {
       "start": "1945-07-17",
@@ -1128,7 +1205,8 @@
       "level1": "Allied",
       "level2": "Diplomacy",
       "lattitude": "52.3989",
-      "longitude": "13.0645"
+      "longitude": "13.0645",
+      "locationName": "Potsdam, Germany"
     },
     {
       "start": "1938-09-30",
@@ -1140,7 +1218,8 @@
       "level1": "Pre-War",
       "level2": "Diplomacy",
       "lattitude": "48.1374",
-      "longitude": "11.5755"
+      "longitude": "11.5755",
+      "locationName": "Munich, Germany"
     },
     {
       "start": "1941-08-09",
@@ -1152,7 +1231,8 @@
       "level1": "Atlantic",
       "level2": "Diplomacy",
       "lattitude": "47.21",
-      "longitude": "-54.21"
+      "longitude": "-54.21",
+      "locationName": "Placentia Bay, Newfoundland"
     },
     {
       "start": "1942-01-20",
@@ -1164,7 +1244,8 @@
       "level1": "Axis",
       "level2": "Planning",
       "lattitude": "52.4319",
-      "longitude": "13.1645"
+      "longitude": "13.1645",
+      "locationName": "Berlin, Germany"
     },
     {
       "start": "1943-01-14",
@@ -1176,7 +1257,8 @@
       "level1": "Strategic",
       "level2": "Diplomacy",
       "lattitude": "33.5731",
-      "longitude": "-7.5898"
+      "longitude": "-7.5898",
+      "locationName": "Casablanca, Morocco"
     }
   ],
   "description": "",
