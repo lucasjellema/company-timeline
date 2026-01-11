@@ -20,6 +20,7 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 
 <body>
@@ -117,9 +118,9 @@
                     </svg>
                     Upload Story
                 </label>
-                <input type="file" id="json-upload" accept=".json" hidden>
+                <input type="file" id="json-upload" accept=".json,.zip" hidden>
                 <button id="download-sample" class="btn btn-secondary">Download Story</button>
-                <button id="sign-in-btn" class="btn btn-secondary">
+                <button id="sign-in-btn" class="btn btn-secondary" style="display: none;">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
@@ -872,6 +873,40 @@
                 </div>
                 <div class="form-actions">
                     <button id="save-map-label-settings-btn" class="btn btn-primary btn-block">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Download Options Modal -->
+    <div id="download-options-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2>Download Story</h2>
+                <button id="close-download-options-btn" class="btn-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+                    This story contains locally stored images. How would you like to download it?
+                </p>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <button id="download-zip-btn" class="btn btn-primary"
+                        style="display: flex; flex-direction: column; align-items: start; gap: 4px; padding: 12px;">
+                        <span style="font-weight: 600;">Download ZIP (Recommended)</span>
+                        <span style="font-size: 0.85rem; font-weight: normal; opacity: 0.9;">Includes JSON file and all
+                            local images. Easy to restore locally.</span>
+                    </button>
+                    <button id="download-json-btn" class="btn btn-secondary"
+                        style="display: flex; flex-direction: column; align-items: start; gap: 4px; padding: 12px;">
+                        <span style="font-weight: 600;">Download JSON Only</span>
+                        <span style="font-size: 0.85rem; font-weight: normal; opacity: 0.9;">Smaller file size, but
+                            local images will be excluded/broken in the file.</span>
+                    </button>
                 </div>
             </div>
         </div>
