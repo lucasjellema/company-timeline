@@ -17,12 +17,12 @@ const CONSTANTS = {
         RADIUS: 10,               // Radius of the back button circle
         CX: 10,                   // Center X of the back button circle
         CY: 5,                    // Center Y of the back button circle
-        FILL_DEFAULT: "rgba(255,255,255,0.1)", // Default background color
-        FILL_HOVER: "rgba(255,255,255,0.3)",   // Background color on hover
-        STROKE: "#666",           // Stroke color for the button circle
+        FILL_DEFAULT: "var(--bg-hover)", // Default background color (theme aware)
+        FILL_HOVER: "var(--bg-active)",   // Background color on hover (theme aware)
+        STROKE: "var(--border)",          // Stroke color for the button circle
         STROKE_WIDTH: 1,          // Stroke width for the button circle
         ICON_PATH: "M 12 5 L 8 9 L 12 13",     // SVG path data for the left arrow icon
-        ICON_STROKE: "#fff",      // Color of the arrow icon
+        ICON_STROKE: "var(--text-main)",      // Color of the arrow icon (theme aware)
         ICON_FILL: "none",        // Fill of the arrow icon (none since it's a line)
         ICON_TRANSLATE: "translate(0, -4)"     // Adjustment to center the arrow within the circle
     },
@@ -159,7 +159,8 @@ export function drawLevelsAndEvents(renderer, svg, layoutData, xScale) {
 
 
 
-
+        //TODO this level.height needs to be updated to reflect actual used height based on rowYOffsets + number of rows
+        level.height = currentLevel0Y;
         levelG.append("rect")
             .attr("class", "level-bg")
             .attr("width", renderer.width)
