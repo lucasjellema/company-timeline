@@ -311,14 +311,14 @@
             </svg>
             Collapse
         </div>
-        <div class="context-menu-item" id="ctx-expand-all">
+        <div class="context-menu-item" id="ctx-expand-all" style="display: none;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path
                     d="M7 11v-4a2 2 0 0 1 2-2h4m-6 0h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-4m0-6v4a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V13a2 2 0 0 1 2-2h4" />
             </svg>
             Expand All
         </div>
-        <div class="context-menu-item" id="ctx-collapse-all">
+        <div class="context-menu-item" id="ctx-collapse-all" style="display: none;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M4 14h6v6M20 10h-6V4" />
             </svg>
@@ -645,6 +645,17 @@
                     <div class="form-group">
                         <label for="settings-desc">Description</label>
                         <textarea id="settings-desc" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="settings-start">Start Date (Year or ISO)</label>
+                            <input type="text" id="settings-start" required placeholder="YYYY or YYYY-MM">
+                        </div>
+                        <div class="form-group">
+                            <label for="settings-end">End Date (Year or ISO)</label>
+                            <input type="text" id="settings-end" required placeholder="YYYY or YYYY-MM">
+                        </div>
                     </div>
 
                     <div class="form-group collapsible-section" id="settings-colors-collapsible"

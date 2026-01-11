@@ -36,6 +36,8 @@ export function initSettingsUI(storage, refreshCallback) {
         modal.classList.remove('hidden');
         document.getElementById('settings-title').value = activeStory.name || '';
         document.getElementById('settings-desc').value = activeStory.description || '';
+        document.getElementById('settings-start').value = activeStory.startDate || '';
+        document.getElementById('settings-end').value = activeStory.endDate || '';
         document.getElementById('settings-csv-paste').value = '';
 
         // Deep copy locations to avoid mutation before save
@@ -585,6 +587,8 @@ export function initSettingsUI(storage, refreshCallback) {
 
         const newName = document.getElementById('settings-title').value;
         const newDesc = document.getElementById('settings-desc').value;
+        const newStart = document.getElementById('settings-start').value;
+        const newEnd = document.getElementById('settings-end').value;
 
         const newColors = {};
         colorContainer.querySelectorAll('input[type="color"]').forEach(input => {
@@ -597,7 +601,7 @@ export function initSettingsUI(storage, refreshCallback) {
         });
 
         storage.updateStorySettings(activeStory.id,
-            { name: newName, description: newDesc },
+            { name: newName, description: newDesc, start: newStart, end: newEnd },
             { colors: newColors, icons: newIcons, locations: currentLocations }
         );
 
