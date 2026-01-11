@@ -28,7 +28,7 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
     // Group by level0
     const groups = d3.group(events, d => d.level0);
 
-    // Sort levels: groupOrder > Company > Alphabetical
+    // Sort levels: groupOrder >  Alphabetical
     const sortedLevel0 = Array.from(groups.keys()).sort((a, b) => {
         const indexA = groupOrder.indexOf(a);
         const indexB = groupOrder.indexOf(b);
@@ -90,6 +90,9 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
         const sortedL1Keys = Array.from(level1Groups.keys()).sort((k1, k2) => {
             const items1 = level1Groups.get(k1);
             const items2 = level1Groups.get(k2);
+            // the items that have d.level1 equal to _misc_ should always come first    
+            if (k1 === " _misc_ ") return -1;
+            if (k2 === " _misc_ ") return 1;
             const min1 = d3.min(items1, d => d.startDate);
             const min2 = d3.min(items2, d => d.startDate);
 
@@ -97,7 +100,7 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
             if (!min2) return -1;
             return min1 - min2;
         });
-
+console.log("L0 Group:", level0, "with L1 keys:", sortedL1Keys);
         let currentLevel0RowIndex = 0; // Tracks the Y-offset (in rows) for the entire L0 container
 
         const finalLevelEvents = [];
@@ -107,11 +110,18 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
 
 
             // Sort bars:
+            // 0. "Grand Parent" items (Level 1 is empty) come FIRST.
             // 1. "Parent" items (Level 2 is empty) come FIRST.
             // 2. Then by start date.
             groupItems.sort((a, b) => {
+                const aIsGrandParent = !a.level1 || a.level1.trim() === '';
+                const bIsGrandParent = !b.level1 || b.level1.trim() === '';
                 const aIsParent = !a.level2 || a.level2.trim() === '';
                 const bIsParent = !b.level2 || b.level2.trim() === '';
+                if (aIsGrandParent) console.log("Grand Parent:", a.id, a.level0, a.level1, a.level2);
+                if (bIsGrandParent) console.log("Grand Parent b:", b.id, b.level0, b.level1, b.level2);
+                if (aIsGrandParent && !bIsGrandParent) return -1; // A comes first
+                if (!aIsGrandParent && bIsGrandParent) return 1;  // B comes first              
 
                 if (aIsParent && !bIsParent) return -1; // A comes first
                 if (!aIsParent && bIsParent) return 1;  // B comes first
@@ -125,6 +135,7 @@ export function processTimelineData(data, collapsedGroups = [], groupOrder = [],
             // Pack bars into rows specific to this Level 1 block
             // Iterate over all bars and position them in existing rows if possible
             // Otherwise, create a new row for them
+            console.log("Placing L1 Group:", l1Key, "with items:", groupItems.map(d => d.id));
             groupItems.forEach(event => {
                 let placed = false;
                 for (let i = 0; i < blockRows.length; i++) {
