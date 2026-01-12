@@ -79,28 +79,30 @@ const prepareActualIconsAndBarsRowMap = (layoutData, xScale, threshold, renderer
                 // NOTE: how do we find a bar in the same row (which means that the current row can the targetRow for the icon) ?
                 let targetRowIndex = rowIndex;
                 let targetSolution = 0
-                for (let i = 0; i < rowIndex; i++) {
-                    const prevRowInfo = rowMap.get(i);
-// TODO if targetrow itself has a targetrow different from itself, we need to follow the chain to the top  
-                    // both have same l1 prevRow has no l2
-                    if (prevRowInfo.level1 === event.level1 && (!prevRowInfo.level2 || prevRowInfo.level2.trim() === '') && targetSolution < 2  ) {
-                        targetRowIndex = i;
-                        targetSolution = 2;
-                        continue;
-                    }
-                    // both have same l1 and same l2 , we have a good option, but we continue our search for better option (no l2)
-                    if (prevRowInfo.level1 === event.level1 && (event.level2 && prevRowInfo.level2 == event.level2) && targetSolution < 3 ) {
-                        targetRowIndex = i;
-                        targetSolution = 3;
-                        continue;
-                    }
-                    // row has l1 , prevRow has no l1 => promote to level 0 level is worth 1 
-                    if ((!prevRowInfo.level1 || prevRowInfo.level1.trim() === '') && targetSolution < 1) {
-                        targetRowIndex = i;
-                        targetSolution = 1;
-                        continue;
-                    }
-                }
+
+                // if multiple icons have same level1 they can be lifted to the same target row - even if no suitable level1 row exists 
+                // for (let i = 0; i < rowIndex; i++) {
+                //     const prevRowInfo = rowMap.get(i);
+                //     // TODO if targetrow itself has a targetrow different from itself, we need to follow the chain to the top  
+                //     // both have same l1 prevRow has no l2
+                //     if (prevRowInfo.level1 === event.level1 && (!prevRowInfo.level2 || prevRowInfo.level2.trim() === '') && targetSolution < 2  ) {
+                //         targetRowIndex = i;
+                //         targetSolution = 2;
+                //         continue;
+                //     }
+                //     // both have same l1 and same l2 , we have a good option, but we continue our search for better option (no l2)
+                //     if (prevRowInfo.level1 === event.level1 && (event.level2 && prevRowInfo.level2 == event.level2) && targetSolution < 3 ) {
+                //         targetRowIndex = i;
+                //         targetSolution = 3;
+                //         continue;
+                //     }
+                //     // row has l1 , prevRow has no l1 => promote to level 0 level is worth 1 
+                //     if ((!prevRowInfo.level1 || prevRowInfo.level1.trim() === '') && targetSolution < 1) {
+                //         targetRowIndex = i;
+                //         targetSolution = 1;
+                //         continue;
+                //     }
+                // }
                 if (targetRowIndex < rowIndex) {
                     // TODO check if the target row already has an icon or a bar; if it has neither, it is no good
                     rowInfo.targetRowIndex = targetRowIndex;
@@ -109,6 +111,9 @@ const prepareActualIconsAndBarsRowMap = (layoutData, xScale, threshold, renderer
                     // set hasicon in target row
                     const targetRowInfo = rowMap.get(targetRowIndex);
                     targetRowInfo.hasIcon = true;
+
+                    // TODO does original row still has icon? probably not! perhaps check all rows with hasIcon is that really still is the case!
+                    //rowInfo.hasIcon = false;
                 } else {
                     rowInfo.hasIcon = true;
                 }
