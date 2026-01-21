@@ -2,7 +2,7 @@ import { TimelineStorage } from './storage.js';
 import { CONFIG } from './config.js';
 import { ensureDataIds } from './utils.js';
 import * as auth from './auth.js';
-import { Client } from "https://cdn.jsdelivr.net/npm/@microsoft/microsoft-graph-client@3.0.4/+esm";
+import { Client, ResponseType } from "https://cdn.jsdelivr.net/npm/@microsoft/microsoft-graph-client@3.0.4/+esm";
 
 export function initShippedStoriesUI(storage, refreshCallback) {
     const modal = document.getElementById('shipped-stories-modal');
@@ -90,11 +90,6 @@ export async function loadStoryFromURL(url, storage, completionCallback, meta = 
         // Convert Share URL to Graph API endpoint to get direct download URL
         if (url.includes('onedrive.live.com') || url.includes('1drv.ms') || url.includes('sharepoint.com')) {
             try {
-                const encodedUrl = btoa(url).replace(/\//g, '_').replace(/\+/g, '-').replace(/=+$/, '');
-                const graphApiUrl = `https://graph.microsoft.com/v1.0/shares/u!${encodedUrl}/driveItem`;
-
-                console.log(`Fetching OneDrive metadata from: ${graphApiUrl}`);
-
                 // Get token using our new auth helper
                 const token = await auth.getAccessToken();
                 const headers = {};
@@ -121,41 +116,29 @@ export async function loadStoryFromURL(url, storage, completionCallback, meta = 
                 }
 
 
-                const sharingUrl = 'https://conclusionfutureit-my.sharepoint.com/:u:/g/personal/lucas_jellema_amis_nl/IQCOLEe0OjYKRJ2DraB0NNUWAVzXOL_ke1FES2H9WBVuNPk?e=aENb87';
-                const shareId = 'u!' + toBase64Url(sharingUrl);
+                const shareId = 'u!' + toBase64Url(url);
 
-                const apiUrl = `https://graph.microsoft.com/v1.0/shares/${shareId}/driveItem`;
-                // Use your access token to call this endpoint
-                const response = await graphClient.api(apiUrl).get();
-                console.log(response);
+                // (A) metadata ophalen (via shares)
+                const item = await graphClient.api(`/shares/${shareId}/driveItem`).get();
 
-                //The response will contain both id (itemId) and parentReference.driveId (driveId).
+                const driveId = item.parentReference?.driveId; // bv. "b!..."
+                const itemId = item.id;
+                const name = item.name ?? "download";
 
+                if (!driveId || !itemId) throw new Error("driveId of itemId ontbreekt in metadata");
 
+                // (B) content ophalen vanaf de juiste drive
+                const blob = await graphClient
+                    .api(`/drives/${driveId}/items/${itemId}/content`)
+                    .responseType(ResponseType.BLOB)   // gebruik enum i.p.v. string
+                    .get();
 
-
-
-                const resp = await graphClient.api("/me/drive/items/{item id}}/content").get();
-                console.log("Got OneDrive download URL via Graph Client");
-                fetchUrl = resp['@microsoft.graph.downloadUrl'] || fetchUrl;
-
-                const metaRes = await fetch(graphApiUrl, { headers });
-
-                if (!metaRes.ok) {
-                    if (metaRes.status === 401 && !token) {
-                        throw new Error("Authentication required for this shared item. Please sign in.");
-                    }
-                    throw new Error(`Failed to fetch OneDrive metadata: ${metaRes.statusText}`);
-                }
-
-                const metaData = await metaRes.json();
-                if (metaData['@microsoft.graph.downloadUrl']) {
-                    fetchUrl = metaData['@microsoft.graph.downloadUrl'];
-                    console.log("Got OneDrive download URL");
-                } else {
-                    throw new Error("OneDrive metadata did not contain download URL");
-                }
-            } catch (odErr) {
+                // (C) blob → tekst → JSON
+                const text = await blob.text();
+                const data = JSON.parse(text); // of een specifiek type
+                loadActiveStoryFromFetchedData(data, meta, url, storage, completionCallback);
+            }
+            catch (odErr) {
                 console.warn("OneDrive workaround failed, falling back to original URL", odErr);
                 // Fallback to original URL if logic fails, though likely to fail CORS too
                 if (odErr.message.includes("Authentication required")) {
@@ -163,51 +146,54 @@ export async function loadStoryFromURL(url, storage, completionCallback, meta = 
                 }
             }
         }
-
-        const res = await fetch(fetchUrl);
-        if (!res.ok) throw new Error(`Failed to load ${url}`);
-        let data = await res.json();
-
+        else {
+            const res = await fetch(fetchUrl);
+            if (!res.ok) throw new Error(`Failed to load ${url}`);
+            let data = await res.json();
         // Handle wrapper if present (e.g. if file is { story: { ... } } or just { ... })
         // Assuming the file IS the story object or an array of events.
-
-        let storyObj;
-
-        if (Array.isArray(data)) {
-            // Raw Events Array
-            ensureDataIds(data);
-            storyObj = {
-                name: meta.name || "Imported Story",
-                description: meta.description || `Loaded from ${url}`,
-                data: data
-            };
-            // Allow storage to create
-            storage.createStory(storyObj.name, storyObj.data, { description: storyObj.description });
-        } else {
-            // Full Story Object
-            storyObj = data;
-            // Force new ID to treat as template import
-            storyObj.id = null;
-            // Ensure name/desc if missing
-            if (!storyObj.name) storyObj.name = meta.name || "Imported Story";
-            if (!storyObj.description) storyObj.description = meta.description || "";
-
-            if (storyObj.data) ensureDataIds(storyObj.data);
-
-            storage.importStory(storyObj);
-        }
-
-        // Activate
-        const activeStory = storage.getActiveStory();
-        window.timelineData = activeStory.data;
-
-        if (completionCallback) {
-            completionCallback({ resetView: true });
+            loadActiveStoryFromFetchedData(data, meta, url, storage, completionCallback);
         }
 
     } catch (err) {
         console.error(err);
         alert("Failed to load story: " + err.message);
+    }
+}
+
+function loadActiveStoryFromFetchedData(data, meta, url, storage, completionCallback) {
+    let storyObj;
+
+    if (Array.isArray(data)) {
+        // Raw Events Array
+        ensureDataIds(data);
+        storyObj = {
+            name: meta.name || "Imported Story",
+            description: meta.description || `Loaded from ${url}`,
+            data: data
+        };
+        // Allow storage to create
+        storage.createStory(storyObj.name, storyObj.data, { description: storyObj.description });
+    } else {
+        // Full Story Object
+        storyObj = data;
+        // Force new ID to treat as template import
+        storyObj.id = null;
+        // Ensure name/desc if missing
+        if (!storyObj.name) storyObj.name = meta.name || "Imported Story";
+        if (!storyObj.description) storyObj.description = meta.description || "";
+
+        if (storyObj.data) ensureDataIds(storyObj.data);
+
+        storage.importStory(storyObj);
+    }
+
+    // Activate
+    const activeStory = storage.getActiveStory();
+    window.timelineData = activeStory.data;
+
+    if (completionCallback) {
+        completionCallback({ resetView: true });
     }
 }
 
